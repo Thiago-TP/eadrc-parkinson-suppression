@@ -1,0 +1,20 @@
+             Method  Voluntary Motion RMSE
+0              wflc               0.192532
+1              abpf               0.245088
+2          bmflc_kf               0.286460
+3               flc               0.318223
+4             bmflc               0.329280
+5            ebmflc               0.339584
+6         bmflc_rls               0.341836
+7           wflc_kf               0.343120
+8               cdf               0.343120
+9    lowpass_filter               0.353983
+10    kalman_filter               0.371180
+11              bbf               0.379931
+12         as_bmflc               0.380908
+13            ar_kf               0.400962
+14  highpass_filter               0.406851
+15        ehwflc_kf               0.413268
+16            amolc               0.460813
+17           zpafkf               0.610504
+18           ar_lms               0.649050
