@@ -1,0 +1,47 @@
+DESCONSIDERAR:
+- 763
+- 817
+- 955 
+- 524 
+- 166
+- 1009
+- 567
+- 698
+- 979
+- 571
+- 27
+- 639
+- 1022
+- 396
+- 627
+- 736
+- 942
+- 384
+- 481
+- 108
+- 888
+- 469
+- 104
+- 260
+- 217
+
+CONSIDERAR:
+- 821 [Introduz filtro adaptativo para estimação do tremor e o compara com WFLC]
+- 553 [Introduz um algoritmo de extração de tremor baseado em transformada de wavelet e filtro de Kalman e o compara com BMFLC, E-BMFLC]
+- 319 [Revisão bibliográfica sobre supressão de tremor em membro superior usando órteses incluindo métodos para extração do tremor/movimento voluntário]
+- 303 [Aplica uma rede neural para realizar estimação e predição da porção voluntária em movimento acometido de tremor PD]
+- 646 [Introduz um joystick com cancelamento de tremor WFLC para pacientes com PD (artigo completo não encontrado]
+- 804 [Propõe um estimador de tremor baseado em autoencoder]
+- 829 [Propõe um método de cancelamento de tremor usando rede neural fuzzy de 3 camadas e processamento de features por transformada de wavelet]
+- 577 [Usa controle ativo FES com estimação do tremor por filtragem passa-alta (Butterworth de 6a ordem com corte em 2Hz) e passa-banda de segunda ordem]
+- 527 [Usa RNN para estimar e prever tremor]
+- 654 [Propõe um "zero phase adaptive fuzzy Kalman filter" para estimação e compensação do tremor]
+- 675 [Estima e remove tremor usando "Lie Groups" e filtro de Kalman estendido]
+
+
+OUTRO:
+- 742 [Descarta componente em frequência menores que 0.8Hz em preparação dos dados]
+- 733 [Prediz tremor usando redes neurais fuzzy, aplicando passa-alta para preparação do sinal]
+- 885 [Propõe um método para encontrar a "frequência causadora" para fenômenos de oscilação não-linear, como PD. Uma discussão interessante.]
+- 183 [Revisão de literatura sobre sensores vestíveis para monitoramento de problemas motores]
+- 695 [Filtra tremor com passa-banda e passa-baixa para recuperar o movimento voluntário, servindo de feature confiável para análise de correlação com bradiquinesia]

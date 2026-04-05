@@ -1,0 +1,207 @@
+Yan Naing Aye, Su Zhao, Cheng Yap Shee, Wei Tech Ang,
+Vision Aided Active Error Canceling in Handheld Microsurgical Instrument,
+Procedia Engineering,
+Volume 41,
+2012,
+Pages 729-736,
+ISSN 1877-7058,
+https://doi.org/10.1016/j.proeng.2012.07.236.
+(https://www.sciencedirect.com/science/article/pii/S1877705812026367)
+Abstract: The intelligent handheld instrument, ITrem2, enhances manual positioning accuracy by cancelling erroneous hand movements and, at the same time, provides automatic micromanipulation functions. Visual data are acquired from a high speed monovision camera attached to the optical surgical microscope and acceleration measurements are acquired from the inertial measurement unit (IMU) on board ITrem2. Tremor estimation and canceling is implemented via Band-limited Multiple Fourier Linear Combiner (BMFLC) ﬁlter. The piezoelectric actuated micromanipulator in ITrem2 generates the 3D motion to compensate erroneous hand motion. Experiments were conducted for cancellation of oscillatory motions and error amplitude was reduced by 67% in 1-DOF test.
+Keywords: Microsurgery; visual servoing; handheld instrument; physiological tremor compensation
+
+J.A. Gallego, E. Rocon, J.O. Roa, J.C. Moreno, A.D. Koutsou, J.L. Pons,
+On the use of inertial measurement units for real-time quantification of pathological tremor amplitude and frequency,
+Procedia Chemistry,
+Volume 1, Issue 1,
+2009,
+Pages 1219-1222,
+ISSN 1876-6196,
+https://doi.org/10.1016/j.proche.2009.07.304.
+(https://www.sciencedirect.com/science/article/pii/S1876619609003052)
+Abstract: Quantification of pathological tremor amplitude and frequency is fundamental for clinical diagnosis of neurological disorders and for robotics based-tremor suppression. In this work, a novel approach for real-time estimation of tremor amplitude and frequency using inertial sensors is presented. First, a miniaturized MEMS sensor is attached to the patient’s hand and calibrated with respect to it. This procedure permits to directly obtain wrist flexion/extension. Afterwards, a two stage algorithm for tremor estimation is implemented. It consists of a tracking algorithm that isolates tremorous movement, followed by an adaptive filter that estimates tremor parameters. The proposed technique has inherent zero phase, providing a tremor amplitude error of 0.3766 rad/s.
+Keywords: MEMS; Inertial Measurement Unit; Pathological Tremor; Adaptive Signal Processing; Kalman Filter
+
+Horia-Nicolai L. Teodorescu, Mircea Chelaru, Abraham Kandel, Ioan Tofan, Mihaela Irimia,
+Fuzzy methods in tremor assessment, prediction, and rehabilitation,
+Artificial Intelligence in Medicine,
+Volume 21, Issues 1–3,
+2001,
+Pages 107-130,
+ISSN 0933-3657,
+https://doi.org/10.1016/S0933-3657(00)00076-2.
+(https://www.sciencedirect.com/science/article/pii/S0933365700000762)
+Abstract: Tremor is a disabling condition for a large segment of population, mainly elderly. To the present date, there are no adequate tools to diagnose and help rehabilitation of subjects with tremor, but recently there is a tremendous surge of interest in the research in the field. We report on the use of fuzzy methods in applications for rehabilitation, namely in tremor diagnosing and control. We synthesize our results regarding the characterization of the tremor by means of nonlinear dynamics techniques and fuzzy logic, and the prediction of tremor movements in view of rehabilitation purposes. Based on linear and nonlinear analysis of tremor, and using fuzzy aggregation, the fusing of tremor parameters in global functional disabling factors is proposed. Nonlinear dynamic parameters, namely correlation dimension and Lyapunov exponent is used in order to improve the assessment of tremor. The benefits of the fuzzy fused tremor parameters rely on more complete and accurate assessment of the functional impairment and on improved feedback for rehabilitation, based on the fused parameters of the tremor. Further steps in rehabilitation may require external muscular control. In turn, the control of tremor by electrical stimulation requires movement prediction. Several neural and neuro-fuzzy predictors are compared and a neuro-fuzzy predictor is presented, allowing us five-step ahead prediction, with an RMS error of the order of 10%. The benefits of the neuro-fuzzy predictor are good prediction capability, versatility, and apparently a high robustness to individual variations of the tremor. The reported research, which extended over several years and included development of sensors, equipment, and software, has been aimed to development of products. The results may also open new ways in tremor rehabilitation.
+Keywords: Rehabilitation; Tremor; Movement analysis; Measurement system; Nonlinear dynamics; Fuzzy data fusing; Neuro-fuzzy predictor
+
+Jiatai Lin, Zhi Liu, C.L. Philip Chen, Yun Zhang,
+Three-domain fuzzy wavelet broad learning system for tremor estimation,
+Knowledge-Based Systems,
+Volume 192,
+2020,
+105295,
+ISSN 0950-7051,
+https://doi.org/10.1016/j.knosys.2019.105295.
+(https://www.sciencedirect.com/science/article/pii/S0950705119305854)
+Abstract: This paper proposes a new three-domain fuzzy wavelet broad learning system (TDFW-BLS) for tremor estimation in tele-operation. In the feature layer of our novel method, feature nodes can be mapped by a three-domain fuzzy wavelet sub-systems (3DFWs) and the k-means method is applied to determine the parameters in the TDFWs. The architecture of the new proposed system maps the input of different dimensions to different groups feature nodes by 3DFWS. In the enhancement layer, feature nodes are mapped to enhancement nodes. Moreover, feature nodes and increment nodes can be concatenated into a matrix to map the total output of the novel system by the full connection layer. Finally, the semi-physical simulation experiment is designed to demonstrate the effectiveness of the novel TDFW-BLS. Meanwhile, it is compared with some existing methods and the results have shown superior performance.
+Keywords: Three-domain fuzzy wavelet broad learning system (TDFW-BLS); Tremor; Tele-operation
+
+Karthik Kumaravelu, Stephen L. Schmidt, Yi Zhao, Allison Vittert, Brandon D. Swan, Chintan S. Oza, Jennifer J. Peters, Kyle T. Mitchell, Dennis A. Turner, Warren M. Grill,
+Analyses of biomarkers for tremor using local field potentials recorded from deep brain stimulation electrodes in the thalamus,
+Brain Stimulation,
+Volume 18, Issue 5,
+2025,
+Pages 1479-1489,
+ISSN 1935-861X,
+https://doi.org/10.1016/j.brs.2025.08.006.
+(https://www.sciencedirect.com/science/article/pii/S1935861X25002967)
+Abstract: Background
+Deep brain stimulation (DBS) of the ventral intermediate nucleus (VIM) of the thalamus (TH) is an effective therapy for suppressing tremor. One of the critical challenges to optimizing VIM-DBS therapy is the lack of robust neural biomarkers that correlate well with tremor.
+Objective
+To quantify biomarkers for tremor using intraoperative TH local field potential (LFP) recorded from DBS electrodes. Further, we used computational modeling to understand the biophysical basis of the recorded LFP signal.
+Methods
+We simultaneously recorded intraoperative TH LFP and tremor from the hand dorsum (32 participants) and during DBS at different frequencies (16 participants). Then, we simulated the effects of DBS and spatial distribution of tremor cells on calculated LFPs in a TH model.
+Results
+There was a moderate correlation between tremor and LFP spectral power in the theta and alpha bands (r = 0.445 and 0.389, respectively). There was a strong correlation between tremor and peak coherence between LFP and tremor signal (r = 0.559). Postural tremor was decoded from the LFP signal with an area under the curve of ∼0.7. High frequency DBS reduced spectral power in the theta and alpha bands and tremor could be decoded from the LFP spectral power in the presence of DBS (0.429 goodness of fit R2). The theta power in the simulated LFP signal varied substantially with the specific location of the bipolar contact pair of the DBS electrode used for the LFP recordings as well as the spatial distribution of tremor cells.
+Conclusions
+Theta power alone was not sufficient for prediction of tremor control. Simulations indicated that the number and distribution of tremor cells surrounding the DBS lead may explain the lack of a strong correlation between tremor and theta power.
+Keywords: Essential tremor; Deep brain stimulation; Ventral intermediate and ventralis oralis posterior nuclei of the thalamus; Local field potentials; Theta; Alpha oscillations
+
+Jiamin Wang, Oumar R. Barry,
+Exploring data-driven modeling and analysis of nonlinear pathological tremors,
+Mechanical Systems and Signal Processing,
+Volume 156,
+2021,
+107659,
+ISSN 0888-3270,
+https://doi.org/10.1016/j.ymssp.2021.107659.
+(https://www.sciencedirect.com/science/article/pii/S0888327021000546)
+Abstract: In this paper, we study various data-driven approaches to modeling periodic and quasiperiodic synthetic tremor signals. The investigation is a preliminary step towards modeling real pathological tremors. We first observe the experimental Parkinsonian tremor motion data in terms of periodicity and spectral properties, which suggests that tremor dynamics are nonlinear. The data-driven modeling is then carried out by embedding tremor signals in their nonlinear time-delay dimensions. The signals are first modeled with the model-free approach via long short-term memory recurrent neural network. Then we employ, for the first time, the dynamic mode decomposition (DMD) and its extended nonlinear version (EDMD) based on Koopman spectral analysis to model tremor time series. Compared to existing algorithms that are only effective in short-term tremor predictions, the proposed models excel in long-term predictions of periodic and quasiperiodic synthetic tremor signals. We quantitatively compare a variety of DMD/EDMD methods under different signal and modeling conditions. Our results show that by including nonlinear observation terms, EDMD can obtain better models with fewer delay embedding dimensions. We then investigate the optimal EDMD that promotes robustness and sparsity in the modeling process. We also demonstrate that EDMD models can provide dynamical information pertaining to the system underlying the modeled time series. Finally, we observe that while EDMD is limited in modeling experimental tremor signals with non-periodic features, it is still capable of approximating the spectral content of the modeled time series.
+Keywords: Pathological tremor; Neuromusculoskeletal model; Nonlinear time-delay system; Data-driven modeling; Artificial neural networks; Dynamic mode decomposition
+
+Erik H. Middlebrooks, Ibrahim S. Tuna, Leonardo Almeida, Sanjeet S. Grewal, Joshua Wong, Michael G. Heckman, Elizabeth R. Lesser, Markus Bredel, Kelly D. Foote, Michael S. Okun, Vanessa M. Holanda,
+Structural connectivity–based segmentation of the thalamus and prediction of tremor improvement following thalamic deep brain stimulation of the ventral intermediate nucleus,
+NeuroImage: Clinical,
+Volume 20,
+2018,
+Pages 1266-1273,
+ISSN 2213-1582,
+https://doi.org/10.1016/j.nicl.2018.10.009.
+(https://www.sciencedirect.com/science/article/pii/S221315821830319X)
+Abstract: Objectives
+Traditional targeting methods for thalamic deep brain stimulation (DBS) performed to address tremor have predominantly relied on indirect atlas-based methods that focus on the ventral intermediate nucleus despite known variability in thalamic functional anatomy. Improvements in preoperative targeting may help maximize outcomes and reduce thalamic DBS–related complications. In this study, we evaluated the ability of thalamic parcellation with structural connectivity–based segmentation (SCBS) to predict tremor improvement following thalamic DBS.
+Methods
+In this retrospective analysis of 40 patients with essential tremor, hard segmentation of the thalamus was performed by using probabilistic tractography to assess structural connectivity to 7 cortical targets. The volume of tissue activated (VTA) was modeled in each patient on the basis of the DBS settings. The volume of overlap between the VTA and the 7 thalamic segments was determined and correlated with changes in preoperative and postoperative Fahn-Tolosa-Marin Tremor Rating Scale (TRS) scores by using multivariable linear regression models.
+Results
+A significant association was observed between greater VTA in the supplementary motor area (SMA) and premotor cortex (PMC) thalamic segment and greater improvement in TRS score when considering both the raw change (P = .001) and percentage change (P = .011). In contrast, no association was observed between change in TRS score and VTA in the primary motor cortex thalamic segment (P ≥ .19).
+Conclusions
+Our data suggest that greater VTA in the thalamic SMA/PMC segment during thalamic DBS was associated with significant improvement in TRS score in patients with tremor. These findings support the potential role of thalamic SCBS as an independent predictor of tremor improvement in patients who receive thalamic DBS.
+Keywords: Brain connectomics; Deep brain stimulation; Diffusion tensor imaging; Essential tremor; Ventral intermediate nucleus; Ventral thalamic nuclei
+
+Feiyun Xiao, Yongsheng Gao, Shengxin Wang, Jie Zhao,
+Prediction of pathological tremor using adaptive multiple oscillators linear combiner,
+Biomedical Signal Processing and Control,
+Volume 27,
+2016,
+Pages 77-86,
+ISSN 1746-8094,
+https://doi.org/10.1016/j.bspc.2016.01.006.
+(https://www.sciencedirect.com/science/article/pii/S1746809416000070)
+Abstract: A new pathological tremor signal prediction algorithm for tremor suppression, the adaptive multiple oscillators linear combiner (AMOLC) based on Hopf oscillator, is proposed in this paper. This method can be used to predict pathological tremor signal with high accuracy and well robustness. An experimental platform is built to simulate the tremor motion to obtain the optimum parameters of AMOLC algorithm. Furthermore, AMOLC algorithm is applied to tremor prediction for actual pathological tremor patients. Results verify that chosen model parameters indeed improve the prediction performance which meets the demand of tremor suppression with high accuracy and well robustness. A comparison of computational complexity is conducted between some existing prediction methods and AMOLC.
+Keywords: Prediction; AMOLC; Pathological tremor; Oscillator
+
+Soroosh Shahtalebi, Seyed Farokh Atashzar, Rajni V. Patel, Arash Mohammadi,
+WAKE: Wavelet decomposition coupled with adaptive Kalman filtering for pathological tremor extraction,
+Biomedical Signal Processing and Control,
+Volume 48,
+2019,
+Pages 179-188,
+ISSN 1746-8094,
+https://doi.org/10.1016/j.bspc.2018.10.007.
+(https://www.sciencedirect.com/science/article/pii/S1746809418302702)
+Abstract: Pathological Hand Tremor (PHT) is among common symptoms of several neurological movement disorders, which can significantly degrade quality of life of affected individuals. Beside pharmaceutical and surgical therapies, mechatronic technologies have been utilized to control PHTs. Most of these technologies function based on estimation, extraction, and characterization of tremor movement signals. Real-time extraction of tremor signal is of paramount importance because of its application in assistive and rehabilitative devices. In this paper, we propose a novel on-line adaptive method which can adjust the hyper-parameters of the filter to the variable characteristics of the tremor. The proposed Wavelet decomposition coupled with adaptive Kalman filtering technique for pathological tremor Extraction, referred to as the WAKE framework, is composed of a new adaptive Kalman filter and a wavelet transform core to provide indirect prediction of the tremor, one sample ahead of time, to be used for its suppression. In this paper, the design, implementation and evaluation of WAKE are given. The performance is evaluated based on three different datasets, the first one is a synthetic dataset, developed in this work, that simulates hand tremor under ten different conditions. The second and third ones are real datasets recorded from patients with PHTs. The results obtained from the proposed WAKE framework demonstrate significant improvements in the estimation accuracy in comparison with two well regarded techniques in the literature.
+Keywords: Adaptive estimation; Kalman filter; Multi-rate prediction; Pathological tremor; Real-time tremor estimation/extraction
+
+Andrej Bartolić, Mihovil Šantić, Samo Ribarič,
+Automated tremor amplitude and frequency determination from power spectra,
+Computer Methods and Programs in Biomedicine,
+Volume 94, Issue 1,
+2009,
+Pages 77-87,
+ISSN 0169-2607,
+https://doi.org/10.1016/j.cmpb.2008.10.007.
+(https://www.sciencedirect.com/science/article/pii/S0169260708002514)
+Abstract: Analysis of tremor amplitude and frequency is often done in frequency domain from tremor power spectra. Several methods for tremor amplitude estimation from power spectra were described but have not been systematically compared and evaluated. In addition, current methods for tremor amplitude estimation from power spectra do not correct tremor amplitude when power spectra of adjacent peaks overlap and this could contribute to an overestimation of tremor amplitude. We developed a computer application for automated analysis of tremor power spectra that corrects tremor amplitude, when power spectra of adjacent peaks overlap, with a Gauss curve fitting method. The accuracy of previously described methods and new methods for tremor amplitude estimation from power spectra was evaluated by 78 simulated power spectra and 900 tremor power spectra records of 25 patients with Parkinson's disease. Thus the influence of peak amplitude, number of peaks and degree of peak overlapping on tremor amplitude estimation could be systematically evaluated and compared. We conclude that the Gauss curve fitting method (Gauss 1) enables a more accurate estimation of tremor amplitude than previously described methods.
+Keywords: Curve fitting; Parkinson's disease; Power spectrum; Tremor
+
+P. Löhnberg, Η.Β.K. Boom, H.M. Greebe,
+Undamped Natural Frequency Estimation of Tremor and Reflex Response for Parkinson Patients,
+IFAC Proceedings Volumes,
+Volume 15, Issue 4,
+1982,
+Pages 1211-1216,
+ISSN 1474-6670,
+https://doi.org/10.1016/S1474-6670(17)63162-8.
+(https://www.sciencedirect.com/science/article/pii/S1474667017631628)
+Abstract: To investigate the role of reflexes in Parkinson tremor generation, lower arm muscles were stimulated transcutaneously by an electrical pulse in dependence of tremor phase. Related hand acceleration was sampled before and after the pulse. Parameters of second order ARMA additive response and tremor models were estimated, alternating the steps of iterative inverse filtering with iterations according to generalized least squares. Residue whiteness and additivity were generally acceptable. For 9 patients, undamped natural reflex frequency was found to be independent of tremor phase and within the reflex frequency range for 5 healthy subjects. This indicated subordinate importance of reflexes in Parkinson tremor generation.
+Keywords: Parkinson's disease; tremor; on-line operation; acceleration measurement; electrophysiology; reflex response; modelling; identification; parameter estimation
+
+James M. Holcomb, Joseph A. Maldjian, Yin Xi, Padraig E. O'Suilleabhain, Elan D. Louis, Bhavya R. Shah,
+ELectronic Archimedes spiral Neural Network (ELANN),
+Parkinsonism & Related Disorders,
+Volume 115,
+2023,
+105837,
+ISSN 1353-8020,
+https://doi.org/10.1016/j.parkreldis.2023.105837.
+(https://www.sciencedirect.com/science/article/pii/S1353802023009161)
+Abstract: The Archimedes spiral is a clinical tool that aids in the diagnosis and monitoring of essential tremor. However, spiral ratings may vary based on experience and training of the rating physician. This study sought to generate an objective standard model for tremor evaluation using convolutional neural networks. One senior movement disorders neurologist (Neurologist 1) with over 30 years of clinical experience used the Bain and Findley Spirography Rating Scale to rate 1653 Archimedes spiral images from 46 essential tremor patients (mild to severe tremor) and 75 control subjects (no to mild tremor). Neurologist 1's labels were used as the reference standard to train the model. After training the model, a randomly selected subset of spiral testing data was re-evaluated by Neurologist 1, by a second senior movement disorders neurologist (Neurologist 2) with over 27 years of clinical experience, and by our model. Cohen's Weighted Kappa 95% confidence intervals were calculated from all rater comparisons to determine if our model performs with the same proficiency as two senior movement disorders neurologists. The Cohen's Weighted Kappa 95% confidence intervals for the agreement between the reference standard scores and Neurologist 1's rerated scores, for the agreement between the reference standard scores and Neurologist 2's scores, and for the agreement between the reference standard scores and our model's scores were 0.93–0.98, 0.86–0.94, and 0.89–0.96, respectively. With overlapping Cohen's Weighted Kappa 95% confidence intervals for all agreement comparisons, we demonstrate that our model evaluates spirals with the same proficiency as two senior movement disorders neurologists.
+Keywords: Essential tremor; Machine learning; Bain and findley spirography rating scale
+
+Guan Yuan Tan, A.S.M. Bakibillah, Ping Yi Chan, Chee Pin Tan, Surya Nurzaman,
+Parkinson’s disease tremor prediction towards real-time suppression: A self-attention deep temporal convolutional network approach,
+Computers in Biology and Medicine,
+Volume 188,
+2025,
+109814,
+ISSN 0010-4825,
+https://doi.org/10.1016/j.compbiomed.2025.109814.
+(https://www.sciencedirect.com/science/article/pii/S0010482525001647)
+Abstract: Accurate prediction of Parkinson’s disease tremor (PDT) is crucial for developing assistive technologies; however, this is challenging due to the nonlinear, stochastic, and nonstationary characteristics of PDT, which substantially vary among patients and their activities. Moreover, most models only have one-step prediction capabilities, which causes delays in real-time applications. This paper proposes a self-attention deep temporal convolutional network (SADTCN) model for the real-time prediction of hand-arm PDT signals from different activities and joint angular motions. The SADTCN can capture both short- and long-term dependencies and complex temporal and spatial dynamics of PDT signals and hence, can effectively adapt to varying tremor characteristics. The performance of the proposed model is evaluated using experimental hand-arm PDT data. The results show that the SADTCN outperforms existing deep learning (DL) models by accurately predicting varying tremor amplitudes and frequencies multi-step ahead. Moreover, we performed spectrum analysis on the measured and predicted signal using the short-time Fourier transform (STFT) as a measure of potential active tremor control and found that SADTCN can accurately determine the transience of tremor amplitude in frequency and time. Finally, we run the Wilcoxon signed-rank statistical test and the results show a statistically significant improvement in the proposed model over the other DL models in all conditions. Therefore, the SADTCN can overcome the nonstationary, nonlinear, and stochastic nature of PDT to perform multi-step prediction with high accuracy, robustness, and generalizability in unseen testing data.
+Keywords: Parkinson’s disease; Tremor prediction; Deep learning; Multi-step prediction; Spectrum analysis
+
+Dong Zhang, Yongqin Xiong, Haoxuan Lu, Caohui Duan, Jiayu Huang, Yan Li, Xiangbing Bian, Dekang Zhang, Jiayou Zhou, Longsheng Pan, Xin Lou,
+Predicting tremor improvement after MRgFUS thalamotomy in essential tremor from preoperative spontaneous brain activity: A machine learning approach,
+Science Bulletin,
+Volume 69, Issue 19,
+2024,
+Pages 3098-3105,
+ISSN 2095-9273,
+https://doi.org/10.1016/j.scib.2024.05.049.
+(https://www.sciencedirect.com/science/article/pii/S2095927324005887)
+Abstract: Magnetic resonance-guided focused ultrasound surgery (MRgFUS) thalamotomy is an emerging technique for medication-refractory essential tremor (ET), but with variable outcomes. This study used pattern regression analysis to identify brain signatures predictive of tremor improvements. Fifty-four ET patients (mean age = 63.06 years, standard deviation (SD) = 10.55 years, 38 males) underwent unilateral MRgFUS thalamotomy and were scanned for resting-state functional magnetic resonance imaging (rs-fMRI). Seventy-four healthy controls (mean age = 58.09 years, SD = 10.30 years, 38 males) were recruited for comparison. Tremor responses at 12 months posttreatment were evaluated by the Clinical Rating Scale for Tremor. The fractional amplitude of low-frequency fluctuations (fALFF) was calculated from rs-fMRI data. Two-sample t-test was used to generate a disease-specific mask, within which Multivariate Kernel Ridge Regression analyses were conducted. Predicted and actual clinical scores were compared using Pearson’s correlation coefficient (r) and normalized mean squared error (Norm. MSE). Permutation test and leave-one-out strategy were applied for results validation. KRR identified fALFF patterns that significantly predicted the hand tremor improvement (r = 0.23, P = 0.025; Norm. MSE = 0.05, P = 0.026) and the postural tremor improvement (r = 0.28, P = 0.025; Norm. MSE = 0.06, P = 0.023), but not action tremor improvement. Lobule VI of right cerebellum (Cerebelum_6_R), right superior occipital gyrus (Occipital_Sup_R) and lobule X of vermis (Vermis_10) contributed most for hand tremor prediction (normalized weights (NW): 2.77%, 2.40%, 2.34%) while Vermis_10, left supplementary motor area (Supp_Motor_Area_L) and right hippocampus (Hippocampus_R) for postural tremor prediction (NW: 2.69%, 2.12%, 2.05%). The low contributing NW of the individual brain regions suggested that the fALFF pattern as a whole is an overall predicting feature. Preoperative fALFF pattern predicts tremor benefits induced by MRgFUS thalamotomy. ClinicalTrials.gov number: NCT04570046.
+Keywords: MRgFUS; Essential tremor; fALFF; Machine learning
+
+Jiatai Lin, Zhi Liu, C.L. Philip Chen, Yun Zhang,
+Quaternion broad learning system: A novel multi-dimensional filter for estimation and elimination tremor in teleoperation,
+Neurocomputing,
+Volume 380,
+2020,
+Pages 78-86,
+ISSN 0925-2312,
+https://doi.org/10.1016/j.neucom.2019.10.059.
+(https://www.sciencedirect.com/science/article/pii/S0925231219314973)
+Abstract: In this paper, a novel quaternion broad learning system is proposed in this paper for tremor estimation and elimination in teleoperation. In the new proposed QBLS, the architecture can be divided into three layers, including quaternion feature layer, enhancement layer and the output layer. In quaternion feature layer, a quaternion-value auto-encoder (QAE) based on the quaternion algebra is proposed and employed to extract the unsupervised features in quaternion domain. Moreover, the enhancement nodes are mapped to improve the system’s regression ability in enhancement layer. In the output layer, the nodes of feature layer and enhancement layer are concatenated to map the output of QBLS. The weight parameters of output layer can be calculated by the minimum norm least squares solutions. In addition, the semi-physical simulation experiment is completed and the new proposed QBLS has been compared with some existing methods. Finally, the effectiveness and efficiency of QBLS are demonstrated by experimental results.
+Keywords: Quaternion broad learning system(QBLS); Teleoperation; Physiological tremor
+
+Shengxin Wang, Yongsheng Gao, Jie Zhao, Hegao Cai,
+Adaptive sliding bandlimited multiple fourier linear combiner for estimation of pathological tremor,
+Biomedical Signal Processing and Control,
+Volume 10,
+2014,
+Pages 260-274,
+ISSN 1746-8094,
+https://doi.org/10.1016/j.bspc.2013.10.004.
+(https://www.sciencedirect.com/science/article/pii/S1746809413001377)
+Abstract: Pathological tremor is a roughly sinusoidal movement and impacts individuals’ daily living activities. Biomechanical loading is employed as a potential method for tremor suppression with the accurate estimation of amplitude and frequency of tremor signals. In this paper, a study on tremor is conducted and the characteristics of tremor signals are analyzed. An adaptive sliding Bandlimited multiple Fourier linear combiner (ASBMFLC) algorithm is proposed to estimate the different desired signals with sliding frequency band and zero-phase lag. This method incorporates digital filter, Weighted-Frequency Fourier Linear Combiner (WFLC) and Bandlimited Multiple Fourier Linear Combiner (BMFLC) with modification of fundamental frequency and limitation of frequency range. Based on the experimental tremor signals, WFLC, BMFLC and the proposed algorithm are evaluated, respectively. The experimental results show that the developed algorithm could adapt to the unknown dominant frequency for determining the interesting frequency band without prior information. Furthermore, the improved method could provide higher accurate estimation of tremor and extract the voluntary components from measured signals, compared with WFLC and BMFLC, respectively.
+Keywords: Pathological tremor; Biomechanical loading; BMFLC; Sliding frequency band; Zero-phase lag
