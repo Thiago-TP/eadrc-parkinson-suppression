@@ -72,9 +72,9 @@ class System(ABC):
         Final time for the simulation in seconds, by default 6.0.
     dt: float, optional
         Time step for the simulation in seconds, by default 1e-3.
-    noise_var: float, optional
-        Variance of the measurement noise in radians,
-        by default 4 * np.pi / 180 (4°).
+    noise_std: float, optional
+        Standard deviation of the measurement noise in radians,
+        by default 5 * np.pi / 180 (5°).
     """
 
     def __init__(
@@ -85,7 +85,7 @@ class System(ABC):
         t0: float = 0.0,
         t1: float = 6.0,
         dt: float = 1e-3,
-        noise_var: float = 4 * np.pi / 180,
+        noise_std: float = 5 * np.pi / 180,
         amplitude_voluntary: float = 1.0,
     ) -> None:
 
@@ -137,7 +137,7 @@ class System(ABC):
         self.initial_conditions: InitialConditions = ic
 
         # Noise injection/filtering parameters
-        self.noise_var: float = noise_var
+        self.noise_std: float = noise_std
         self.alpha: list[float] = [1.0]
 
         # Load model parameters to fill matrices
@@ -335,7 +335,7 @@ class System(ABC):
 
     @final
     def _add_noise(self, theta: np.ndarray) -> np.ndarray:
-        noise = rs.normal(0.0, self.noise_var, size=theta.shape)
+        noise = rs.normal(0.0, self.noise_std ** 2, size=theta.shape)
         return theta + noise
 
     @final
@@ -345,7 +345,7 @@ class System(ABC):
 
         # Calculate alpha only relative to wrist angle
         alpha = scipy.special.erf(
-            abs(innovation[2]) / (2 * np.sqrt(2 * self.noise_var)))
+            abs(innovation[2]) / (2 * np.sqrt(2 * self.noise_std ** 2)))
         self.alpha.append(alpha)
 
         # Return filtered measurement

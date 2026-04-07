@@ -2,15 +2,29 @@ from matplotlib import pyplot as plt
 import numpy as np
 from system import System
 
+plt.rcParams.update({
+    "text.usetex": True,
+    "font.family": "serif",
+    "text.latex.preamble": r"\usepackage{bm}",
+    "font.size": 20,
+})
+
+COLORS = {
+    "open_loop": "#D8C303",
+    "pid": "#FF3867",
+    "adrc": "#1CA1DA",
+}
+
 
 class Plots:
 
     def __init__(self, system: System,
                  xlim: tuple[float, float] = (0, 6),
-                 ylim: tuple[float, float] = (-100, 100)):
+                 ylim: tuple[float, float] = (-80, 80)):
         self.s = system
         self.xlim = xlim
         self.ylim = ylim
+        self.suffix = f"amplitude_{self.s.amplitude_voluntary}"
 
     def plot_torque_profiles(self, save_results: bool = True):
         tau_v = np.array([self.s.tau_v(t) for t in self.s.t])
@@ -20,32 +34,30 @@ class Plots:
         fig, axs = plt.subplots(
             nrows=4, ncols=1, sharex=True, sharey=True, figsize=(10, 8))
 
-        fig.suptitle("Torque profiles")
-
-        axs[0].set_title("Voluntary")
-        axs[0].plot(self.s.t, tau_v, label=["Upper arm", "Forearm", "Palm"])
+        axs[0].plot(self.s.t, tau_v[:, 0], color="black", label=r"$\tau_{v_1}$")  # noqa: E501
+        axs[0].plot(self.s.t, tau_v[:, 1], "-.", color="black", label=r"$\tau_{v_2}$")  # noqa: E501
+        axs[0].plot(self.s.t, tau_v[:, 2], "--", color="black", label=r"$\tau_{v_3}$")  # noqa: E501
         axs[0].set_xlabel("")
-        axs[0].set_ylabel("Torque [Nm]")
+        axs[0].set_ylabel(r"$\bm{\tau}_v$ [Nm]")
         axs[0].grid()
-        axs[0].legend()
+        axs[0].legend(loc="lower center", ncols=3, bbox_to_anchor=(0.5, 1))
 
-        axs[1].set_title("Involuntary (PD tremor)")
-        axs[1].plot(self.s.t, tau_i[:, 0], color="tab:blue")
-        axs[1].set_ylabel("Torque [Nm]")
+        axs[1].plot(self.s.t, tau_i[:, 0], color="black")
+        axs[1].set_ylabel(r"$\tau_{i_1}$ [Nm]")
         axs[1].grid()
 
-        axs[2].plot(self.s.t, tau_i[:, 1], color="tab:orange")
-        axs[2].set_ylabel("Torque [Nm]")
+        axs[2].plot(self.s.t, tau_i[:, 1], color="black")
+        axs[2].set_ylabel(r"$\tau_{i_2}$ [Nm]")
         axs[2].grid()
 
-        axs[3].plot(self.s.t, tau_i[:, 2], color="tab:green")
+        axs[3].plot(self.s.t, tau_i[:, 2], color="black")
         axs[3].set_xlabel("Time [s]")
-        axs[3].set_ylabel("Torque [Nm]")
+        axs[3].set_ylabel(r"$\tau_{i_3}$ [Nm]")
         axs[3].grid()
 
         if save_results:
             plt.savefig(
-                f"results/torque_profiles_{self.s.name}.pdf",
+                f"results/torque_profiles_{self.suffix}.pdf",
                 pad_inches=0.1,
                 bbox_inches="tight",
             )
@@ -59,42 +71,25 @@ class Plots:
         # Convert from radians to degrees
         theta = np.array(self.s.theta) * 180 / np.pi
         theta_v = np.array(self.s.theta_v) * 180 / np.pi
+        theta_v3_hat = np.array(self.s.theta_v_hat) * 180 / np.pi
 
         plt.figure()
         fig, axs = plt.subplots(
-            nrows=3, ncols=1, sharex=True, sharey=True, figsize=(10, 8))
+            nrows=1, ncols=1, sharex=True, sharey=True, figsize=(10, 3))
 
-        axs[0].plot(self.s.t, theta[:, 0], color="tab:blue", label="Upper arm")
-        axs[0].set_title("Upper limb time response")
-        axs[0].set_ylabel("$\\theta$ [˚]")
-        axs[0].set_xlabel("")
-        axs[0].set_xlim(*self.xlim)
-        axs[0].set_ylim(*self.ylim)
-        axs[0].legend()
-        axs[0].grid()
-
-        axs[1].plot(self.s.t, theta[:, 1], color="tab:orange", label="Forearm")
-        axs[1].set_ylabel("$\\theta$ [˚]")
-        axs[1].set_xlabel("")
-        axs[1].set_xlim(*self.xlim)
-        axs[1].set_ylim(*self.ylim)
-        axs[1].legend()
-        axs[1].grid()
-
-        axs[2].plot(self.s.t, theta[:, 2],
-                    color="tab:green", label="$\\theta$")
-        axs[2].plot(self.s.t, theta_v[:, 2], linestyle="--",
-                    color="tab:olive", label="$\\theta_v$")
-        axs[2].set_ylabel("Palm angle [˚]")
-        axs[2].set_xlabel("Time [s]")
-        axs[2].set_xlim(*self.xlim)
-        axs[2].set_ylim(*self.ylim)
-        axs[2].legend()
-        axs[2].grid()
+        axs.plot(self.s.t, theta[:, 2], color=COLORS[self.s.name], label=r"$\theta^*_3$")  # noqa: E501
+        axs.plot(self.s.t, theta_v3_hat[:, 2], color="#BD1AEA", label=r"$\widehat{\theta}_{v_3}$")  # noqa: E501
+        axs.plot(self.s.t, theta_v[:, 2], linestyle="--", color="black", label=r"$\theta_{v_3}$")  # noqa: E501
+        axs.set_ylabel(r"Palm angle [\textdegree]")
+        axs.set_xlabel("Time [s]")
+        axs.set_xlim(*self.xlim)
+        axs.set_ylim(*self.ylim)
+        axs.legend(loc="upper right", ncols=3)
+        axs.grid()
 
         if save_results:
             plt.savefig(
-                f"results/time_response_{self.s.name}.pdf",
+                f"results/time_response_{self.s.name}_{self.suffix}.pdf",
                 pad_inches=0.1,
                 bbox_inches="tight",
             )
@@ -104,82 +99,12 @@ class Plots:
             )
         plt.close()
 
-    def plot_voluntary_time_response(self, save_results: bool = True):
-        # Plot actual and estimated voluntary time response
-
-        plt.figure()
-        fig, axs = plt.subplots(
-            nrows=5, ncols=1, sharex=True, sharey=True, figsize=(8, 15))
-        fig.suptitle("Upper Limb Time response")
-
-        # Actual voluntary time response
-        theta_v = np.array(self.s.theta_v) * 180 / \
-            np.pi  # convert radians to degrees
-        axs[0].plot(self.s.t, theta_v, "--",
-                    label=["Upper arm", "Forearm", "Palm"])
-        axs[0].set_title("Actual voluntary")
-        axs[0].set_ylabel("$\\theta_v$ [˚]")
-        axs[0].set_xlabel("")
-        axs[0].set_xlim(*self.xlim)
-        axs[0].set_ylim(*self.ylim)
-        axs[0].legend()
-        axs[0].grid()
-
-        # Estimation from low-pass filtering
-        theta_v_hat = np.array(self.s.theta_v_hat) * \
-            180 / np.pi  # radians to degrees
-        axs[1].plot(self.s.t, theta_v_hat, "--")
-        axs[1].set_title("Estimated voluntary (low-pass filtered)")
-        axs[1].set_ylabel("$\\hat{\\theta}_v$ [˚]")
-        axs[1].set_xlabel("")
-        axs[1].set_xlim(*self.xlim)
-        axs[1].set_ylim(*self.ylim)
-        axs[1].grid()
-
-        # Errors
-        error = theta_v - theta_v_hat
-        axs[2].plot(self.s.t, error[:, 0], color="tab:blue")
-        axs[2].set_title("Errors")
-        axs[2].set_ylabel("$\\theta_v-\\hat{\\theta}_v$ [˚]")
-        axs[2].set_xlim(*self.xlim)
-        axs[2].set_ylim(*self.ylim)
-        axs[2].grid()
-
-        axs[3].plot(self.s.t, error[:, 1], color="tab:orange")
-        axs[3].set_title("")
-        axs[3].set_ylabel("$\\theta_v-\\hat{\\theta}_v$ [˚]")
-        axs[3].set_xlim(*self.xlim)
-        axs[3].set_ylim(*self.ylim)
-        axs[3].grid()
-
-        axs[4].plot(self.s.t, error[:, 2], color="tab:green")
-        axs[4].set_title("")
-        axs[4].set_ylabel("$\\theta_v-\\hat{\\theta}_v$ [˚]")
-        axs[4].set_xlim(*self.xlim)
-        axs[4].set_ylim(*self.ylim)
-        axs[4].grid()
-
-        axs[4].set_xlabel("Time [s]")
-
-        if save_results:
-            plt.savefig(
-                f"results/voluntary_time_response_{self.s.name}.pdf",
-                pad_inches=0.1,
-                bbox_inches="tight",
-            )
-            print(
-                "* Saved voluntary time response plot "
-                f"for {self.s.name} to results folder."
-            )
-        plt.close()
-
-    def plot__control(self, save_results: bool = True) -> None:
+    def plot_control(self, save_results: bool = True) -> None:
         # Plot control signal applied to wrist joint
 
-        plt.figure()
-        plt.plot(self.s.t, np.array(self.s.u)[:, 2], color="tab:green")
-        plt.title("Control torque applied at wrist joint")
-        plt.ylabel("$u_3$ [Nm]")
+        plt.figure(figsize=(10, 3))
+        plt.plot(self.s.t, np.array(self.s.u)[:, 2], color=COLORS[self.s.name])
+        plt.ylabel(r"$u_3$ [Nm]")
         plt.xlim(*self.xlim)
         plt.grid()
 
@@ -187,7 +112,7 @@ class Plots:
 
         if save_results:
             plt.savefig(
-                f"results/control_{self.s.name}.pdf",
+                f"results/control_{self.s.name}_{self.suffix}.pdf",
                 pad_inches=0.1,
                 bbox_inches="tight",
             )

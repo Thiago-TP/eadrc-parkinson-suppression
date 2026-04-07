@@ -1,7 +1,7 @@
 import yaml
 from control_strategies import (
     open_loop,
-    # pid,
+    pid,
     adrc
 )
 from plots import Plots
@@ -49,12 +49,12 @@ def main(
         ic,
         amplitude_voluntary=amplitude_voluntary
     )
-    # pid_control = pid.PIDControl(
-    #     "pid",
-    #     parameters,
-    #     ic,
-    #     amplitude_voluntary=amplitude_voluntary
-    # )
+    pid_control = pid.PIDControl(
+        "pid",
+        parameters,
+        ic,
+        amplitude_voluntary=amplitude_voluntary
+    )
     adr_control = adrc.ADRControl(
         "adrc",
         parameters,
@@ -64,20 +64,20 @@ def main(
 
     print("Running nominal model simulations...")
 
-    for control in [
+    controls = [
         adr_control,
-        # pid_control,
-        no_control,
-    ]:
+        pid_control,
+        no_control
+    ]
+
+    for control in controls:
         control.simulate_system()
 
         if plot_nominal:
             plots = Plots(control)
             plots.plot_time_response()
-            # plots.plot_voluntary_time_response()
-            plots.plot__control()
+            plots.plot_control()
 
-    # Plot torques only once since they are the same for all control strategies
     if plot_nominal:
         plots.plot_torque_profiles()
 
@@ -87,27 +87,25 @@ def main(
         "non-nominal model simulations with parameter sampling..."
     )
     for _ in range(num_simulations - 1):
-        for control in [
-            adr_control,
-            # pid_control,
-        ]:
+        for control in controls:
             # Constant random seed -> per-control resample is valid
             control.resample_stiffness()
             control.simulate_system()
 
     # Save results across runs to npz files in results folder
     adr_control.save_results()
-    # pid_control.save_results()
+    pid_control.save_results()
+    no_control.save_results()
 
 
 if __name__ == "__main__":
     main(
-        num_simulations=100,
+        num_simulations=1,
         plot_nominal=True,
         amplitude_voluntary=0.0
     )
     main(
-        num_simulations=100,
-        plot_nominal=False,
+        num_simulations=1,
+        plot_nominal=True,
         amplitude_voluntary=1.0
     )
