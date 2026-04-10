@@ -1,5 +1,6 @@
 import numpy as np
-from system import System, ModelParameters, InitialConditions
+
+from system import InitialConditions, ModelParameters, System
 
 
 class ADRControl(System):
@@ -8,8 +9,8 @@ class ADRControl(System):
         name: str,
         params: ModelParameters,
         ic: InitialConditions,
-        omega_c: float = 10,
         amplitude_voluntary: float = 1.0,
+        omega_c: float = 10,
     ) -> None:
         super().__init__(name, params, ic,
                          amplitude_voluntary=amplitude_voluntary)
@@ -40,7 +41,7 @@ class ADRControl(System):
         u3_old = self.u[-1][2]
 
         # Tracking error
-        e = np.array(self.theta_v_hat) - np.array(self.theta_filtered)
+        e = np.array(self.theta_v_hat) - np.array(self.theta)
         xe1 = e[-1, 2]  # error on theta3
         delta_xe1 = xe1 - self.xe1_hat
 

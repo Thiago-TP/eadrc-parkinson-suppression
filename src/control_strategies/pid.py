@@ -95,15 +95,14 @@ class PIDControl(System):
         # For more details, check out
         # https://alphaville.github.io/qub/pid-101/#/
 
-        if self.theta_v_hat is None or self.theta_filtered is None:
+        if self.theta_v_hat is None or self.theta is None:
             # If the system hasn't been simulated yet, return zero control
             raise ValueError(
                 "System state is not initialized. "
                 "Run simulate_system() before calling _control()."
             )
 
-        self.error_control = self.theta_v_hat[-1][2] - \
-            self.theta_filtered[-1][2]
+        self.error_control = self.theta_v_hat[-1][2] - self.theta[-1][2]
         self.error_delta = self.error_control - self.error_previous
 
         u3 = np.dot(

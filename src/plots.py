@@ -1,5 +1,6 @@
-from matplotlib import pyplot as plt
 import numpy as np
+from matplotlib import pyplot as plt
+
 from system import System
 
 plt.rcParams.update({
@@ -77,7 +78,7 @@ class Plots:
         fig, axs = plt.subplots(
             nrows=1, ncols=1, sharex=True, sharey=True, figsize=(10, 3))
 
-        axs.plot(self.s.t, theta[:, 2], color=COLORS[self.s.name], label=r"$\theta^*_3$")  # noqa: E501
+        axs.plot(self.s.t, theta[:, 2], color=COLORS[self.s.name], label=r"$\theta_3$")  # noqa: E501
         axs.plot(self.s.t, theta_v3_hat[:, 2], color="#BD1AEA", label=r"$\widehat{\theta}_{v_3}$")  # noqa: E501
         axs.plot(self.s.t, theta_v[:, 2], linestyle="--", color="black", label=r"$\theta_{v_3}$")  # noqa: E501
         axs.set_ylabel(r"Palm angle [\textdegree]")

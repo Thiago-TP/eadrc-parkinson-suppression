@@ -85,7 +85,6 @@ class System(ABC):
         t0: float = 0.0,
         t1: float = 6.0,
         dt: float = 1e-3,
-        noise_std: float = 5 * np.pi / 180,
         amplitude_voluntary: float = 1.0,
     ) -> None:
 
@@ -123,7 +122,6 @@ class System(ABC):
         self.u: list[np.ndarray] = [np.array([0.0, 0.0, 0.0])]
 
         # Time response
-        self.theta_true: list[np.ndarray] | None = None
         self.theta: list[np.ndarray] | None = None
 
         # Voluntary portion of the time response (actual and estimated)
@@ -131,14 +129,10 @@ class System(ABC):
         self.theta_v_hat: list[np.ndarray] | None = None
 
         # Time vector and initial conditions
-        self.dt: float = dt
+        self.dt = dt
         self.fs = 1 / self.dt
-        self.t: np.ndarray = np.arange(t0, t1 + self.dt, self.dt)
+        self.t = np.arange(t0, t1 + self.dt, self.dt)
         self.initial_conditions: InitialConditions = ic
-
-        # Noise injection/filtering parameters
-        self.noise_std: float = noise_std
-        self.alpha: list[float] = [1.0]
 
         # Load model parameters to fill matrices
         self.params = params
@@ -171,11 +165,9 @@ class System(ABC):
         x = np.array(self.initial_conditions)
         x_v = np.array(self.initial_conditions)
         self.x_hat = [x]
-        self.theta_true = [self.c_ss @ x]
-        self.theta = [self._add_noise(self.theta_true[-1])]
-        self.theta_filtered = [self.theta_true[-1]]
+        self.theta = [self.c_ss @ x]
         self.theta_v = [self.c_ss @ x_v]
-        self.theta_v_hat = [self.theta_filtered[-1]]
+        self.theta_v_hat = [self.theta[-1]]
 
         # 4th order Runge-Kutta with fixed time step
         for t in self.t[1:]:
@@ -191,15 +183,8 @@ class System(ABC):
             # Update state
             x += (self.dt / 6) * (k1 + (2 * k2) + (2 * k3) + k4)
 
-            # Update true response
-            self.theta_true.append(self.c_ss @ x)
-
-            # Update measured response
-            self.theta.append(self._add_noise(self.theta_true[-1]))
-
-            # Mitigate measurement noise
-            # self.theta_filtered.append(self.adaptive_filter(self.theta[-1]))
-            self.theta_filtered.append(self.theta[-1])
+            # Update response
+            self.theta.append(self.c_ss @ x)
 
             # Update estimation of voluntary response
             self.theta_v_hat = self._estimate_voluntary()
@@ -232,9 +217,7 @@ class System(ABC):
             key = f"non_nominal_run_{len(self.results)}"
         self.results[key] = {
             "time": self.t,
-            "theta_true": self.theta_true,
             "theta": self.theta,
-            "theta_filtered": self.theta_filtered,
             "theta_v": self.theta_v,
             "theta_v_hat": self.theta_v_hat,
             "parameters": self.params,
@@ -254,14 +237,14 @@ class System(ABC):
         )
         return
 
-    def _estimate_voluntary(self) -> list[np.ndarray]:
+    def _estimate_voluntary(self) -> list[np.ndarray] | None:
         # Apply the filter to each column of theta
         try:
             return scipy.signal.sosfiltfilt(
                 self.butter_sos, self.theta, axis=0,
             )
         except ValueError:
-            return self.theta_filtered
+            return self.theta
 
     @final
     def _set_model(self) -> None:
@@ -332,24 +315,6 @@ class System(ABC):
         self.a = np.concatenate((a_num, a_den), axis=0)  # state matrix
         self.b = np.concatenate((null, inv_j), axis=0)  # input matrix
         self.c_ss = np.concatenate((iden, null), axis=1)  # output matrix
-
-    @final
-    def _add_noise(self, theta: np.ndarray) -> np.ndarray:
-        noise = rs.normal(0.0, self.noise_std ** 2, size=theta.shape)
-        return theta + noise
-
-    @final
-    def adaptive_filter(self, measured_theta: np.ndarray) -> np.ndarray:
-        # Calculate innovation, i.e. error
-        innovation = measured_theta - self.theta_filtered[-1]
-
-        # Calculate alpha only relative to wrist angle
-        alpha = scipy.special.erf(
-            abs(innovation[2]) / (2 * np.sqrt(2 * self.noise_std ** 2)))
-        self.alpha.append(alpha)
-
-        # Return filtered measurement
-        return self.theta_filtered[-1] + self.alpha[-1] * innovation
 
     @final
     def resample_stiffness(self) -> None:
