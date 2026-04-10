@@ -1,5 +1,6 @@
 import numpy as np
-from system import System, ModelParameters
+
+from system import InitialConditions, ModelParameters, System
 
 
 class ADRControl(System):
@@ -7,10 +8,12 @@ class ADRControl(System):
         self,
         name: str,
         params: ModelParameters,
-        ic: tuple[float],
-        omega_c: float = 10
+        ic: InitialConditions,
+        amplitude_voluntary: float = 1.0,
+        omega_c: float = 10,
     ) -> None:
-        super().__init__(name, params, ic)
+        super().__init__(name, params, ic,
+                         amplitude_voluntary=amplitude_voluntary)
 
         # Proportional, derivative gains
         self.kp = omega_c ** 2
@@ -28,7 +31,7 @@ class ADRControl(System):
 
         return
 
-    def control(self) -> np.ndarray:
+    def _control(self) -> np.ndarray:
         # j*dy2/dt2 + c*dy/dt + k*y = u3 + tau_v + tau_i + f
         # dy2/dt2 = (u3 + tau_v)/j + zeta
         # dy2/dt2 = u3' + zeta
@@ -38,7 +41,7 @@ class ADRControl(System):
         u3_old = self.u[-1][2]
 
         # Tracking error
-        e = np.array(self.theta_v_hat) - np.array(self.theta_filtered)
+        e = np.array(self.theta_v_hat) - np.array(self.theta)
         xe1 = e[-1, 2]  # error on theta3
         delta_xe1 = xe1 - self.xe1_hat
 

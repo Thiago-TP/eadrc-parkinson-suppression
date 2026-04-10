@@ -1,0 +1,75 @@
+DESCONSIDERAR:
+- 996
+- 692
+- 575
+- 773
+- 776
+- 636
+- 825
+- 801
+- 961
+- 918
+- 890
+- 777
+- 975
+- 722
+- 532
+- 585
+- 302
+- 1006
+- 988
+- 998
+- 634
+- 787
+- 911
+- 141
+- 741
+- 1015
+- 609
+- 664
+- 599
+- 1005
+- 122
+- 999
+- 930
+- 467
+- 461
+- 58
+
+CONSIDERAR:
+- 749 [WFLC, sixth-order elliptical bandpass (7-13Hz) filter]
+- 557 [BMFLC, Kalman Filter]
+- 620 [Introduz WFLC]
+- 899 [Controle ativo, neuroprótese, filtro g-h para desacoplamento voluntário-patológico]
+- 808 [SVM para predição do tremor, comparação com outros métodos de predição de tremor (MS-BMFLC-KF, MS-AR-KF, LS-SVM)]
+- 935 [Similar ao artigo da Access, mas usa estimador do tremor como um passa-altas. Parece tirar os sinais de uma database]
+- 702 [Proposta de metodologia de filtragem para remoção de tremor do sinal original]
+- 949 [FES com filtros passa-banda. Ver demais trabalhos de Arthur Prochazka]
+- 699 [Introduz equalizadores para atenuação de elementos de alta frequência no sinal devidos a tremor]
+- 783 [Propõe uma metodologia de predição de tremor baseada em BMFLC]
+- 764 [Caracteriza o tremor na mão devido a PD e propõe um estimador WFLC-KF]
+- 853 [Introduz o estimador de tremor E-BMFLC usado no artigo do Access]
+- 663 [Introduz o estimador de tremor AR-KF]
+- 608 [Introduz o estimador ASBMFLC, incorporando WFLC e BMFLC]
+- 850 [Introduz um filtro passa-alta sem fase (ZPHP) para melhorar a performance de controle FES)
+
+OUTRO:
+- 628 [Usa Chebyshev passa-alta tipo II para pré-processar dados]
+- 751 [Dá uma faixa de frequência para o Primary Writing Tremor]
+- 566 [Dá uma faixa de frequência para Orthostatic Tremor]
+- 619 [Indica uma faixa (0.5-11Hz) que melhora filtragem por passa-banda]
+- 887 [Usa um Chebyshev passa-banda (3-30Hz) tipo II para pré-processar os dados]
+- 750 [Usa passa-bandas para remover do sinal original o movimento voluntário, preparando os dados]
+- 972 [Discussão interessante sobre a mudança das frequências de vibração de PD e ET ao longo do tempo]
+- 650 [Prepara os sinais com dois Chebyshev passa-banda tipo I, um a 1-5Hz para remover discinésia e outro a 6-10Hz para remover tremor]
+- 872 [Usa filtros passa-baixa na velocidade angular das pernas da pessoa andando para usar como índice de patologia do tremor]
+- 458 [Usa filtro passa-banda (3-8Hz), filtro de mediana, e filtro de Kalman em etapa de pré-processamento de dados]
+- 726 [Usa Butterworth passa-altas de 1a ordem com corte de 1Hz para atenuar movimento voluntário, preparando o sinal]
+- 969 [Analisa tremores na frequência, indicando faixas onde existem e quantos modos tremor de PD pode ter]
+- 701 [Usa Butterworth passa-banda de 10a ordem na faixa de 3-10Hz para preparar o sinal]
+- 653 [Corrobora a interpretação de que tremor é uma forma de onda multimodal ao invés de harmônicos de uma oscilação não-linear]
+- 272 [Revisão de sensores vestíveis para feature extraction, mas parce fazer uma contextualização legal de PD e outras doenças]
+- 622 [Trabalho seminal (?) de controle ativo por órtese. Ver trabalhos pioneiros (?) de Rosen nas referências]
+- 995 [Estuda diferenças entre PD e ET a partir de sinais coletados por acelerômetros]
+- 552 [Valida WFLC em uma aplicação de análise de passo acometido por patologia]
+

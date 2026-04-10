@@ -1,0 +1,15 @@
+[Engineering Village]
+"tremor pred*" OR "tremor est*"
+
+[Scopus]
+TITLE-ABS-KEY ( "tremor pred*" OR "tremor est*" OR "est* of tremor" OR "pred* of tremor" OR ( "parkinson*" AND "filter*" ) ) AND ( LIMIT-TO ( DOCTYPE , "ar" ) OR LIMIT-TO ( DOCTYPE , "re" ) ) AND ( LIMIT-TO ( LANGUAGE , "English" ) )
+
+[Science Direct]
+tremor prediction" OR "tremor estimation" OR "estimation of tremor" OR "prediction of tremor"
+
+[IEEE Xplore]
+("All Metadata":"tremor pred*" OR "All Metadata":"tremor est*" OR "All Metadata":"est* of tremor" OR "All Metadata":"pred* of tremor")
+
+[PubMed]
+-
+

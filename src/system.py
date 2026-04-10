@@ -1,15 +1,17 @@
-from dataclasses import dataclass
+import os
+import time
 from abc import ABC, abstractmethod
-from typing import final, Callable
+from dataclasses import dataclass
+from typing import final
 
-import scipy
 import numpy as np
+import scipy
 from numpy.random import MT19937, RandomState, SeedSequence
 
 rs = RandomState(MT19937(SeedSequence(42)))
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=False)
 class ModelParameters:
     # Lengths
     l1: float  # upper arm
@@ -43,26 +45,56 @@ class ModelParameters:
     c3: float  # biceps
     c4: float  # wrist
 
+    # Stiffness uncertainty intervals
+    stiffness_intervals: dict[str, tuple[float, float]]
+
+
+InitialConditions = tuple[float, float, float, float, float, float]
+
 
 class System(ABC):
+    """
+    Implementation of system dynamics, including state-space representation,
+    noise injection and filtering, and placeholders for control strategies.
+
+    Parameters
+    ----------
+    name: str
+        Name of the system, used for saving results.
+    params: ModelParameters
+        Model parameters to be used in the system dynamics.
+    ic: InitialConditions
+        Initial conditions for the state variables
+        (theta and theta_dot for each joint).
+    t0: float, optional
+        Initial time for the simulation in seconds, by default 0.0.
+    t1: float, optional
+        Final time for the simulation in seconds, by default 6.0.
+    dt: float, optional
+        Time step for the simulation in seconds, by default 1e-3.
+    noise_std: float, optional
+        Standard deviation of the measurement noise in radians,
+        by default 5 * np.pi / 180 (5°).
+    """
+
     def __init__(
         self,
         name: str,
         params: ModelParameters,
-        ic: tuple[float],
+        ic: InitialConditions,
         t0: float = 0.0,
         t1: float = 6.0,
         dt: float = 1e-3,
-        noise_var: float = 4 * np.pi / 180
+        amplitude_voluntary: float = 1.0,
     ) -> None:
 
         # Model name
         self.name = name
 
         # Model dynamics parameters
-        self.j: np.ndarray | None = None  # inertia
-        self.k: np.ndarray | None = None  # stiffness
-        self.c: np.ndarray | None = None  # damping
+        self.j: np.ndarray = np.zeros((3, 3))  # inertia
+        self.k: np.ndarray = np.zeros((3, 3))  # stiffness
+        self.c: np.ndarray = np.zeros((3, 3))  # damping
 
         # State space matrices
         self.a: np.ndarray | None = None  # state matrix
@@ -70,37 +102,8 @@ class System(ABC):
         self.c_ss: np.ndarray | None = None  # output matrix
 
         # Torque profiles (voluntary and involuntary)
-        self.tau_v: Callable[[float], np.ndarray] | None = None
-        self.tau_i: Callable[[float], np.ndarray] | None = None
-
-        # Control signal history
-        self.u: list[np.ndarray] = [np.array([0.0, 0.0, 0.0])]
-
-        # Time response
-        self.theta_true: list[np.ndarray] | None = None
-        self.theta: list[np.ndarray] | None = None
-
-        # Voluntary portion of the time response (actual and estimated)
-        self.theta_v: list[np.ndarray] | None = None
-        self.theta_v_hat: list[np.ndarray] | None = None
-
-        # Time vector and initial conditions
-        self.dt: float = dt
-        self.t: np.ndarray = np.arange(t0, t1 + self.dt, self.dt)
-        self.initial_conditions: tuple[float] = ic
-
-        # Noise injection/filtering parameters
-        self.noise_var: float = noise_var  # deviation of 5° on measurement
-        self.alpha: list[float] = [1.0]  # measurement noise filter parameter
-
-        # Load model parameters to fill matrices
-        self.update_model_parameters(params)
-
-        return
-
-    def load_torque_profiles(self) -> None:
-        # Placeholders for now
-        self.tau_v = lambda t: 1.0 * np.array(
+        self.amplitude_voluntary = amplitude_voluntary
+        self.tau_v = lambda t: amplitude_voluntary * np.array(
             [
                 np.cos(2 * np.pi * 0.1 * t),
                 np.cos(2 * np.pi * 0.2 * t),
@@ -114,9 +117,45 @@ class System(ABC):
                 np.cos(2 * np.pi * 14.34746 * t),
             ]
         )
+
+        # Control signal history
+        self.u: list[np.ndarray] = [np.array([0.0, 0.0, 0.0])]
+
+        # Time response
+        self.theta: list[np.ndarray] | None = None
+
+        # Voluntary portion of the time response (actual and estimated)
+        self.theta_v: list[np.ndarray] | None = None
+        self.theta_v_hat: list[np.ndarray] | None = None
+
+        # Time vector and initial conditions
+        self.dt = dt
+        self.fs = 1 / self.dt
+        self.t = np.arange(t0, t1 + self.dt, self.dt)
+        self.initial_conditions: InitialConditions = ic
+
+        # Load model parameters to fill matrices
+        self.params = params
+        self._set_model()
+
+        # Set voluntary motion estimator
+        self.butter_sos = scipy.signal.butter(
+            N=1,
+            Wn=5.0,
+            fs=self.fs,
+            btype="low",
+            output="sos"
+        )
+
+        # Results storage across runs
+        self.results = {}
+
         return
 
     def simulate_system(self) -> None:
+
+        print(f"Simulating system {self.name}...")
+        __start = time.time()
 
         # State dynamics
         def f_vol(t, x): return self.a @ x + self.b @ self.tau_v(t)
@@ -126,16 +165,14 @@ class System(ABC):
         x = np.array(self.initial_conditions)
         x_v = np.array(self.initial_conditions)
         self.x_hat = [x]
-        self.theta_true = [self.c_ss @ x]
-        self.theta = [self.add_noise(self.theta_true[-1])]
-        self.theta_filtered = [self.theta_true[-1]]
+        self.theta = [self.c_ss @ x]
         self.theta_v = [self.c_ss @ x_v]
-        self.theta_v_hat = [self.theta_filtered[-1]]
+        self.theta_v_hat = [self.theta[-1]]
 
         # 4th order Runge-Kutta with fixed time step
-        for t in self.t[:-1]:
+        for t in self.t[1:]:
 
-            u = self.control()
+            u = self._control()
 
             # Update k1 through k4 (Measured response)
             k1 = f_all(t, x, u)
@@ -146,17 +183,11 @@ class System(ABC):
             # Update state
             x += (self.dt / 6) * (k1 + (2 * k2) + (2 * k3) + k4)
 
-            # Update true response
-            self.theta_true.append(self.c_ss @ x)
-
-            # Update measured response
-            self.theta.append(self.add_noise(self.theta_true[-1]))
-
-            # Mitigate measurement noise
-            self.theta_filtered.append(self.adaptive_filter(self.theta[-1]))
+            # Update response
+            self.theta.append(self.c_ss @ x)
 
             # Update estimation of voluntary response
-            self.theta_v_hat = self.estimate_voluntary()
+            self.theta_v_hat = self._estimate_voluntary()
 
             # Update estimation of state
             theta_dot = np.diff(self.theta, axis=0)
@@ -176,30 +207,54 @@ class System(ABC):
             # Update true voluntary response
             self.theta_v.append(self.c_ss @ x_v)
 
+        __end = time.time()
+        print(f"Run took {__end - __start:.2f} s.")
+
+        # Store run results
+        if self.results == {}:
+            key = "nominal_run"
+        else:
+            key = f"non_nominal_run_{len(self.results)}"
+        self.results[key] = {
+            "time": self.t,
+            "theta": self.theta,
+            "theta_v": self.theta_v,
+            "theta_v_hat": self.theta_v_hat,
+            "parameters": self.params,
+        }
+
         return
 
-    def estimate_voluntary(self, f_cutoff: float = 1.0):
-        # Estimate voluntary time response using low-pass filtering
-
-        # Design a Butterworth low-pass filter
-        fs = 1 / self.dt  # sampling frequency in Hz
-        b, a = scipy.signal.butter(
-            N=4, Wn=2 * np.pi * f_cutoff, fs=fs, btype="low", analog=False
+    def save_results(self) -> None:
+        """
+        Dumps simulation results across runs to a npz file in folder result.
+        Overwrites file if npz already existed.
+        """
+        os.makedirs("results", exist_ok=True)
+        np.savez_compressed(
+            f"results/{self.name}_amplitude_{self.amplitude_voluntary}.npz",
+            **self.results
         )
+        return
 
+    def _estimate_voluntary(self) -> list[np.ndarray] | None:
         # Apply the filter to each column of theta
         try:
-            return scipy.signal.filtfilt(b, a, self.theta, axis=0)
+            return scipy.signal.sosfiltfilt(
+                self.butter_sos, self.theta, axis=0,
+            )
         except ValueError:
-            return self.theta_filtered
+            return self.theta
 
     @final
-    def update_model_parameters(self, p: ModelParameters) -> None:
-        self._set_dynamics(p)
+    def _set_model(self) -> None:
+        self._set_dynamics()
         self._set_state_space()
 
     @final
-    def _set_dynamics(self, p: ModelParameters) -> None:
+    def _set_dynamics(self) -> None:
+        p = self.params  # shorthand for readability
+
         a1 = p.a1 * p.l1
         a2 = p.a2 * p.l2
         a3 = p.a3 * p.l3
@@ -262,23 +317,15 @@ class System(ABC):
         self.c_ss = np.concatenate((iden, null), axis=1)  # output matrix
 
     @final
-    def add_noise(self, theta: np.ndarray) -> np.ndarray:
-        noise = rs.normal(0.0, self.noise_var, size=theta.shape)
-        return theta + noise
-
-    @final
-    def adaptive_filter(self, measured_theta: np.ndarray) -> np.ndarray:
-        # Calculate innovation, i.e. error
-        innovation = measured_theta - self.theta_filtered[-1]
-
-        # Calculate alpha only relative to wrist angle
-        alpha = scipy.special.erf(
-            abs(innovation[2]) / (2 * np.sqrt(2 * self.noise_var)))
-        self.alpha.append(alpha)
-
-        # Return filtered measurement
-        return self.theta_filtered[-1] + self.alpha[-1] * innovation
+    def resample_stiffness(self) -> None:
+        print("Resampling stiffness parameters...")
+        self.params.k1 = rs.uniform(*self.params.stiffness_intervals["k1"])
+        self.params.k2 = rs.uniform(*self.params.stiffness_intervals["k2"])
+        self.params.k3 = rs.uniform(*self.params.stiffness_intervals["k3"])
+        self.params.k4 = rs.uniform(*self.params.stiffness_intervals["k4"])
+        self._set_model()
+        return
 
     @abstractmethod
-    def control(self) -> np.ndarray:
+    def _control(self) -> np.ndarray:
         pass

@@ -1,0 +1,16 @@
+DESCONSIDERAR:
+- 485
+- 522
+- 953
+- 932
+- 443
+- 889
+
+CONSIDERAR:
+- 300 [Usa uma LSTM para prever tremor de ET]
+- 32 [Revisão bibliográfica sobre quantificação de tremor intencional em pacientes com tremor patológico]
+- 782 [Propõe um algoritmo de estimação do tremor baseado no oscilador de Hopf] 
+
+OUTRO:
+- 916 [Propõe uma técnica de suavizamento de trajetória para uso do mouse por pacientes com tremor]
+
