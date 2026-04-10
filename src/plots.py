@@ -32,8 +32,9 @@ class Plots:
         tau_i = np.array([self.s.tau_i(t) for t in self.s.t])
 
         plt.figure()
-        fig, axs = plt.subplots(
-            nrows=4, ncols=1, sharex=True, sharey=True, figsize=(10, 8))
+        _, axs = plt.subplots(
+            nrows=4, ncols=1, sharex=True, sharey=True, figsize=(10, 8)
+        )
 
         axs[0].plot(self.s.t, tau_v[:, 0], color="black", label=r"$\tau_{v_1}$")  # noqa: E501
         axs[0].plot(self.s.t, tau_v[:, 1], "-.", color="black", label=r"$\tau_{v_2}$")  # noqa: E501
@@ -75,18 +76,17 @@ class Plots:
         theta_v3_hat = np.array(self.s.theta_v_hat) * 180 / np.pi
 
         plt.figure()
-        fig, axs = plt.subplots(
-            nrows=1, ncols=1, sharex=True, sharey=True, figsize=(10, 3))
+        plt.figure(figsize=(10, 3))
 
-        axs.plot(self.s.t, theta[:, 2], color=COLORS[self.s.name], label=r"$\theta_3$")  # noqa: E501
-        axs.plot(self.s.t, theta_v3_hat[:, 2], color="#BD1AEA", label=r"$\widehat{\theta}_{v_3}$")  # noqa: E501
-        axs.plot(self.s.t, theta_v[:, 2], linestyle="--", color="black", label=r"$\theta_{v_3}$")  # noqa: E501
-        axs.set_ylabel(r"Palm angle [\textdegree]")
-        axs.set_xlabel("Time [s]")
-        axs.set_xlim(*self.xlim)
-        axs.set_ylim(*self.ylim)
-        axs.legend(loc="upper right", ncols=3)
-        axs.grid()
+        plt.plot(self.s.t, theta[:, 2], color=COLORS[self.s.name], label=r"$\theta_3$")  # noqa: E501
+        plt.plot(self.s.t, theta_v3_hat[:, 2], color="#BD1AEA", label=r"$\widehat{\theta}_{v_3}$")  # noqa: E501
+        plt.plot(self.s.t, theta_v[:, 2], linestyle="--", color="black", label=r"$\theta_{v_3}$")  # noqa: E501
+        plt.ylabel(r"Palm angle [\textdegree]")
+        plt.xlabel("Time [s]")
+        plt.xlim(*self.xlim)
+        plt.ylim(*self.ylim)
+        plt.legend(loc="upper right", ncols=3)
+        plt.grid()
 
         if save_results:
             plt.savefig(
