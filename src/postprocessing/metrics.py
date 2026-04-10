@@ -3,6 +3,7 @@ import re
 from pathlib import Path
 
 import numpy as np
+from scipy.integrate import trapezoid
 
 
 EPS = 1e-12
@@ -95,10 +96,10 @@ def _compute_metrics(
         "rmse": float(np.sqrt(np.mean(err_sq))),
         "response_entropy": entropy,
         "control_signal_power": control_signal_power,
-        "ise": float(np.trapezoid(err_sq, t)),
-        "iae": float(np.trapezoid(err_abs, t)),
-        "itae": float(np.trapezoid(t * err_abs, t)),
-        "itse": float(np.trapezoid(t * err_sq, t)),
+        "ise": float(trapezoid(err_sq, t)),
+        "iae": float(trapezoid(err_abs, t)),
+        "itae": float(trapezoid(t * err_abs, t)),
+        "itse": float(trapezoid(t * err_sq, t)),
     }
 
 
