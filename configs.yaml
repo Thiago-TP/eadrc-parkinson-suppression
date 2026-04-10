@@ -1,3 +1,10 @@
+# This is the configuration file for the human arm model. 
+# It contains the nominal values of the model coefficients, 
+# uncertainty intervals for stiffness parameters, 
+# and initial conditions for the simulation.
+# It is called by the main script to set up the model 
+# parameters and initial conditions before running the simulation.
+
 # Nominal values of model coefficients and uncertainty intervals
 parameters:
   # Lengths
