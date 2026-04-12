@@ -1,7 +1,8 @@
 import os
+import pickle
 import time
 from abc import ABC, abstractmethod
-from dataclasses import asdict, dataclass
+from dataclasses import dataclass
 from typing import final
 
 import numpy as np
@@ -49,6 +50,7 @@ class ModelParameters:
 
 
 InitialConditions = tuple[float, float, float, float, float, float]
+RunResult = dict[str, float | np.ndarray | ModelParameters]
 
 
 class System(ABC):
@@ -71,6 +73,8 @@ class System(ABC):
         Final time for the simulation in seconds, by default 6.0.
     dt: float, optional
         Time step for the simulation in seconds, by default 1e-3.
+    amplitude_voluntary: float, optional
+        Amplitude of the voluntary torque profile, by default 1.0.
     savedir: str, optional
         Directory where results will be saved, by default "results/runs".
     """
@@ -88,7 +92,34 @@ class System(ABC):
     ) -> None:
 
         # Model name
-        self.name = name
+        self.name: str = name
+        self.params: ModelParameters = params
+        self.ic: InitialConditions = ic
+        self.t0: float = t0
+        self.t1: float = t1
+        self.dt: float = dt
+        self.amplitude_voluntary: float = amplitude_voluntary
+        self.savedir: str = savedir
+
+        # Time vector and sampling frequency
+        self.fs: float = 1 / self.dt
+        self.t: np.ndarray = np.arange(
+            self.t0,
+            self.t1 + self.dt,
+            self.dt
+        )
+
+        # Control signal history
+        self.u: np.ndarray = np.zeros((len(self.t), 3))
+
+        # States from state space representation (for use in Runge-Kutta)
+        self.x: np.ndarray = np.zeros((len(self.t), 6))
+        self.x_v: np.ndarray = np.zeros((len(self.t), 6))
+
+        # Time response: observation, true voluntary, and estimated voluntary
+        self.theta: np.ndarray = np.zeros((len(self.t), 3))
+        self.theta_v: np.ndarray = np.zeros((len(self.t), 3))
+        self.theta_v_hat: np.ndarray = np.zeros((len(self.t), 3))
 
         # Model dynamics parameters
         self.j: np.ndarray = np.zeros((3, 3))  # inertia
@@ -96,53 +127,44 @@ class System(ABC):
         self.c: np.ndarray = np.zeros((3, 3))  # damping
 
         # State space matrices
-        self.a: np.ndarray | None = None  # state matrix
-        self.b: np.ndarray | None = None  # input matrix
-        self.c_ss: np.ndarray | None = None  # output matrix
-
-        # Torque profiles (voluntary and involuntary)
-        self.amplitude_voluntary = amplitude_voluntary
-        self.tau_v = lambda t: amplitude_voluntary * np.array(
-            [
-                np.cos(2 * np.pi * 0.1 * t),
-                np.cos(2 * np.pi * 0.2 * t),
-                np.cos(2 * np.pi * 0.3 * t),
-            ]
-        )
-        self.tau_i = lambda t: np.array(
-            [
-                np.cos(2 * np.pi * 3.58803 * t),
-                np.cos(2 * np.pi * 5.30097 * t),
-                np.cos(2 * np.pi * 14.34746 * t),
-            ]
-        )
-
-        # Control signal history
-        self.u: list[np.ndarray] | None = None
-
-        # Time response
-        self.theta: list[np.ndarray] | None = None
-
-        # Voluntary portion of the time response (actual and estimated)
-        self.theta_v: list[np.ndarray] | None = None
-        self.theta_v_hat: list[np.ndarray] | None = None
-
-        # Time vector and initial conditions
-        self.dt = dt
-        self.fs = 1 / self.dt
-        self.t = np.arange(t0, t1 + self.dt, self.dt)
-        self.initial_conditions: InitialConditions = ic
+        self.a: np.ndarray = np.zeros((6, 6))  # state matrix
+        self.b: np.ndarray = np.zeros((6, 3))  # input matrix
+        self.c_ss: np.ndarray = np.zeros((3, 6))  # output matrix
 
         # Load model parameters to fill matrices
-        self.params = params
         self._set_model()
 
+        # Initializations of simulation-relevant attributes:
+        self.u[0] = np.array([0.0, 0.0, 0.0])
+        self.x[0] = np.array(self.ic)
+        self.x_v[0] = np.array(self.ic)
+        self.theta[0] = self.c_ss @ self.x[0]
+        self.theta_v[0] = self.c_ss @ self.x_v[0]
+        self.theta_v_hat[0] = self.theta[0]
+
         # Results storage across runs
-        self.suffix = f"{self.name}_amplitude_{self.amplitude_voluntary}"
-        self.savedir = savedir
-        self.results = {}
+        self.suffix: str = f"{self.name}_amplitude_{self.amplitude_voluntary}"
+        self.results: dict[str, RunResult] = {}
 
         return
+
+    # Torque profiles (voluntary and involuntary)
+    @final
+    def _tau_v(self, t: float) -> np.ndarray:
+        return self.amplitude_voluntary * np.array([
+            np.cos(2 * np.pi * 0.1 * t),
+            np.cos(2 * np.pi * 0.2 * t),
+            np.cos(2 * np.pi * 0.3 * t),
+        ])
+
+    @final
+    @staticmethod
+    def _tau_i(t: float) -> np.ndarray:
+        return np.array([
+            np.cos(2 * np.pi * 3.58803 * t),
+            np.cos(2 * np.pi * 5.30097 * t),
+            np.cos(2 * np.pi * 14.34746 * t),
+        ])
 
     @final
     def simulate_system(self) -> None:
@@ -151,55 +173,43 @@ class System(ABC):
         __start = time.time()
 
         # State dynamics
-        def f_vol(t, x): return self.a @ x + self.b @ self.tau_v(t)
-        def f_all(t, x, u): return f_vol(t, x) + self.b @ (self.tau_i(t) + u)
-
-        # Initializations
-        x = np.array(self.initial_conditions)
-        x_v = np.array(self.initial_conditions)
-        self.u = [np.array([0.0, 0.0, 0.0])]
-        self.x_hat = [x]
-        self.theta = [self.c_ss @ x]
-        self.theta_v = [self.c_ss @ x_v]
-        self.theta_v_hat = [self.theta[-1]]
+        def f_vol(t, x): return self.a @ x + self.b @ self._tau_v(t)
+        def f_all(t, x, u): return f_vol(t, x) + self.b @ (self._tau_i(t) + u)
 
         # 4th order Runge-Kutta with fixed time step
-        for t in self.t[1:]:
-
-            u = self._control()
+        for k, t in enumerate(self.t[1:], start=1):
 
             # Update k1 through k4 (Measured response)
-            k1 = f_all(t, x, u)
-            k2 = f_all(t + (self.dt / 2), x + (self.dt * k1 / 2), u)
-            k3 = f_all(t + (self.dt / 2), x + (self.dt * k2 / 2), u)
-            k4 = f_all(t + (self.dt), x + (self.dt * k3), u)
+            k1 = f_all(t, self.x[k-1], self.u[k-1])
+            k2 = f_all(t + (self.dt / 2), self.x[k-1] + (self.dt * k1 / 2), self.u[k-1])  # noqa: E501
+            k3 = f_all(t + (self.dt / 2), self.x[k-1] + (self.dt * k2 / 2), self.u[k-1])  # noqa: E501
+            k4 = f_all(t + (self.dt), self.x[k-1] + (self.dt * k3), self.u[k-1])  # noqa: E501
 
             # Update state
-            x += (self.dt / 6) * (k1 + (2 * k2) + (2 * k3) + k4)
+            update = (self.dt / 6) * (k1 + (2 * k2) + (2 * k3) + k4)
+            self.x[k] = self.x[k - 1] + update
 
             # Update response
-            self.theta.append(self.c_ss @ x)
+            self.theta[k] = self.c_ss @ self.x[k]
 
-            # Update estimation of voluntary response
-            self._estimate_voluntary()
+            # Update estimation of voluntary/tremor response
+            self._update_estimates(k)
 
-            # Update estimation of state
-            theta_dot = np.diff(self.theta, axis=0)
-            self.x_hat.append(
-                np.concat([self.theta[-1], theta_dot[-1]], axis=None)
-            )
+            # Update control signal
+            self._update_control(k)
 
             # Repeat Runge-Kutta process to obtain true voluntary response
-            k1 = f_vol(t, x_v)
-            k2 = f_vol(t + (self.dt / 2), x_v + (self.dt * k1 / 2))
-            k3 = f_vol(t + (self.dt / 2), x_v + (self.dt * k2 / 2))
-            k4 = f_vol(t + (self.dt), x_v + (self.dt * k3))
+            k1 = f_vol(t, self.x_v[k-1])
+            k2 = f_vol(t + (self.dt / 2), self.x_v[k-1] + (self.dt * k1 / 2))
+            k3 = f_vol(t + (self.dt / 2), self.x_v[k-1] + (self.dt * k2 / 2))
+            k4 = f_vol(t + (self.dt), self.x_v[k-1] + (self.dt * k3))
 
             # Update voluntary state
-            x_v += (self.dt / 6) * (k1 + (2 * k2) + (2 * k3) + k4)
+            update_v = (self.dt / 6) * (k1 + (2 * k2) + (2 * k3) + k4)
+            self.x_v[k] = self.x_v[k - 1] + update_v
 
             # Update true voluntary response
-            self.theta_v.append(self.c_ss @ x_v)
+            self.theta_v[k] = self.c_ss @ self.x_v[k]
 
         __end = time.time()
         print(f"Run took {__end - __start:.2f} s.")
@@ -210,16 +220,15 @@ class System(ABC):
         else:
             key = f"non_nominal_run_{len(self.results)}"
 
-        self.results[key] = {
-            "time": self.t.copy(),
-            "theta": np.asarray(self.theta),
-            "theta_v": np.asarray(self.theta_v),
-            "theta_v_hat": np.asarray(self.theta_v_hat),
-            "u": np.asarray(self.u),
-            "tau_v": np.asarray([self.tau_v(t) for t in self.t]),
-            "tau_i": np.asarray([self.tau_i(t) for t in self.t]),
+        self.results[key]: RunResult = {
+            "time": self.t,
+            "theta": self.theta,
+            "theta_v": self.theta_v,
+            "theta_v_hat": self.theta_v_hat,
+            "u": self.u,
+            "tau_v": np.array([self._tau_v(t) for t in self.t]),
+            "tau_i": np.array([self._tau_i(t) for t in self.t]),
             "amplitude_voluntary": self.amplitude_voluntary,
-            "parameters": asdict(self.params),
         }
 
         return
@@ -227,14 +236,14 @@ class System(ABC):
     @final
     def save_results(self) -> None:
         """
-        Dumps simulation results across runs to a npz file in savedir.
-        Overwrites file if npz already existed.
+        Dumps simulation results across runs to a data file in savedir.
+        Overwrites file if data already existed.
         """
         os.makedirs(self.savedir, exist_ok=True)
-        np.savez_compressed(
-            f"{self.savedir}/{self.suffix}.npz",
-            **self.results
-        )
+        path = f"{self.savedir}/{self.suffix}.data"
+        with open(path, "wb") as f:
+            pickle.dump(self.results, f)
+        print(f"Results saved to {path}.")
         return
 
     @final
@@ -309,6 +318,10 @@ class System(ABC):
 
     @final
     def resample_stiffness(self) -> None:
+        """
+        Resamples stiffness parameters from their uncertainty intervals
+        and updates model (matrices K and C).
+        """
         print("Resampling stiffness parameters...")
         self.params.k1 = rs.uniform(*self.params.stiffness_intervals["k1"])
         self.params.k2 = rs.uniform(*self.params.stiffness_intervals["k2"])
@@ -318,15 +331,28 @@ class System(ABC):
         return
 
     @abstractmethod
-    def _control(self) -> np.ndarray:
+    def _update_control(self, k: int) -> None:
+        """
+        Update control signal self.u[k] based on
+        the control strategy implemented in each subclass.
+
+        Parameters
+        ----------
+        k: int
+            Index of the current time step in the simulation.
+        """
         pass
 
     @abstractmethod
-    def _estimate_voluntary(self) -> None:
+    def _update_estimates(self, k: int) -> None:
         """
-        Update the estimation of the voluntary portion of the response.
-        Estimators change between control strategies
-        and must be implemented in each subclass.
-        Must change attribute self.theta_v_hat to be used in the control law.
+        Estimate voluntary and/or tremor portion of the response.
+        Estimators change between control strategies and
+        must be implemented in each subclass.
+
+        Parameters
+        ----------
+        k: int
+            Index of the current time step in the simulation.
         """
         pass

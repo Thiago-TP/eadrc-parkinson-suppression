@@ -1,10 +1,10 @@
 import csv
+import pickle
 import re
 from pathlib import Path
 
 import numpy as np
 from scipy.integrate import trapezoid
-
 
 EPS = 1e-12
 
@@ -20,12 +20,9 @@ def _sorted_run_keys(keys: list[str]) -> list[str]:
     return sorted(keys, key=_order_key)
 
 
-def run_payloads(npz_path: Path) -> dict[str, dict[str, np.ndarray | float]]:
-    with np.load(npz_path, allow_pickle=True) as data:
-        payloads = {
-            key: data[key].item()
-            for key in data.files
-        }
+def run_payloads(data_path: Path) -> dict[str, dict[str, np.ndarray | float]]:
+    with open(data_path, "rb") as f:
+        payloads = pickle.load(f)
     return payloads
 
 
@@ -104,10 +101,10 @@ def _compute_metrics(
 
 
 def metrics_table_for_file(
-    npz_path: Path,
+    path: Path,
     baseline_payloads: dict[str, dict[str, np.ndarray | float]] | None,
 ) -> list[dict[str, str | float]]:
-    payloads = run_payloads(npz_path)
+    payloads = run_payloads(path)
     rows: list[dict[str, str | float]] = []
 
     for run_key in _sorted_run_keys(list(payloads.keys())):

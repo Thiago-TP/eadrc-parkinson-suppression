@@ -1,4 +1,6 @@
 import os
+import pickle
+
 import numpy as np
 import scipy
 from matplotlib import pyplot as plt
@@ -36,7 +38,7 @@ class Plots:
                  amplitude_voluntary: float,
                  xlim: tuple[float, float] = (0, 6),
                  ylim: tuple[float, float] = (-80, 80),
-                 savedir="results/figures"):
+                 savedir: str = "results/figures"):
         self.control_name = control_name
         self.t = time
         self.theta = theta
@@ -219,49 +221,19 @@ class Plots:
         )
 
 
-def _run_data(
-    npz_data: np.lib.npyio.NpzFile,
-    run_key: str = "nominal_run",
-) -> dict[str, np.ndarray | float]:
-    if run_key not in npz_data.files:
-        raise KeyError(
-            f"Run key '{run_key}' was not found in the result file. "
-            f"Available keys: {npz_data.files}"
-        )
-
-    run_payload = npz_data[run_key].item()
-    return {
-        "time": run_payload["time"],
-        "theta": run_payload["theta"],
-        "theta_v": run_payload["theta_v"],
-        "theta_v_hat": run_payload["theta_v_hat"],
-        "u": run_payload["u"],
-        "tau_v": run_payload["tau_v"],
-        "tau_i": run_payload["tau_i"],
-        "amplitude_voluntary": float(run_payload["amplitude_voluntary"]),
-    }
-
-
-def plot_from_npz(
-    npz_path: str,
+def plot_from_data(
+    data_path: str,
     control_name: str,
     run_key: str = "nominal_run",
 ) -> None:
-    with np.load(npz_path, allow_pickle=True) as data:
-        run_data = _run_data(data, run_key)
+    with open(data_path, "rb") as f:
+        data = pickle.load(f)
 
-    print("\nPlotting results in file:", npz_path)
+    print("\nPlotting results in file:", data_path)
 
     plots = Plots(
         control_name=control_name,
-        time=run_data["time"],
-        theta=run_data["theta"],
-        theta_v=run_data["theta_v"],
-        theta_v_hat=run_data["theta_v_hat"],
-        u=run_data["u"],
-        tau_v=run_data["tau_v"],
-        tau_i=run_data["tau_i"],
-        amplitude_voluntary=run_data["amplitude_voluntary"],
+        **data[run_key],
     )
     plots.plot_time_response()
     plots.plot_control()

@@ -1,7 +1,7 @@
 from pathlib import Path
 
-from metrics import run_payloads, metrics_table_for_file, write_csv
-from plots import plot_from_npz
+from metrics import metrics_table_for_file, run_payloads, write_csv
+from plots import plot_from_data
 
 
 def generate_plots(
@@ -14,16 +14,18 @@ def generate_plots(
     Parameters
     ----------
     run_key : str, optional
-        Simulation run key to plot from each `.npz` file.
+        Simulation run key to plot from each `.data` file.
         Defaults to "nominal_run".
     """
     results_path = Path(results_dir)
 
     for amplitude in (0.0, 1.0):
         control_files = {
-            "adrc": results_path / f"adrc_amplitude_{amplitude}.npz",
-            "pid": results_path / f"pid_amplitude_{amplitude}.npz",
-            "open_loop": results_path / f"open_loop_amplitude_{amplitude}.npz",
+            "adrc": results_path / f"adrc_amplitude_{amplitude}.data",
+            "pid": results_path / f"pid_amplitude_{amplitude}.data",
+            "open_loop": (
+                results_path / f"open_loop_amplitude_{amplitude}.data"
+            ),
         }
 
         for control_name, file_path in control_files.items():
@@ -32,7 +34,7 @@ def generate_plots(
                     f"Expected results file '{file_path}' was not found. "
                     "Run main.py first."
                 )
-            plot_from_npz(str(file_path), control_name, run_key=run_key)
+            plot_from_data(str(file_path), control_name, run_key=run_key)
 
 
 def generate_metrics_tables(
@@ -40,9 +42,9 @@ def generate_metrics_tables(
     metrics_dir: str = "results/metrics",
 ) -> None:
     """
-    Generate per-response run-quality metrics tables from saved NPZ outputs.
+    Generate per-response run-quality metrics tables from saved pickle outputs.
 
-    Each generated CSV contains one row per run key in the source NPZ file.
+    Each generated CSV contains one row per run key in the source data file.
     TPSR and ASR are computed against the corresponding open-loop run for the
     same voluntary-amplitude scenario.
     """
@@ -51,9 +53,11 @@ def generate_metrics_tables(
 
     for amplitude in (0.0, 1.0):
         control_files = {
-            "adrc": results_path / f"adrc_amplitude_{amplitude}.npz",
-            "pid": results_path / f"pid_amplitude_{amplitude}.npz",
-            "open_loop": results_path / f"open_loop_amplitude_{amplitude}.npz",
+            "adrc": results_path / f"adrc_amplitude_{amplitude}.data",
+            "pid": results_path / f"pid_amplitude_{amplitude}.data",
+            "open_loop": (
+                results_path / f"open_loop_amplitude_{amplitude}.data"
+            ),
         }
 
         missing = [
@@ -68,10 +72,10 @@ def generate_metrics_tables(
 
         baseline_payloads = run_payloads(control_files["open_loop"])
 
-        for control_name, npz_path in control_files.items():
-            print(f"\nGenerating metrics table for file: {npz_path}")
+        for control_name, path in control_files.items():
+            print(f"\nGenerating metrics table for file: {path}")
             rows = metrics_table_for_file(
-                npz_path,
+                path,
                 baseline_payloads=baseline_payloads,
             )
             out_csv = (

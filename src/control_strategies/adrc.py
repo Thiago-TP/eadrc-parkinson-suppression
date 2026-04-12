@@ -1,5 +1,5 @@
-import scipy
 import numpy as np
+import scipy
 
 from system import InitialConditions, ModelParameters, System
 
@@ -41,18 +41,13 @@ class ADRControl(System):
 
         return
 
-    def _control(self) -> np.ndarray:
-        # j*dy2/dt2 + c*dy/dt + k*y = u3 + tau_v + tau_i + f
-        # dy2/dt2 = (u3 + tau_v)/j + zeta
-        # dy2/dt2 = u3' + zeta
-        # u3 = ju3' - tau_v
+    def _update_control(self, k: int) -> None:
 
         # Last control output
-        u3_old = self.u[-1][2]
+        u3_old = self.u[k - 1, 2]
 
         # Tracking error
-        e = np.array(self.theta_v_hat) - np.array(self.theta)
-        xe1 = e[-1, 2]  # error on theta3
+        xe1 = self.theta_v_hat[k, 2] - self.theta[k, 2]  # error on theta3
         delta_xe1 = xe1 - self.xe1_hat
 
         # Extended State Observer of error
@@ -71,11 +66,9 @@ class ADRControl(System):
         u3 = u3_adrc / self.b0
 
         # Update of control history
-        self.u.append(np.array([0.0, 0.0, u3]))
+        self.u[k] = np.array([0.0, 0.0, u3])
 
-        return self.u[-1]
-
-    def _estimate_voluntary(self) -> None:
+    def _update_estimates(self, k: int) -> None:
         # Zero-phase low-pass Butterworth filter to estimate voluntary response
         try:
             self.theta_v_hat = scipy.signal.sosfiltfilt(

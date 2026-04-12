@@ -42,7 +42,7 @@ def main(
 
     # Run nominal model with different control strategies
     no_control = open_loop.OpenLoopControl(name="open_loop", **_shared)
-    pid_control = pid.PIDControl(name="pid", **_shared)
+    pid_control = pid.PIDControl(name="pid", **_shared, slow_factor=5.0)
     adr_control = adrc.ADRControl(name="adrc", **_shared)
 
     print("\nRunning nominal model simulations...")

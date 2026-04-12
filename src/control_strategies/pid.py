@@ -1,5 +1,5 @@
-import scipy
 import numpy as np
+import scipy
 
 from system import InitialConditions, ModelParameters, System
 
@@ -11,11 +11,11 @@ class PIDControl(System):
         params: ModelParameters,
         ic: InitialConditions,
         amplitude_voluntary: float = 1.0,
-        kp: float = 2.0,
-        ki: float = 4.0,
-        kd: float = 0.42,
+        kp: float | None = None,
+        ki: float | None = None,
+        kd: float | None = None,
         manual: bool = False,
-        slow_factor: float = 5.0,
+        slow_factor: float | None = None,
     ) -> None:
         super().__init__(name,
                          params,
@@ -31,15 +31,20 @@ class PIDControl(System):
             output="sos"
         )
 
-        self.kp, self.ki, self.kd = 0.0, 0.0, 0.0
         if manual:
+            if kp is None or ki is None or kd is None:
+                raise ValueError(
+                    "For manual PID tuning, kp, ki, and kd must be provided."
+                )
             # Proportional, integral, derivative gains
             self.kp = kp
             self.ki = ki
             self.kd = kd
         else:
-            if np.isclose(self.j, np.zeros((3, 3))).all():
-                self._set_dynamics()
+            if slow_factor is None:
+                raise ValueError(
+                    "For IMC PID tuning, slow_factor must be provided."
+                )
             # Compute the PID gains using IMC
             self._calculate_imc_pid_gains(slow_factor)
 
@@ -101,7 +106,7 @@ class PIDControl(System):
         self.ki = self.kp / ti
         self.kd = self.kp * td
 
-    def _control(self) -> np.ndarray:
+    def _update_control(self, k: int) -> None:
         # PID control with fixed gains
         # For more details, check out
         # https://alphaville.github.io/qub/pid-101/#/
@@ -113,7 +118,7 @@ class PIDControl(System):
                 "Run simulate_system() before calling _control()."
             )
 
-        self.error_control = self.theta_v_hat[-1][2] - self.theta[-1][2]
+        self.error_control = self.theta_v_hat[k, 2] - self.theta[k, 2]
         self.error_delta = self.error_control - self.error_previous
 
         u3 = np.dot(
@@ -123,14 +128,12 @@ class PIDControl(System):
              self.error_delta / self.dt],
         )
 
+        self.u[k] = np.array([0.0, 0.0, u3])
+
         self.error_sum += self.error_control
         self.error_previous = self.error_control
 
-        self.u.append(np.array([0.0, 0.0, u3]))
-
-        return self.u[-1]
-
-    def _estimate_voluntary(self) -> None:
+    def _update_estimates(self, k: int) -> None:
         # Zero-phase low-pass Butterworth filter to estimate voluntary response
         try:
             self.theta_v_hat = scipy.signal.sosfiltfilt(

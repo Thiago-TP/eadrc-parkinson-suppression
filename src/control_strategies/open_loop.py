@@ -1,6 +1,7 @@
-import scipy
 import numpy as np
-from system import System, ModelParameters, InitialConditions
+import scipy
+
+from system import InitialConditions, ModelParameters, System
 
 
 class OpenLoopControl(System):
@@ -25,13 +26,11 @@ class OpenLoopControl(System):
 
         return
 
-    def _control(self) -> np.ndarray:
+    def _update_control(self, k: int) -> None:
         # Null control signal in open loop
-        control = np.array([0.0, 0.0, 0.0])
-        self.u.append(control)  # register control signal to history
-        return self.u[-1]
+        self.u[k] = np.zeros(3)
 
-    def _estimate_voluntary(self) -> None:
+    def _update_estimates(self, k: int) -> None:
         # Zero-phase low-pass Butterworth filter to estimate voluntary response
         try:
             self.theta_v_hat = scipy.signal.sosfiltfilt(
