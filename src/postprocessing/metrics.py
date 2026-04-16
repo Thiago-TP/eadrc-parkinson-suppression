@@ -56,7 +56,6 @@ def _compute_metrics(
     entropy = float(np.mean([
         _entropy(theta[:, i]) for i in range(theta.shape[1])
     ]))
-    control_signal_power = float(np.mean(np.sum(u**2, axis=1)))
 
     err = theta - theta_v
     err_sq = np.sum(err**2, axis=1)
@@ -87,12 +86,27 @@ def _compute_metrics(
             if tremor_amplitude_bl > EPS else np.nan
         )
 
+    # Control signal metrics
+    u_sq = np.sum(u**2, axis=1)
+    u_abs = np.sum(np.abs(u), axis=1)
+    control_power = float(np.mean(u_sq))
+    control_rms = float(np.sqrt(control_power))
+    u_dot = np.gradient(u, t, axis=0)
+    u_dot_abs = np.sum(np.abs(u_dot), axis=1)
+    control_tvc = float(trapezoid(u_dot_abs, t))
+    control_iac = float(trapezoid(u_abs, t))
+    control_isc = float(trapezoid(u_sq, t))
+
     return {
         "tpsr_percent": float(tpsr),
         "asr_percent": float(asr),
         "rmse": float(np.sqrt(np.mean(err_sq))),
         "response_entropy": entropy,
-        "control_signal_power": control_signal_power,
+        "control_power": control_power,
+        "control_rms": control_rms,
+        "control_tvc": control_tvc,
+        "control_iac": control_iac,
+        "control_isc": control_isc,
         "ise": float(trapezoid(err_sq, t)),
         "iae": float(trapezoid(err_abs, t)),
         "itae": float(trapezoid(t * err_abs, t)),
