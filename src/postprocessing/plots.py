@@ -5,6 +5,8 @@ import numpy as np
 import scipy
 from matplotlib import pyplot as plt
 
+# Change if LaTeX is not available in the system
+# (or if you want to use a different font)
 plt.rcParams.update({
     "text.usetex": True,
     "font.family": "serif",
@@ -15,7 +17,8 @@ plt.rcParams.update({
 COLORS = {
     "open_loop": "#D8C303",
     "pid": "#FF3867",
-    "adrc": "#1CA1DA",
+    "eadrc": "#1CA1DA",
+    "adrc_ebmflc": "#FF7F00",
     "pi_gallego": "#2E8B57",
 }
 

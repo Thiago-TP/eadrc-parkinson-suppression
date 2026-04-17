@@ -21,7 +21,8 @@ def generate_plots(
 
     for amplitude in (0.0, 1.0):
         control_files = {
-            "adrc": results_path / f"adrc_amplitude_{amplitude}.data",
+            "eadrc": results_path / f"eadrc_amplitude_{amplitude}.data",
+            "adrc_ebmflc": results_path / f"adrc_ebmflc_amplitude_{amplitude}.data",
             "pid": results_path / f"pid_amplitude_{amplitude}.data",
             "pi_gallego": results_path / f"pi_gallego_amplitude_{amplitude}.data",  # noqa: E501
             "open_loop": results_path / f"open_loop_amplitude_{amplitude}.data",  # noqa: E501
@@ -52,7 +53,8 @@ def generate_metrics_tables(
 
     for amplitude in (0.0, 1.0):
         control_files = {
-            "adrc": results_path / f"adrc_amplitude_{amplitude}.data",
+            "eadrc": results_path / f"eadrc_amplitude_{amplitude}.data",
+            "adrc_ebmflc": results_path / f"adrc_ebmflc_amplitude_{amplitude}.data",
             "pid": results_path / f"pid_amplitude_{amplitude}.data",
             "pi_gallego": results_path / f"pi_gallego_amplitude_{amplitude}.data",  # noqa: E501
             "open_loop": results_path / f"open_loop_amplitude_{amplitude}.data",  # noqa: E501

@@ -4,7 +4,14 @@ import scipy
 from system import InitialConditions, ModelParameters, System
 
 
-class ADRControl(System):
+class EADRControl(System):
+    """
+    Implements a standard Error-based Active Disturbance Rejection Control (EADRC)
+    strategy for Parkinson's tremor suppression.
+    Compensation is based on the estimation of voluntary motion,
+    which is done using a low-pass Butterworth filter.
+    """
+
     def __init__(
         self,
         name: str,
