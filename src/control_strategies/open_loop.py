@@ -19,5 +19,9 @@ class OpenLoopControl(System):
         self.u[k, 2] = 0.0
 
     def _update_estimates(self, k: int) -> None:
-        """No estimation in open loop control."""
+        # No estimation in open loop control
+        return
+
+    def _reset_control_variables(self) -> None:
+        # Nothing to reset
         return

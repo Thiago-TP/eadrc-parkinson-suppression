@@ -1,5 +1,5 @@
 import yaml
-
+import time
 from control_strategies import (
     afe_notch,
     eadrc_ebmflc,
@@ -84,6 +84,7 @@ def main(
     )
 
     print("\nRunning nominal model simulations...")
+    __start = time.time()
 
     controls = [
         afe_notch_control,
@@ -115,6 +116,11 @@ def main(
     pid_control.save_results()
     pi_gallego_control.save_results()
     no_control.save_results()
+
+    __stop = time.time()
+    delta_s = __stop - __start
+    delta_m = delta_s / 60
+    print(f"\nAll finished in {delta_s :.3f}s ({delta_m :.3f} minutes)")
 
 
 if __name__ == "__main__":

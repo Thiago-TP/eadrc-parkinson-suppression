@@ -352,7 +352,18 @@ class System(ABC):
         self.theta_i: np.ndarray = np.zeros((len(self.t), 3))
         self.theta_i_hat: np.ndarray = np.zeros((len(self.t), 3))
 
+        # Resets any other control-specific attributes
+        self._reset_control_variables()
+
         return
+
+    @abstractmethod
+    def _reset_control_variables(self) -> None:
+        """
+        Resets control-specific attributes that should not persist
+        across runs of the system. 
+        """
+        pass
 
     @abstractmethod
     def _update_control(self, k: int) -> None:

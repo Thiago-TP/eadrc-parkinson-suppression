@@ -132,3 +132,10 @@ class EADRC_EBMFLC(System):
         # Motion weights update
         error_m = self.theta[k, 2] - m_hat
         self.w_m = self.p * self.w_m + 2 * self.mu * error_m * x_m
+
+    def _reset_control_variables(self) -> None:
+        # Reset EADRC states, EBMFLC weights
+        self.w_m = np.zeros(2 * self.n)
+        self.xe1_hat = 0.0
+        self.xe2_hat = 0.0
+        self.z = 0.0

@@ -56,6 +56,7 @@ class AFE_NotchControl(System):
         )
 
         # AFE attributes: parameters and states
+        self.wt0 = wt0
         self.zeta_f = zeta_f
         self.zeta_e = zeta_e
         self.gamma = gamma
@@ -63,7 +64,7 @@ class AFE_NotchControl(System):
         self.yf2 = 0.0
         self.ye1 = 0.0
         self.ye2 = 0.0
-        self.ye3 = wt0
+        self.ye3 = self.wt0
         self.wt = self.ye3
 
         # Control attributes: parameters and states
@@ -134,3 +135,16 @@ class AFE_NotchControl(System):
         self.wt = self.ye3
 
         return
+
+    def _reset_control_variables(self) -> None:
+        # Reset states, estimated frequency
+        self.yf1 = 0.0
+        self.yf2 = 0.0
+        self.ye1 = 0.0
+        self.ye2 = 0.0
+        self.ye3 = self.wt0
+        self.wt = self.ye3
+        self.y1 = 0.0
+        self.y2 = 0.0
+        self.y3 = 0.0
+        self.y4 = 0.0

@@ -21,7 +21,7 @@ def generate_plots(
     """
 
     for file_path in control_files:
-        control_name = Path(file_path).stem.split("_amplitude_")[0]
+        control_name = Path(file_path).stem.split(separator)[0]
         plot_from_data(file_path, control_name, run_key=run_key)
 
 

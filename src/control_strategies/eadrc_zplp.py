@@ -83,3 +83,9 @@ class EADRC_ZPLP(System):
             )
         except ValueError:
             self.theta_v_hat = self.theta.copy()
+
+    def _reset_control_variables(self) -> None:
+        # Reset EADRC states
+        self.xe1_hat = 0.0
+        self.xe2_hat = 0.0
+        self.z = 0.0
