@@ -15,6 +15,7 @@ plt.rcParams.update({
 })
 
 COLORS = {
+    "afe_notch": "#0077BB",
     "eadrc_ebmflc": "#FF7F00",
     "eadrc_zplp": "#1CA1DA",
     "open_loop": "#D8C303",
@@ -107,7 +108,8 @@ class Plots:
         plt.figure(figsize=(10, 3))
 
         plt.plot(self.t, theta[:, 2], color=COLORS.get(self.control_name, "black"), label=r"$\theta_3$")  # noqa: E501
-        plt.plot(self.t, theta_v3_hat[:, 2], color="#BD1AEA", label=r"$\widehat{\theta}_{v_3}$")  # noqa: E501
+        if self.control_name not in ["afe_notch", "open_loop"]:
+            plt.plot(self.t, theta_v3_hat[:, 2], color="#BD1AEA", label=r"$\widehat{\theta}_{v_3}$")  # noqa: E501
         plt.plot(self.t, theta_v[:, 2], linestyle="--", color="black", label=r"$\theta_{v_3}$")  # noqa: E501
         plt.ylabel(r"Palm angle [\textdegree]")
         plt.xlabel("Time [s]")

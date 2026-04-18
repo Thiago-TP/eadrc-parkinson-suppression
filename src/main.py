@@ -1,6 +1,7 @@
 import yaml
 
 from control_strategies import (
+    afe_notch,
     eadrc_ebmflc,
     eadrc_zplp,
     open_loop,
@@ -40,8 +41,26 @@ def main(
     ic = tuple(cfgs["initial_conditions"].values())
 
     # Run nominal model with different control strategies
-    no_control = open_loop.OpenLoopControl(
-        name="open_loop",
+    afe_notch_control = afe_notch.AFE_NotchControl(
+        name="afe_notch",
+        params=parameters,
+        ic=ic,
+        amplitude_voluntary=amplitude_voluntary
+    )
+    eadr_ebmflc_control = eadrc_ebmflc.EADRC_EBMFLC(
+        name="eadrc_ebmflc",
+        params=parameters,
+        ic=ic,
+        amplitude_voluntary=amplitude_voluntary
+    )
+    eadr_zplp_control = eadrc_zplp.EADRC_ZPLP(
+        name="eadrc_zplp",
+        params=parameters,
+        ic=ic,
+        amplitude_voluntary=amplitude_voluntary
+    )
+    pi_gallego_control = pi_gallego.GallegoPIControl(
+        name="pi_gallego",
         params=parameters,
         ic=ic,
         amplitude_voluntary=amplitude_voluntary
@@ -53,20 +72,8 @@ def main(
         amplitude_voluntary=amplitude_voluntary,
         slow_factor=5.0
     )
-    eadr_zplp_control = eadrc_zplp.EADRC_ZPLP(
-        name="eadrc_zplp",
-        params=parameters,
-        ic=ic,
-        amplitude_voluntary=amplitude_voluntary
-    )
-    eadr_ebmflc_control = eadrc_ebmflc.EADRC_EBMFLC(
-        name="eadrc_ebmflc",
-        params=parameters,
-        ic=ic,
-        amplitude_voluntary=amplitude_voluntary
-    )
-    pi_gallego_control = pi_gallego.GallegoPIControl(
-        name="pi_gallego",
+    no_control = open_loop.OpenLoopControl(
+        name="open_loop",
         params=parameters,
         ic=ic,
         amplitude_voluntary=amplitude_voluntary
@@ -75,6 +82,7 @@ def main(
     print("\nRunning nominal model simulations...")
 
     controls = [
+        afe_notch_control,
         eadr_zplp_control,
         eadr_ebmflc_control,
         pid_control,
@@ -97,6 +105,7 @@ def main(
             control.simulate_system()
 
     # Save results across runs to npz files in results folder
+    afe_notch_control.save_results()
     eadr_zplp_control.save_results()
     eadr_ebmflc_control.save_results()
     pid_control.save_results()
