@@ -19,7 +19,7 @@ def objective_function(
     """
     kp, ki, kd = gains
 
-    # 1. Instaciate the PID system with the current gains
+    # 1. Instantiate the PID system with the current gains
     pid_system = pid.PIDControl(
         name="pid_de_eval",
         params=parameters,
