@@ -1,12 +1,19 @@
 import yaml
 
-from control_strategies import adrc, open_loop, pid
+from control_strategies import (
+    afe_notch,
+    eadrc_ebmflc,
+    eadrc_zplp,
+    pi_gallego,
+    pid,
+    uncontrolled,
+)
 from system import ModelParameters
 
 
 def main(
     num_simulations: int,
-    amplitude_voluntary: float = 1.0
+    amplitude_voluntary: float = 1.0,
 ) -> None:
     """
     Main function to run and persist simulations.
@@ -20,7 +27,8 @@ def main(
         A properly formatted configs.yaml file is required to specify
         nominal parameters and stiffness uncertainty intervals.
     amplitude_voluntary : float, optional
-        Amplitude of the voluntary torque profile. Defaults to 1.0.
+        Amplitude of the voluntary torque profile.
+        Defaults to 1.0 (the more interesting case).
     """
 
     # Load configurations
@@ -33,39 +41,79 @@ def main(
     # Load initial conditions
     ic = tuple(cfgs["initial_conditions"].values())
 
-    # Shared arguments across control strategies
-    _shared = {
-        "params": parameters,
-        "ic": ic,
-        "amplitude_voluntary": amplitude_voluntary
-    }
+    # Instantiate control strategies
+    # with same model parameters and initial conditions
+    afe_notch_control = afe_notch.AFE_NotchControl(
+        name="afe_notch",
+        params=parameters,
+        ic=ic,
+        amplitude_voluntary=amplitude_voluntary
+    )
+    eadr_ebmflc_control = eadrc_ebmflc.EADRC_EBMFLC(
+        name="eadrc_ebmflc",
+        params=parameters,
+        ic=ic,
+        amplitude_voluntary=amplitude_voluntary
+    )
+    eadr_zplp_control = eadrc_zplp.EADRC_ZPLP(
+        name="eadrc_zplp",
+        params=parameters,
+        ic=ic,
+        amplitude_voluntary=amplitude_voluntary
+    )
+    pi_gallego_control = pi_gallego.GallegoPIControl(
+        name="pi_gallego",
+        params=parameters,
+        ic=ic,
+        amplitude_voluntary=amplitude_voluntary
+    )
+    pid_imc_control = pid.PIDControl(
+        name="pid_imc",
+        params=parameters,
+        ic=ic,
+        amplitude_voluntary=amplitude_voluntary,
+        # Values below were found with slow_factor=5.0 on
+        # the nominal model with amplitude_voluntary=1.0
+        manual=True,
+        kp=0.0998772,
+        ki=98.7732779,
+        kd=0.040496,
+    )
+    pid_de_control = pid.PIDControl(
+        name="pid_de",
+        params=parameters,
+        ic=ic,
+        amplitude_voluntary=amplitude_voluntary,
+        # Values below were found from src/pid_tuning.py
+        manual=True,
+        kp=1.2998816,
+        ki=20.2188130,
+        kd=3.2374438,
+        perfect_tracking=True,
+    )
+    no_control = uncontrolled.Uncontrolled(
+        name="uncontrolled",
+        params=parameters,
+        ic=ic,
+        amplitude_voluntary=amplitude_voluntary
+    )
 
-    # Run nominal model with different control strategies
-    no_control = open_loop.OpenLoopControl(
-        name="open_loop",
-        **_shared
-    )
-    pid_control = pid.PIDControl(
-        name="pid",
-        **_shared
-    )
-    adr_control = adrc.ADRControl(
-        name="adrc",
-        **_shared
-    )
-
+    # Run nominal model simulations for selected control strategies
     print("\nRunning nominal model simulations...")
-
     controls = [
-        adr_control,
-        pid_control,
-        no_control
+        afe_notch_control,
+        eadr_ebmflc_control,
+        eadr_zplp_control,
+        pi_gallego_control,
+        pid_de_control,
+        pid_imc_control,
+        no_control,
     ]
-
     for control in controls:
         control.simulate_system()
 
-    # Remaining runs with parameters sampled from uniform intervals
+    # Run non-nominal model simulations with stiffness sampling
+    # for selected control strategies
     print(
         f"\nRunning {num_simulations - 1} "
         "non-nominal model simulations with parameter sampling..."
@@ -77,12 +125,16 @@ def main(
             control.simulate_system()
 
     # Save results across runs to npz files in results folder
-    adr_control.save_results()
-    pid_control.save_results()
-    no_control.save_results()
+    for control in controls:
+        control.save_results()
 
 
 if __name__ == "__main__":
+
+    import time
+
+    __start = time.time()
+
     main(
         num_simulations=1,
         amplitude_voluntary=0.0
@@ -91,3 +143,8 @@ if __name__ == "__main__":
         num_simulations=1,
         amplitude_voluntary=1.0
     )
+    __stop = time.time()
+
+    delta_s = __stop - __start
+    delta_m = delta_s / 60
+    print(f"\nAll finished in {delta_s:.2f}s ({delta_m:.2f} minutes)")

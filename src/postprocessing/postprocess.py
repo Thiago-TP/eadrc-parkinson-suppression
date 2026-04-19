@@ -1,11 +1,14 @@
+from glob import glob
 from pathlib import Path
 
-from metrics import run_payloads, metrics_table_for_file, write_csv
-from plots import plot_from_npz
+from metrics import metrics_table_for_file, summarize_metrics_csv, write_csv
+from plots import plot_from_data
 
 
 def generate_plots(
-    results_dir: str = "results/runs",
+    control_files: list[str],
+    baseline_file: str,
+    separator: str,
     run_key: str = "nominal_run",
 ) -> None:
     """
@@ -14,73 +17,79 @@ def generate_plots(
     Parameters
     ----------
     run_key : str, optional
-        Simulation run key to plot from each `.npz` file.
+        Simulation run key to plot from each `.data` file.
         Defaults to "nominal_run".
     """
-    results_path = Path(results_dir)
 
-    for amplitude in (0.0, 1.0):
-        control_files = {
-            "adrc": results_path / f"adrc_amplitude_{amplitude}.npz",
-            "pid": results_path / f"pid_amplitude_{amplitude}.npz",
-            "open_loop": results_path / f"open_loop_amplitude_{amplitude}.npz",
-        }
-
-        for control_name, file_path in control_files.items():
-            if not file_path.exists():
-                raise FileNotFoundError(
-                    f"Expected results file '{file_path}' was not found. "
-                    "Run main.py first."
-                )
-            plot_from_npz(str(file_path), control_name, run_key=run_key)
+    for file_path in control_files:
+        control_name = Path(file_path).stem.split(separator)[0]
+        plot_from_data(
+            file_path,
+            baseline_file,
+            control_name,
+            run_key=run_key
+        )
 
 
 def generate_metrics_tables(
-    results_dir: str = "results/runs",
+    control_files: list[str],
+    baseline_file: str,
     metrics_dir: str = "results/metrics",
 ) -> None:
     """
-    Generate per-response run-quality metrics tables from saved NPZ outputs.
+    Generate per-response run-quality metrics tables from saved pickle outputs.
 
-    Each generated CSV contains one row per run key in the source NPZ file.
+    Each generated CSV contains one row per run key in the source data file.
     TPSR and ASR are computed against the corresponding open-loop run for the
     same voluntary-amplitude scenario.
     """
-    results_path = Path(results_dir)
     output_path = Path(metrics_dir)
 
-    for amplitude in (0.0, 1.0):
-        control_files = {
-            "adrc": results_path / f"adrc_amplitude_{amplitude}.npz",
-            "pid": results_path / f"pid_amplitude_{amplitude}.npz",
-            "open_loop": results_path / f"open_loop_amplitude_{amplitude}.npz",
-        }
+    for file in control_files:
 
-        missing = [
-            str(path)
-            for path in control_files.values()
-            if not path.exists()
-        ]
-        if missing:
-            raise FileNotFoundError(
-                "Expected result files were not found: " + ", ".join(missing)
-            )
+        file_name = Path(file).stem
 
-        baseline_payloads = run_payloads(control_files["open_loop"])
+        print(f"\nGenerating metrics table for file: {file}")
+        rows = metrics_table_for_file(
+            Path(file),
+            baseline=Path(baseline_file),
+        )
+        out_csv = (output_path / f"{file_name}_metrics.csv")
+        write_csv(out_csv, rows)
+        summarize_metrics_csv(out_csv)
 
-        for control_name, npz_path in control_files.items():
-            print(f"\nGenerating metrics table for file: {npz_path}")
-            rows = metrics_table_for_file(
-                npz_path,
-                baseline_payloads=baseline_payloads,
-            )
-            out_csv = (
-                output_path
-                / f"{control_name}_amplitude_{amplitude}_metrics.csv"
-            )
-            write_csv(out_csv, rows)
+
+def generate_all(
+    results_dir: str = "results/runs",
+    extension: str = "data",
+    separator: str = "_amplitude_",
+) -> None:
+    """
+    Generate all plots and metrics tables from
+    previously saved numeric simulation results.
+    """
+
+    # Group files by baseline
+    # Files are expected to be named in the format:
+    # {control_name}_amplitude_{amplitude}.{extension}
+    groups = {
+        bl_file: glob(
+            f"{results_dir}/*_{bl_file.split(separator)[-1]}")
+        for bl_file in glob(f"{results_dir}/uncontrolled_*.{extension}")
+    }
+    for baseline, controls in groups.items():
+        generate_metrics_tables(
+            control_files=controls,
+            baseline_file=baseline,
+        )
+        generate_plots(
+            control_files=controls,
+            baseline_file=baseline,
+            separator=separator,
+            run_key="nominal_run",
+        )
 
 
 if __name__ == "__main__":
-    generate_metrics_tables()
-    generate_plots(run_key="nominal_run")
+
+    generate_all()

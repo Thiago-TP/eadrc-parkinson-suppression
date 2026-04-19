@@ -1,36 +1,94 @@
 import numpy as np
+import scipy
 
 from system import InitialConditions, ModelParameters, System
 
 
 class PIDControl(System):
+    """
+    Proportional-Integral-Derivative (PID) control strategy.
+    The PID implemented may be adjusted manually
+    by setting the kp, ki, and kd parameters,
+    or automatically using Internal Model Control (IMC)
+    tuning rules based on the system's physical parameters.
+    For a Differential Evolution (DE)-based offline
+    optimization of the PID gains, see src/pid_tuning.py.
+    PID DE is assumed to be a best-case controller with perfect tracking
+    of voluntary motion. For PID IMC, estimation of voluntary motion
+    is done using a zero-phase low-pass Butterworth filter.
+
+    Parameters
+    ----------
+    name: str
+        Name of the control strategy.
+    params: ModelParameters
+        Model parameters for the system.
+    ic: InitialConditions
+        Initial conditions for the system.
+    amplitude_voluntary: float, optional
+        Amplitude of the voluntary motion.
+    kp: float, optional
+        Proportional gain for manual tuning, by default None.
+    ki: float, optional
+        Integral gain for manual tuning, by default None.
+    kd: float, optional
+        Derivative gain for manual tuning, by default None.
+    manual: bool, optional
+        If True, uses manual tuning with provided kp, ki, kd.
+        If False, uses IMC tuning based on system parameters, by default False.
+    slow_factor: float, optional
+        Slow factor for IMC tuning, by default None.
+        Higher values lead to slower response.
+    perfect_tracking: bool, optional
+        If True, assumes perfect tracking of voluntary motion (DE tuning only),
+        by default False.
+    """
+
     def __init__(
         self,
         name: str,
         params: ModelParameters,
         ic: InitialConditions,
-        amplitude_voluntary: float = 1.0,
-        kp: float = 2.0,
-        ki: float = 4.0,
-        kd: float = 0.42,
+        amplitude_voluntary: float,
+        kp: float | None = None,
+        ki: float | None = None,
+        kd: float | None = None,
         manual: bool = False,
-        slow_factor: float = 5.0,
+        slow_factor: float | None = None,
+        perfect_tracking: bool = False,
     ) -> None:
         super().__init__(name,
                          params,
                          ic,
                          amplitude_voluntary=amplitude_voluntary)
-        self.kp, self.ki, self.kd = 0.0, 0.0, 0.0
+
+        # Set voluntary motion estimator
+        self.butter_sos = scipy.signal.butter(
+            N=1,
+            Wn=5.0,
+            fs=self.fs,
+            btype="low",
+            output="sos"
+        )
+
         if manual:
+            if kp is None or ki is None or kd is None:
+                raise ValueError(
+                    "For manual PID tuning, kp, ki, and kd must be provided."
+                )
             # Proportional, integral, derivative gains
             self.kp = kp
             self.ki = ki
             self.kd = kd
         else:
-            if np.isclose(self.j, np.zeros((3, 3))).all():
-                self._set_dynamics()
+            if slow_factor is None:
+                raise ValueError(
+                    "For IMC PID tuning, slow_factor must be provided."
+                )
             # Compute the PID gains using IMC
             self._calculate_imc_pid_gains(slow_factor)
+
+        self.perfect_tracking = perfect_tracking
 
         # Errors for calculating control
         self.error_control = 0.0
@@ -85,24 +143,16 @@ class PIDControl(System):
             ti = 2 * zeta * tau
             td = tau / (2 * zeta)
 
-        # 5. Final discretization for the PID class
-        # Convert continuous gains to the discrete variables used in control()
+        # 5. Final scaling of integral and derivative gains
         self.ki = self.kp / ti
         self.kd = self.kp * td
 
-    def _control(self) -> np.ndarray:
+    def _update_control(self, k: int) -> None:
         # PID control with fixed gains
         # For more details, check out
         # https://alphaville.github.io/qub/pid-101/#/
 
-        if self.theta_v_hat is None or self.theta is None:
-            # If the system hasn't been simulated yet, return zero control
-            raise ValueError(
-                "System state is not initialized. "
-                "Run simulate_system() before calling _control()."
-            )
-
-        self.error_control = self.theta_v_hat[-1][2] - self.theta[-1][2]
+        self.error_control = self.theta_v_hat[k, 2] - self.theta[k, 2]
         self.error_delta = self.error_control - self.error_previous
 
         u3 = np.dot(
@@ -112,9 +162,31 @@ class PIDControl(System):
              self.error_delta / self.dt],
         )
 
+        self.u[k] = np.array([0.0, 0.0, u3])
+
         self.error_sum += self.error_control
         self.error_previous = self.error_control
 
-        self.u.append(np.array([0.0, 0.0, u3]))
+    def _update_estimates(self, k: int) -> None:
+        # During DE tuning, control has perfect tracking
+        if self.perfect_tracking:
+            self.theta_v_hat[k] = self.theta_v[k]
+            return
+        # Zero-phase low-pass Butterworth filter to estimate voluntary response
+        # using only samples observed up to the current timestep.
+        theta_prefix = self.theta[:k + 1]
+        try:
+            theta_v_hat_prefix = scipy.signal.sosfiltfilt(
+                self.butter_sos, theta_prefix, axis=0,
+            )
+            self.theta_v_hat[k] = theta_v_hat_prefix[-1]
+        except ValueError:
+            self.theta_v_hat[k] = self.theta[k]
 
-        return self.u[-1]
+    def _reset_control_variables(self) -> None:
+        # Reset errors
+        self.error_control = 0.0
+        self.error_sum = 0.0
+        self.error_delta = 0.0
+        self.error_previous = 0.0
+        return
