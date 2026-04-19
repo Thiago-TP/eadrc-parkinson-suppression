@@ -44,7 +44,7 @@ def objective_function(
             # Return a very high cost if the simulation failed
             return 1e12
 
-        # 4. Check wheter the gains led to NaN or Inf values in the results,
+        # 4. Check whether the gains led to NaN or Inf values in the results,
         # which indicates instability
         theta = run_payload["theta"]
         if np.isnan(theta).any() or np.isinf(theta).any():
