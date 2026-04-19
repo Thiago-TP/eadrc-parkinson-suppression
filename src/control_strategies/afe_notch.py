@@ -111,8 +111,8 @@ class AFE_NotchControl(System):
         # The voluntary motion components in the velocity signal are removed
         # by a 6th order Butterworth high-pass filter
         # with a cutoff frequency of 2 Hz.
-        theta_dot = (self.theta[k, 2] - self.theta[k - 1, 2]) / self.dt
-        x_dot_hp = scipy.signal.sosfilt(self.butter_sos, [theta_dot])[0]
+        theta_dot = (self.theta[1:k + 1, 2] - self.theta[0:k, 2]) / self.dt
+        x_dot_hp = scipy.signal.sosfilt(self.butter_sos, theta_dot)[-1]
 
         # State space equations of the bandpass filter
         yf1_dot = self.yf2
