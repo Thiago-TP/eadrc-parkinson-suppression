@@ -111,16 +111,40 @@ class GallegoPIControl(System):
         # Tremor-Voluntary Ratio:
         # integral of the amplitude spectrum in 3-12Hz (tremor)
         # divided by integral in 0-3Hz (voluntary motion)
-        amplitude_spectrum = np.abs(np.fft.rfft(self.theta[:k + 1, 2]))
-        freqs = np.fft.rfftfreq(k + 1, d=self.dt)
-        tr = scipy.integrate.trapezoid(
-            amplitude_spectrum[(freqs >= 3) & (freqs <= 12)]
-        )
-        vol = scipy.integrate.trapezoid(
-            amplitude_spectrum[(freqs >= 0) & (freqs <= 3)]
-        )
-        tvr = tr / (vol + 1e-6)
+        #
+        # Avoid recomputing a full-history FFT at every timestep:
+        # update TVR periodically on a bounded sliding window and
+        # reuse the last computed TVR between updates.
+        if not hasattr(self, "_tvr_window_samples"):
+            self._tvr_window_samples = max(16, int(np.ceil(2.0 / self.dt)))
+            self._tvr_update_interval = max(1, self._tvr_window_samples // 4)
+            self._last_tvr = 0.0
+            self._last_tvr_k = -self._tvr_update_interval
 
+        if (
+            k == 0
+            or k - self._last_tvr_k >= self._tvr_update_interval
+            or self._last_tvr_k < 0
+        ):
+            start = max(0, k + 1 - self._tvr_window_samples)
+            theta_window = self.theta[start:k + 1, 2]
+
+            if theta_window.size >= 2:
+                amplitude_spectrum = np.abs(np.fft.rfft(theta_window))
+                freqs = np.fft.rfftfreq(theta_window.size, d=self.dt)
+                tr = scipy.integrate.trapezoid(
+                    amplitude_spectrum[(freqs >= 3) & (freqs <= 12)]
+                )
+                vol = scipy.integrate.trapezoid(
+                    amplitude_spectrum[(freqs >= 0) & (freqs <= 3)]
+                )
+                self._last_tvr = tr / (vol + 1e-6)
+            else:
+                self._last_tvr = 0.0
+
+            self._last_tvr_k = k
+
+        tvr = self._last_tvr
         # If TVR is below threshold, do not apply control
         if tvr < self.tvr_th:
             self.u[k] = np.array([0.0, 0.0, 0.0])
