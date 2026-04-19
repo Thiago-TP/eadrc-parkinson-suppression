@@ -1,15 +1,20 @@
 import warnings
-import yaml
+
 import numpy as np
+import yaml
 from scipy.optimize import differential_evolution
 
 from control_strategies import pid
-from system import ModelParameters
 from postprocessing.metrics import _compute_metrics
+from postprocessing.plots import plot_from_data
+from system import InitialConditions, ModelParameters
 
 
-def objective_function(gains: list[float], parameters: ModelParameters,
-                       ic: tuple, amplitude_voluntary: float) -> float:
+def objective_function(
+        gains: list[float],
+        parameters: ModelParameters,
+        ic: InitialConditions,
+        amplitude_voluntary: float) -> float:
     """
     Cost function for differential evolution optimization.
     """
@@ -25,7 +30,7 @@ def objective_function(gains: list[float], parameters: ModelParameters,
         kp=kp,
         ki=ki,
         kd=kd,
-        pid_tuning=True,
+        perfect_tracking=True,
     )
 
     # 2. Execute the simulation, ignoring overflow warnings
@@ -49,7 +54,9 @@ def objective_function(gains: list[float], parameters: ModelParameters,
         # 5. Calculate the cost based on the performance metrics (ISE, IAE, ITAE, ITSE)
         try:
             metrics = _compute_metrics(
-                run_payload=run_payload, baseline_payload=None)
+                run_payload=run_payload,
+                baseline_payload=None
+            )
             cost = metrics["ise"] + metrics["iae"] + \
                 metrics["itae"] + metrics["itse"]
 
@@ -77,10 +84,11 @@ def main(amplitude_voluntary: float = 1.0) -> None:
     ic = tuple(cfgs["initial_conditions"].values())
 
     print(
-        f"Initializing PID tuning optimization with amplitude_voluntary={amplitude_voluntary}...")
+        "Initializing PID tuning optimization "
+        f"with amplitude_voluntary={amplitude_voluntary}...")
 
     # Bounds for Kp, Ki, Kd (you can adjust these based on expected ranges)
-    bounds = [(0.0, 10.0), (0.0, 10.0), (0.0, 10.0)]
+    bounds = [(0.0, 5.0), (0.0, 100.0), (0.0, 5.0)]
 
     # Optimize the PID gains using Differential Evolution
     result = differential_evolution(
@@ -108,8 +116,8 @@ def main(amplitude_voluntary: float = 1.0) -> None:
     print(f"Minimum Cost (Sum of Errors): {result.fun:.4f}")
     print("="*40)
 
-    # Optional: Run a final simulation with the best parameters and save the results
-    print("\nRunning final simulation with the optimized parameters to save the results...")
+    # Optional: Run a final simulation with best parameters and save results
+    print("\nRunning final simulation with optimized parameters to save results...")
     best_pid = pid.PIDControl(
         name="pid_optimized",
         params=parameters,
@@ -119,15 +127,18 @@ def main(amplitude_voluntary: float = 1.0) -> None:
         kp=best_kp,
         ki=best_ki,
         kd=best_kd,
+        perfect_tracking=True,  # DE-tuned PID always has perfect tracking
     )
 
     # Save the results of the final simulation for post-processing
     best_pid.simulate_system()
     best_pid.save_results()
 
+    plot_from_data(
+        data_path="results/runs/pid_optimized_amplitude_1.0.data",
+        control_name="pid_optimized",
+    )
+
 
 if __name__ == "__main__":
     main(amplitude_voluntary=1.0)
-
-    # from postprocessing.postprocess import generate_plots, generate_metrics_tables
-    # generate_plots(run_key="nominal_run")

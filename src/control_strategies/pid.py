@@ -16,7 +16,7 @@ class PIDControl(System):
         kd: float | None = None,
         manual: bool = False,
         slow_factor: float | None = None,
-        pid_tuning: bool = False,
+        perfect_tracking: bool = False,
     ) -> None:
         super().__init__(name,
                          params,
@@ -49,7 +49,7 @@ class PIDControl(System):
             # Compute the PID gains using IMC
             self._calculate_imc_pid_gains(slow_factor)
 
-        self.pid_tuning = pid_tuning
+        self.perfect_tracking = perfect_tracking
 
         # Errors for calculating control
         self.error_control = 0.0
@@ -113,11 +113,7 @@ class PIDControl(System):
         # For more details, check out
         # https://alphaville.github.io/qub/pid-101/#/
 
-        # Changed from theta_v_hat to theta_v for the control error calculation
-        if self.pid_tuning:
-            self.error_control = self.theta_v[k, 2] - self.theta[k, 2]
-        else:
-            self.error_control = self.theta_v_hat[k, 2] - self.theta[k, 2]
+        self.error_control = self.theta_v_hat[k, 2] - self.theta[k, 2]
         self.error_delta = self.error_control - self.error_previous
 
         u3 = np.dot(
@@ -133,6 +129,10 @@ class PIDControl(System):
         self.error_previous = self.error_control
 
     def _update_estimates(self, k: int) -> None:
+        # During DE tuning, control has perfect tracking
+        if self.perfect_tracking:
+            self.theta_v_hat[k] = self.theta_v[k]
+            return
         # Zero-phase low-pass Butterworth filter to estimate voluntary response
         try:
             self.theta_v_hat = scipy.signal.sosfiltfilt(

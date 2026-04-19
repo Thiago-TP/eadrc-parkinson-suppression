@@ -17,6 +17,7 @@ COLORS = {
     "pid": "#FF3867",
     "adrc": "#1CA1DA",
     "pi_gallego": "#2E8B57",
+    "pid_optimized": "#FF7F50",
 }
 
 SAVEFIG_ARGS = {  # slightly better than tight_layout
