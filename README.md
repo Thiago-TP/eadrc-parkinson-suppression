@@ -21,6 +21,8 @@ This repository studies tremor suppression in a 3-DOF biomechanical arm model by
 │   ├── metrics/
 │   ├── plots/
 │   └── runs/
+├── cba-2026-paper/
+├── cba-2026-presentation/
 ├── docs/
 │   └── literature_review/
 └── src/
@@ -135,6 +137,22 @@ This script reads the saved run files and generates summary plots and metrics un
 - The simulation driver in [src/main.py](src/main.py) accepts `num_simulations` and `amplitude_voluntary` parameters.
 - The configuration file drives both the nominal model and the uncertainty sampling ranges for robustness analysis.
 - This repository is organized as a research/simulation project rather than a packaged application, so the source directory is the primary execution context.
+
+## CBA 2026 paper and presentation
+
+This work is the subject of the paper *Error-Based Active Disturbance Rejection Control for Parkinson's Disease Tremor Suppression in Wrist Considering Upper Limb Dynamics*, presented at the XXVI Congresso Brasileiro de Automática (CBA 2026, the Brazilian Congress on Automation), held in São Paulo, Brazil, on October 6–9, 2026. More information about the conference is available at [sites.usp.br/cba2026](https://sites.usp.br/cba2026/).
+
+- [cba-2026-paper](cba-2026-paper) holds the LaTeX sources of the paper, written with the `ifacconf` class of the conference template: sections, tables, figures, references, and the reviewers' comments with the authors' answers to them (in Portuguese).
+- [cba-2026-presentation](cba-2026-presentation) holds the Beamer slides of the 15-minute oral presentation, in Portuguese, built on the official CBA 2026 template (`cba2026.sty`). The slides reuse the paper's figures, upper limb schematic and bibliography straight from [cba-2026-paper](cba-2026-paper), so both folders must be kept side by side.
+
+Both documents are built with a TeX distribution that provides `pdflatex`, `bibtex` and `biber` (e.g. TeX Live), from Git Bash or any other bash shell:
+
+```bash
+bash cba-2026-paper/build.sh          # writes cba-2026-paper/paper.pdf
+bash cba-2026-presentation/build.sh   # writes cba-2026-presentation/presentation.pdf
+```
+
+Each script reruns `pdflatex` until citations and cross-references settle, prints any errors or warnings left in the log (no output means a clean build), and removes the auxiliary files.
 
 ## Related documentation
 
