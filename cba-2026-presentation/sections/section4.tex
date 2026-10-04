@@ -1,0 +1,96 @@
+\section{Resultados e Discussão}
+
+\begin{frame}{Métricas médias em 100 execuções}
+  \centering
+  \input{tables/table_average_metrics.tex}
+
+  {\scriptsize Média $\pm$ desvio padrão; $\uparrow$ ($\downarrow$): maior (menor) é melhor.}
+
+  \begin{itemize}
+    \small
+    \item DE-PID: TPSR $>$ 99,9\%, mas conhece $\theta_{v_3}$ e tem TV $\approx 1{,}6\times$ a do EADRC+ZPLP.
+    \item EADRC+ZPLP: maior TPSR entre os controladores realizáveis (61,31\% em movimento), com menor esforço que o EADRC+EBMFLC.
+    \item IMC-PID: supressão fraca e muito variável entre execuções.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Análise estatística}
+  \begin{columns}[c]
+    \begin{column}{0.62\textwidth}
+      \centering
+      \input{tables/table_wilcoxon.tex}
+
+      \vspace{0.1cm}
+      {\scriptsize $p$ corrigido por Holm--Bonferroni; $r > 0$: métrica maior com EADRC+ZPLP; em cinza, $p \geq 0{,}05$.}
+    \end{column}
+    \begin{column}{0.36\textwidth}
+      \small
+      \begin{itemize}
+        \setlength{\itemsep}{0.2cm}
+        \item \textbf{vs.\ EBMFLC:} supressão estatisticamente equivalente (TPSR, IAE), mas \alert{menor esforço} de controle (potência, TV).
+        \item \textbf{vs.\ DE-PID:} $|r| \approx 1$ em todas as métricas: resposta melhor em todas as execuções, à custa de maior esforço em todas elas.
+        \item \textbf{vs.\ IMC-PID:} supressão superior sem diferença significativa de potência.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Espectrogramas da resposta do punho}
+  \begin{columns}[c]
+    \begin{column}{0.68\textwidth}
+      \centering
+      \begin{minipage}{0.49\linewidth}
+        \centering
+        {\scriptsize Sem controle, repouso}\\
+        \includegraphics[width=\linewidth]{figures/plots/uncontrolled_amplitude_0.0/spectrogram_response_uncontrolled_amplitude_0.0.pdf}
+      \end{minipage}
+      \hfill
+      \begin{minipage}{0.49\linewidth}
+        \centering
+        {\scriptsize EADRC+EBMFLC, repouso}\\
+        \includegraphics[width=\linewidth]{figures/plots/eadrc_ebmflc_amplitude_0.0/spectrogram_response_eadrc_ebmflc_amplitude_0.0.pdf}
+      \end{minipage}
+
+      \vspace{0.2cm}
+      \begin{minipage}{0.49\linewidth}
+        \centering
+        {\scriptsize Sem controle, movimento}\\
+        \includegraphics[width=\linewidth]{figures/plots/uncontrolled_amplitude_1.0/spectrogram_response_uncontrolled_amplitude_1.0.pdf}
+      \end{minipage}
+      \hfill
+      \begin{minipage}{0.49\linewidth}
+        \centering
+        {\scriptsize EADRC+EBMFLC, movimento}\\
+        \includegraphics[width=\linewidth]{figures/plots/eadrc_ebmflc_amplitude_1.0/spectrogram_response_eadrc_ebmflc_amplitude_1.0.pdf}
+      \end{minipage}
+
+      \vspace{0.1cm}
+      {\tiny Espectrogramas de simulações longas (cerca de 1000 s), para maior resolução em frequência.}
+    \end{column}
+    \begin{column}{0.30\textwidth}
+      \small
+      \begin{itemize}
+        \setlength{\itemsep}{0.2cm}
+        \item Componente de 14,35 Hz fortemente atenuada.
+        \item Componentes de 3,59 e 5,30 Hz \alert{pouco mitigadas}.
+        \item Comportamento semelhante em repouso e em movimento.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Discussão}
+  \begin{itemize}
+    \setlength{\itemsep}{0.25cm}
+    \item As estratégias EADRC equilibram atenuação do tremor e esforço de controle em um ambiente com dinâmica acoplada.
+    \item DE-PID serve como referência ideal, não como competidor prático: exige conhecimento perfeito do movimento voluntário e maior atuação.
+    \item IMC-PID, sintonizado sem os termos de acoplamento, tem supressão fraca sem economia significativa de potência.
+    \item EBMFLC e ZPLP suprimem o tremor de forma equivalente; o ZPLP gera sinais de controle mais suaves.
+  \end{itemize}
+
+  \vspace{0.2cm}
+  \begin{alertblock}{Limitação: tremores de menor frequência}
+    As componentes de 3,59 e 5,30 Hz ficam dentro ou perto da banda tomada como voluntária (EBMFLC: 0--4 Hz; ZPLP: corte em 5 Hz).
+    Parte do tremor entra em $\hat{\theta}_{v_3}$ e o EADRC não a inclui na perturbação total.
+  \end{alertblock}
+\end{frame}

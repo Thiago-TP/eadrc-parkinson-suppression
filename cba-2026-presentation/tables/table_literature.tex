@@ -1,0 +1,16 @@
+\small
+\begin{tabularx}{\textwidth}{
+    l
+    >{\raggedright\arraybackslash\hsize=1.2\hsize}X
+    >{\raggedright\arraybackslash\hsize=0.8\hsize}X
+}
+    \toprule
+    Trabalho & Controle & Estimação \\
+    \midrule
+    \textcite{Gallego:2013} & PI (neuroprótese), punho com 1 GdL & CDF + WFLC + filtro de Kalman \\
+    \textcite{Copur:2019} & Controle repetitivo (estimulação elétrica), 1 GdL & Passa-altas de fase zero \\
+    \textcite{Lekshmi:2019} & PID com ganhos por algoritmo genético, punho com 4 GdL & --- \\
+    \textcite{Zamanian:2019} & Filtro \textit{notch} adaptativo & Frequência do tremor via AFE \\
+    \textcite{Qi:2024} & ADRC & Movimento voluntário via EBMFLC \\
+    \bottomrule
+\end{tabularx}

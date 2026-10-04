@@ -1,0 +1,53 @@
+\section{Introdução}
+
+\begin{frame}{Doença de Parkinson e tremor}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{A doença}
+        \begin{itemize}
+          \item Distúrbio neurodegenerativo crônico e progressivo: perda de neurônios dopaminérgicos na substância negra \cite{Meng:2022,Fujikawa:2023}.
+          \item Manifestações motoras: bradicinesia, rigidez, instabilidade postural e \alert{tremor de repouso} \cite{Botzel:2014}.
+        \end{itemize}
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Tratamentos convencionais}
+        \begin{itemize}
+          \item Farmacológico: primeira linha, mas parte dos pacientes não responde, e o uso prolongado perde eficácia e causa efeitos colaterais \cite{Fujikawa:2023,Lora-Millan:2021,Meng:2022}.
+          \item Cirúrgico: invasivo e com riscos \cite{Botzel:2014,Fujikawa:2023}.
+        \end{itemize}
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.4cm}
+  \begin{exampleblock}{Órteses com controle ativo}
+    Alternativa eficaz e não invasiva \cite{Lora-Millan:2021,Meng:2022}, particularmente popular para a supressão do tremor de punho.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}{Supressão ativa do tremor de punho}
+  \centering
+  \input{tables/table_literature.tex}
+
+  \vspace{0.3cm}
+  \begin{alertblock}{Lacuna}
+    Tremores de ombro e cotovelo afetam significativamente o movimento do punho,
+    mas a maioria das abordagens usa modelos de uma única articulação, desprezando o acoplamento entre elas.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Proposta deste trabalho}
+  \begin{itemize}
+    \setlength{\itemsep}{0.25cm}
+    \item \textbf{Controle:} rejeição ativa de perturbações baseada em erro (EADRC), robusta a perturbações externas e incertezas de modelo \cite{Guo:2016}.
+    \item \textbf{Plataforma de teste:} modelo linear do membro superior com 3 graus de liberdade (GdL) \cite{Gebai:2017,Gebai:2018}, que captura o acoplamento ombro--cotovelo--punho.
+    \item \textbf{Estimação do movimento voluntário}, em duas variantes:
+      \begin{itemize}
+        \item EADRC+EBMFLC, com o combinador linear de Fourier de \textcite{Qi:2024};
+        \item EADRC+ZPLP, com filtragem passa-baixas de fase zero (ZPLP).
+      \end{itemize}
+    \item \textbf{Comparação} com dois PIDs: IMC-PID (\textit{Internal Model Control}) e DE-PID (evolução diferencial com conhecimento perfeito do movimento voluntário).
+    \item \textbf{Robustez:} 100 simulações de Monte Carlo dos parâmetros físicos e teste de Wilcoxon pareado.
+  \end{itemize}
+\end{frame}

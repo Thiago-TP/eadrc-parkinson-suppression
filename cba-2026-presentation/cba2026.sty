@@ -1,0 +1,114 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{cba2026}[2026/09/01 Estilo Beamer CBA 2026]
+
+% --- Pacotes Básicos ---
+\RequirePackage[utf8]{inputenc}
+\RequirePackage[brazilian]{babel}
+\RequirePackage{graphicx}
+\RequirePackage{tikz}
+\RequirePackage{booktabs}
+\RequirePackage{subcaption}
+\RequirePackage{mathtools,amssymb,amsthm}
+
+% --- Gestão de Bibliografia (biblatex) ---
+\RequirePackage[backend=biber, style=numeric, sorting=none]{biblatex}
+
+% --- Definição dos Caminhos das Pastas de Imagens e Logos ---
+\graphicspath{{logos/}{figures/}}
+
+% --- Configuração de Tema Base ---
+\usetheme{Madrid}
+\useinnertheme{rounded}
+
+\definecolor{CBAPurple}{HTML}{7040B8}
+\definecolor{CBAMagenta}{HTML}{D81B70}
+\definecolor{CBAOrange}{HTML}{F28C38}
+\definecolor{CBAPetrol}{HTML}{245B73}
+\definecolor{CBAGraphite}{HTML}{303030}
+\definecolor{CBALightPurple}{HTML}{F1ECF8}
+\definecolor{CBALightMagenta}{HTML}{FCECF3}
+\definecolor{CBALightOrange}{HTML}{FFF2E7}
+\definecolor{CBALightPetrol}{HTML}{EAF2F5}
+
+% --------------------------------------------------------------------------
+% 2. ESQUEMAS DE CORES DOS AMBIENTES (BLOCKS) E ELEMENTOS
+% --------------------------------------------------------------------------
+\setbeamertemplate{blocks}[rounded][shadow=true]
+
+% Títulos
+\setbeamercolor{title}{bg=CBAPurple, fg=white} 
+\setbeamerfont{title}{series=\bfseries}
+
+\setbeamercolor{author}{fg=white} 
+\setbeamercolor{institute}{fg=white} 
+\setbeamerfont{author}{series=\bfseries}
+\setbeamercolor{frametitle}{bg=CBAPurple, fg=white}
+
+% Footline
+% Left box (usually Author name)
+\setbeamercolor{author in head/foot}{bg=CBAPurple!80, fg=white}
+\setbeamerfont{author in head/foot}{series=\bfseries}
+
+% Middle box (usually Title)
+\setbeamercolor{title in head/foot}{bg=CBAPurple!90, fg=white}
+\setbeamerfont{title in head/foot}{series=\bfseries}
+
+% Right box (usually Date and Page Number)
+\setbeamercolor{date in head/foot}{bg=CBAPurple, fg=white}
+\setbeamerfont{date in head/foot}{series=\bfseries}
+
+% Bloco Normal / Padrão
+\setbeamercolor{block title}{bg=CBAOrange, fg=white}
+\setbeamercolor{block body}{bg=CBAOrange!10, fg=black}
+
+% Bloco de Alerta (alertblock)
+\setbeamercolor{block title alerted}{bg=CBAMagenta, fg=white}
+\setbeamercolor{block body alerted}{bg=CBAMagenta!10, fg=black}
+
+% Bloco de Exemplo (exampleblock)
+\setbeamercolor{block title example}{bg=CBAPetrol, fg=white}
+\setbeamercolor{block body example}{bg=CBAPetrol!10, fg=black}
+
+% Numeração e Estilo dos Teoremas
+\setbeamertemplate{theorems}[numbered]
+\beamertemplatenavigationsymbolsempty
+
+% Itens
+\setbeamercolor{item}{fg=CBAPurple}
+\setbeamercolor{item projected}{fg=white, bg=CBAPurple}
+\setbeamercolor{alerted text}{fg=CBAMagenta}
+
+% Ambiente de Lema Customizado
+\newtheorem{lemmaCustom}{Lema}
+
+% --------------------------------------------------------------------------
+% --------------------------------------------------------------------------
+% 3. TEMPLATE DA CAPA (TITLE PAGE)
+% --------------------------------------------------------------------------
+\setbeamertemplate{title page}{
+  \begin{tikzpicture}[remember picture,overlay]
+    % Fundo em frontmatter
+    \node[anchor=north west, inner sep=0pt] at (current page.north west){%
+      \includegraphics[width=\paperwidth,height=\paperheight]{frontpage}
+    };
+  \end{tikzpicture}
+  
+ % \vspace{1.5cm}
+  \begin{center}
+  \begin{beamercolorbox}[rounded=true, shadow=true, sep=8pt, center]{title}
+    \usebeamerfont{title}\inserttitle\par
+    \ifx\insertsubtitle\@empty\else
+      \vskip0.25em
+      {\usebeamerfont{subtitle}\usebeamercolor[fg]{subtitle}\insertsubtitle\par}
+    \fi
+  \end{beamercolorbox}
+  %\vskip1em
+  \begin{beamercolorbox}[rounded=true, shadow=true, sep=4pt, center]{author}
+    \usebeamerfont{author}\insertauthor
+  \end{beamercolorbox}
+  \vskip0.2em
+  \begin{beamercolorbox}[rounded=true, shadow=true, sep=4pt, center]{institute}
+    \usebeamerfont{institute}\insertinstitute
+  \end{beamercolorbox}
+  \end{center}
+}

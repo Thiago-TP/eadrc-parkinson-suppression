@@ -1,0 +1,27 @@
+\scriptsize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{c l cc cc cc}
+    \toprule
+    & & \multicolumn{6}{c}{EADRC+ZPLP vs.\ $\cdots$} \\
+    \cmidrule(lr){3-8}
+    & & \multicolumn{2}{c}{EADRC+EBMFLC} & \multicolumn{2}{c}{DE-PID} & \multicolumn{2}{c}{IMC-PID} \\
+    \cmidrule(lr){3-4} \cmidrule(lr){5-6} \cmidrule(lr){7-8}
+    & Métrica & $p$ & $r$ & $p$ & $r$ & $p$ & $r$ \\
+    \midrule
+    & TPSR     & \textcolor{gray}{1,000} & \textcolor{gray}{$-$0,00} & $<$0,001 & $-$1,00 & $<$0,001 & +0,73 \\
+    & $R^2$    & $<$0,001 & +0,53   & $<$0,001 & $-$1,00 & $<$0,001 & +0,97 \\
+    & Entropia & $<$0,001 & $-$0,44 & $<$0,001 & +0,96   & $<$0,001 & $-$0,95 \\
+    & IAE      & \textcolor{gray}{1,000} & \textcolor{gray}{$-$0,03} & $<$0,001 & +1,00 & $<$0,001 & $-$0,81 \\
+    & Potência & 0,001    & $-$0,43 & $<$0,001 & $-$1,00 & \textcolor{gray}{0,665} & \textcolor{gray}{$-$0,14} \\
+    \multirow{-6}{*}{\rotatebox{90}{Repouso}}
+    & TV       & 0,018    & $-$0,33 & $<$0,001 & $-$1,00 & $<$0,001 & +0,95 \\
+    \midrule
+    & TPSR     & \textcolor{gray}{1,000} & \textcolor{gray}{+0,09} & $<$0,001 & $-$1,00 & $<$0,001 & +0,71 \\
+    & $R^2$    & 0,039    & +0,31   & $<$0,001 & $-$1,00 & $<$0,001 & +0,99 \\
+    & Entropia & \textcolor{gray}{0,144} & \textcolor{gray}{$-$0,24} & $<$0,001 & +0,97 & $<$0,001 & $-$0,96 \\
+    & IAE      & \textcolor{gray}{1,000} & \textcolor{gray}{$-$0,08} & $<$0,001 & +1,00 & $<$0,001 & $-$0,76 \\
+    & Potência & $<$0,001 & $-$0,44 & $<$0,001 & $-$1,00 & \textcolor{gray}{1,000} & \textcolor{gray}{$-$0,09} \\
+    \multirow{-6}{*}{\rotatebox{90}{Movimento}}
+    & TV       & 0,034    & $-$0,32 & $<$0,001 & $-$1,00 & $<$0,001 & +0,97 \\
+    \bottomrule
+\end{tabular}

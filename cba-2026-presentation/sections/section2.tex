@@ -1,0 +1,126 @@
+\section{Fundamentação Teórica}
+
+\begin{frame}{Modelo do membro superior}
+  \begin{columns}[c]
+    \begin{column}{0.40\textwidth}
+      \centering
+      \resizebox{!}{0.68\textheight}{\upperlimbschematic}
+
+      {\scriptsize Adaptado de \textcite{Albuquerque:2025}.}
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \begin{itemize}
+        \item Modelo planar com 3 GdL: ombro ($\theta_1$), cotovelo ($\theta_2$) e punho ($\theta_3$) \cite{Gebai:2018}.
+        \item Músculos e tendões como molas e amortecedores equivalentes; $k_3$ representa o acoplamento pelo bíceps.
+      \end{itemize}
+      \begin{equation*}
+        \mathbf{J}\ddot{\bm{\theta}} + \mathbf{C}\dot{\bm{\theta}} + \mathbf{K}\bm{\theta} = \bm{\tau},
+        \qquad
+        \mathbf{K} =
+        \begin{bmatrix}
+          k_1 + k_3 & k_3       & 0   \\
+          k_3       & k_2 + k_3 & 0   \\
+          0         & 0         & k_4
+        \end{bmatrix}
+      \end{equation*}
+      \begin{itemize}
+        \item $\mathbf{C}$ tem a estrutura de $\mathbf{K}$, com $c_i \propto k_i$; $\mathbf{J}$ é cheia e acopla as três articulações.
+        \item Linearização adequada se os parâmetros variam pouco no tempo \cite{Gebai:2020}.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Torques aplicados e representação em espaço de estados}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \begin{block}{Torque em um paciente com DP \cite{Qi:2024}}
+        \vspace{-0.3cm}
+        \begin{equation*}
+          \bm{\tau} = \underbrace{\bm{\tau}_i}_{\text{patológico}} + \underbrace{\bm{\tau}_v}_{\text{voluntário}}
+        \end{equation*}
+      \end{block}
+      \begin{itemize}
+        \item A potência do tremor concentra-se em torno de uma frequência central \cite{Deuschl:2022}; usualmente, até 3 harmônicos \cite{Zamanian:2019,Albuquerque:2025}.
+        \item O acoplamento já torna a dinâmica do punho multimodal: um harmônico por articulação.
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \begin{block}{Tremor}
+        \vspace{-0.3cm}
+        \begin{equation*}
+          \bm{\tau}_i =
+          \begin{bmatrix}
+            A_1\sin(2\pi f_1 t) \\
+            A_2\sin(2\pi f_2 t) \\
+            A_3\sin(2\pi f_3 t)
+          \end{bmatrix}
+        \end{equation*}
+        \centering
+        \small
+        $A_i = 1$~N$\cdot$m;\quad $f_1, f_2, f_3 = 3{,}59;\ 5{,}30;\ 14{,}35$~Hz
+      \end{block}
+      \begin{block}{Espaço de estados, $\mathbf{x} = [\bm{\theta}^\top\ \dot{\bm{\theta}}^\top]^\top$}
+        \vspace{-0.3cm}
+        \begin{align*}
+          \dot{\mathbf{x}} &= \mathbf{A}\mathbf{x} + \mathbf{B}\bm{\tau}, \qquad
+          \mathbf{y} = \mathbf{C}_\text{ss}\mathbf{x} \\[1mm]
+          \mathbf{A} &=
+          \begin{bmatrix}
+            \mathbf{0} & \mathbf{I} \\
+            -\mathbf{J}^{-1}\mathbf{K} & -\mathbf{J}^{-1}\mathbf{C}
+          \end{bmatrix},
+          \quad
+          \mathbf{B} =
+          \begin{bmatrix}
+            \mathbf{0} \\
+            \mathbf{J}^{-1}
+          \end{bmatrix} \\[1mm]
+          \mathbf{C}_\text{ss} &=
+          \begin{bmatrix}
+            \mathbf{I} & \mathbf{0}
+          \end{bmatrix}
+        \end{align*}
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Controle por rejeição ativa de perturbações baseado em erro}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \begin{itemize}
+        \item ADRC: estima e rejeita, em tempo real, a \alert{perturbação total}, isto é, incertezas internas e perturbações externas \cite{Guo:2016}:
+          \begin{equation*}
+            y^{(n)} = f(y, \dot{y}, \dots, y^{(n-1)}, t) + b_0 u.
+          \end{equation*}
+        \item EADRC: mesma estrutura no erro de rastreamento $e = r - y$, de implementação mais simples \cite{Madonski:2019}:
+          \begin{equation*}
+            e^{(n)} = f_e - b_0 u,
+            \qquad
+            f_e = r^{(n)} - f(\cdot).
+          \end{equation*}
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      ESO, com $z_i = e^{(i-1)}$ ($i \leq n$) e $z_{n+1} = f_e$:
+      \begin{equation*}
+        \begin{cases}
+          \dot{\hat{z}}_i = \hat{z}_{i+1} + \beta_i (e - \hat{z}_1), \quad i < n \\
+          \dot{\hat{z}}_n = \hat{z}_{n+1} + \beta_n (e - \hat{z}_1) - b_0 u \\
+          \dot{\hat{z}}_{n+1} = \beta_{n+1} (e - \hat{z}_1)
+        \end{cases}
+      \end{equation*}
+      Lei de controle e dinâmica resultante do erro:
+      \begin{gather*}
+        u = \tfrac{1}{b_0}\big(\textstyle\sum_{i=1}^{n} \kappa_i \hat{z}_i + \hat{z}_{n+1}\big) \\
+        \Rightarrow\ e^{(n)} \approx -\textstyle\sum_{i=1}^{n} \kappa_i e^{(i-1)}
+      \end{gather*}
+    \end{column}
+  \end{columns}
+
+  \begin{alertblock}{Cuidado}
+    \small
+    Instabilidade do observador pode causar problemas numéricos; usualmente, limita-se a magnitude ou a taxa do sinal de controle \cite{Herbst:2025}.
+  \end{alertblock}
+\end{frame}
