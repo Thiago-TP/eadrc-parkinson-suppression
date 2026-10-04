@@ -1,0 +1,22 @@
+----------------------- REVIEW 1 ---------------------
+
+SUBMISSION: 2227
+TITLE: Error-Based Active Disturbance Rejection Control for Parkinson's Disease Tremor Suppression in Wrist Considering Upper Limb Dynamics
+
+----------- Paper organization -----------
+SCORE: 5 (excellent)
+----------- Originality -----------
+SCORE: 4 (good)
+----------- Contribution -----------
+SCORE: 5 (excellent)
+----------- References -----------
+SCORE: 5 (excellent)
+----------- Overall evaluation -----------
+SCORE: 2 (accept)
+----- TEXT:
+O artigo apresenta uma abordagem relevante e tecnicamente consistente para supressão de tremores em pacientes com Doença de Parkinson utilizando controle Error-Based Active Disturbance Rejection Control (EADRC) aplicado a um modelo dinâmico de membro superior com três graus de liberdade. A principal contribuição do trabalho está em considerar explicitamente o acoplamento dinâmico entre ombro, cotovelo e punho, algo frequentemente negligenciado em trabalhos anteriores que focam apenas em modelos simplificados de uma única junta. Além disso, o artigo compara duas estratégias de estimação do movimento voluntário (EBMFLC e ZPLP) integradas ao EADRC e realiza uma avaliação robusta frente a incertezas paramétricas por meio de 100 simulações de Monte Carlo. O trabalho também apresenta uma comparação abrangente com controladores clássicos e modernos, incluindo PI, PID ajustado por IMC, PID otimizado por Differential Evolution e AFE, utilizando métricas bem est
+abelecidas como TPSR, IAE, potência do sinal e total variation.
+
+Os resultados demonstram que a estratégia EADRC+ZPLP apresentou um desempenho bastante equilibrado entre atenuação de tremor e esforço de controle, alcançando aproximadamente 61% de supressão média do tremor em cenários dinâmicos, com menor esforço de atuação quando comparada ao DE-PID. Embora o controlador DE-PID tenha atingido taxas próximas de 100% de supressão, o artigo corretamente argumenta que esse método depende do conhecimento prévio do movimento voluntário e exige maior atuação, tornando-o menos viável para aplicações reais vestíveis. Outro ponto positivo é a demonstração de robustez frente a variações significativas dos parâmetros biomecânicos do modelo, indicando potencial de aplicação prática em sistemas reais de órteses ativas. A inclusão de espectrogramas e múltiplas métricas quantitativas fortalece a análise experimental e melhora a interpretação dos resultados.
+
+Na minha avaliação, o artigo possui qualidade suficiente para publicação. O trabalho apresenta motivação clara, revisão bibliográfica atualizada, modelagem coerente, metodologia bem estruturada e resultados relevantes. A principal força do artigo está na integração entre controle robusto e dinâmica biomecânica acoplada, o que demonstra originalidade incremental e boa contribuição aplicada. Entretanto, alguns pontos poderiam ser aprimorados para fortalecer ainda mais o manuscrito: (1) aprofundar a discussão sobre implementação em tempo real e limitações computacionais do EADRC; (2) incluir uma análise estatística mais detalhada dos resultados; (3) discutir possíveis limitações do modelo linearizado utilizado; e (4) melhorar a escrita em alguns trechos da seção de resultados, que em certos momentos fica mais descritiva do que analítica. Ainda assim, essas observações não comprometem a qualidade geral do trabalho.

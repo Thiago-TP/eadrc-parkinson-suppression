@@ -1,0 +1,39 @@
+\section{Introduction}
+
+\reviewchange{\input{sections/original_introduction_text}}{
+Parkinson's disease (PD) is a chronic, progressive neurodegenerative disorder primarily characterized by the substantial loss of dopaminergic neurons in the substantia nigra
+\citep{Meng:2022,Fujikawa:2023}.
+This neurological decline results in a set of cardinal motor manifestations, including bradykinesia (slowness of movement), rigidity (stiffness), postural instability, and a characteristic unilateral rest tremor
+\citep{Botzel:2014}. 
+
+Pharmacological therapy 
+\citep{Botzel:2014, Lora-Millan:2021}
+remains the first-line approach for tremor management, 
+but a significant portion of patients does not respond adequately to medication \citep{Fujikawa:2023},
+and long-term pharmacotherapy often leads to reduced effectiveness and may induce debilitating side effects \citep{Lora-Millan:2021, Meng:2022}. 
+Surgical interventions \citep{Botzel:2014, Fujikawa:2023} may be considered, but invasiveness and risks limit their applicability. 
+
+Actively controlled orthoses are an effective, non-invasive alternative 
+\citep{Lora-Millan:2021, Meng:2022}, 
+and particularly popular for wrist tremor suppression.
+
+Several control strategies for wrist tremor suppression have been proposed in the literature. \cite{Gallego:2013} design a neuroprosthesis based on Proportional Integrative (PI) control for a single degree of freedom (DoF) system of the human wrist, combining a Critically Damped g-h Filter (CDF), a Weighted Frequency Fourier Linear Combiner (WFLC), and a Kalman filter for tremor estimation. \cite{Copur:2019} propose a zero-phase high-pass filter for tremor estimation alongside a repetitive control strategy for electrical stimulation-based co-contraction in a single DoF setup.
+
+In parallel, \cite{Lekshmi:2019} introduce a Proportional Integrative Derivative (PID) controller applied to a four DoF wrist model with gains optimized via a genetic algorithm. \cite{Zamanian:2019} develop an adaptive notch filter supported by an Adaptive Frequency Estimator (AFE) to track tremor frequency in the velocity signal. 
+More recently, \cite{Qi:2024} propose an Active Disturbance Rejection Control (ADRC) strategy using an Enhanced Bandlimited Multiple Fourier Linear Combiner (EBMFLC) for voluntary motion estimation.
+
+While shoulder and elbow PD tremors significantly affect wrist motion,
+most approaches focus on single-joint models, neglecting joint coupling. 
+To address this issue, a 3-DoF linear upper limb model 
+\citep{Gebai:2017, Gebai:2018} 
+is adopted in this work as a test platform.
+
+Disturbance rejection-based control 
+\citep{Guo:2016}
+is expected to offer advantages due to its robustness to external perturbations and model uncertainties. 
+This work investigates an error-based active disturbance rejection control for wrist tremor suppression under coupled dynamics. Two variations are considered, differing in how voluntary motion is estimated: one based on EBMFLC \cite{Qi:2024} and another on Zero-Phase Low-Pass (ZPLP) filtering. 
+These approaches are evaluated against two PID controllers, one tuned with Internal Model Control (IMC) and the other with offline Differential Evolution (DE) optimization plus perfect knowledge of voluntary motion. 
+Robustness is evaluated through Monte Carlo simulations of physical parameters.
+}
+
+The remainder of this paper is organized as follows: Section \ref{sec:theory} presents the upper limb dynamic model and the control framework. Section \ref{sec:methodology} describes the simulation setup. Section \ref{sec:results} discusses the obtained results. Section \ref{sec:conclusion} concludes the paper and outlines future work.

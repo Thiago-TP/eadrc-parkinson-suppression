@@ -1,0 +1,60 @@
+\begin{tabular}{c|l}
+    Symbol & \multicolumn{1}{c}{Definition} \\
+    \hline
+    $\theta_1$ & Shoulder joint flexion \\
+    $\theta_2$ & Elbow joint flexion \\
+    $\theta_3$ & Wrist joint flexion \\
+    $m_1$ & Arm mass \\
+    $m_2$ & Forearm mass \\
+    $m_3$ & Palm mass \\
+    $I_1$ & Arm inertia \\
+    $I_2$ & Forearm inertia \\
+    $I_3$ & Palm inertia \\
+    $l_1$ & Arm length \\
+    $l_2$ & Forearm length \\
+    $l_3$ & Palm length 
+\end{tabular}
+%
+\raisebox{1.75mm}{
+\begin{tabular}{c|l}
+    Symbol & \multicolumn{1}{c}{Definition} \\
+    \hline
+    $a_1$ & Arm centroid, $0.427 l_1$ \\
+    $a_2$ & Forearm centroid, $0.417 l_2$ \\
+    $a_3$ & Palm centroid, $0.361 l_3$ \\
+    $k_1$ & Shoulder joint stiffness \\
+    $k_2$ & Elbow joint stiffness \\
+    $k_3$ & Bicep stiffness \\ 
+    $k_4$ & Wrist joint stiffness \\
+    $c_1$ & Shoulder joint damping, $0.002 k_1$ \\
+    $c_2$ & Elbow joint damping, $0.002 k_2$ \\
+    $c_3$ & Bicep damping, $0.001 k_4$ \\
+    $c_4$ & Wrist joint damping, $0.002 k_3$ \\
+\end{tabular}
+}
+%
+\begin{tabular}{c|l}
+    Symbol & \multicolumn{1}{c}{Definition} \\
+    \hline
+    $A_1$ & Shoulder joint tremor amplitude \\
+    $A_2$ & Elbow joint tremor amplitude \\
+    $A_3$ & Wrist joint tremor amplitude \\
+    $f_1$ & Shoulder joint tremor frequency \\
+    $f_2$ & Elbow joint tremor frequency \\
+    $f_3$ & Wrist joint tremor frequency \\
+    $j_{11}$ & 
+    $
+    (I_1 + m_1a_1^2) +
+    m_2l_1^2 +
+    m_3l_1^2 + j_{12}$ 
+    \\
+    $j_{12}$ & 
+    $
+    (I_2 + m_2a_2^2) + m_3(l_2^2 + l_2a_3) + j_{13}
+    $ \\
+    $j_{13}$ & $m_3(a_3^2 + l_2a_3)$ 
+    \\
+    $j_{22}$ & $j_{12}$ \\
+    $j_{23}$ & $j_{13}$ \\
+    $j_{33}$ & $I_3 + m_3a_3^2$
+\end{tabular}

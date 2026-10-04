@@ -1,0 +1,136 @@
+\section{Methodology}
+\label{sec:methodology}
+
+\subsection{Tracking error}
+The observed value of wrist angle flexion $\theta_3$ is composed by two parts,
+a voluntary portion due to voluntary torque from the patient, 
+and an involuntary portion due to PD tremor, i.e.:
+%
+\begin{align}
+    \theta_3 
+    &= 
+        \underbrace{\theta_{v_3}}_{\text{Due to } \tau_{v_3}} + 
+        \underbrace{\theta_{i_3}}_{\text{Due to } \tau_{i_3}}
+\end{align}
+%
+since the simplified system is linear.
+%
+We wish to dampen the tremor at the wrist by applying a torque $u_3$ to it.
+With respect to the modeling, this means adding a vector 
+$\mathbf{u} = 
+\begin{bmatrix}
+    0 & 0 & u_3
+\end{bmatrix}^\top$
+to $\bm{\tau}$.
+%
+Isolating the dynamics at the wrist ($\theta_3$) from the state-space representation in \eqref{eq:system}, the following is derived:
+%
+\begin{equation}
+    \ddot{\theta}_3 
+    = 
+    b_0 u_3 +
+    \zeta(\bm{\tau}, \bm{\theta}, \dot{\bm{\theta}}),
+\label{eq:wrist_dynamic}
+\end{equation}
+% 
+where $b_0$ is the $(3,3)$ entry of $\mathbf{J}^{-1}$, and $\zeta$ is a linear combination of $\bm{\theta}$, $\dot{\bm{\theta}}$, and $\bm{\tau}$.
+
+Ideally, the ESO tracking error would be given by
+%
+\begin{equation}
+    e_3(t) 
+    = \theta_{i_3}(t)
+    = \theta_{v_3}(t) - \theta_3(t),
+\end{equation}
+
+so that $e_3\to 0$ as $u_3$ compensates $\tau_{i_3}$.
+
+In a practical setting, $\theta_{v_3}$ is unknown, 
+and thus we estimate the tracking error using
+%
+\begin{equation}
+    \widehat{e}_3(t) 
+    = \widehat{\theta}_{v_3}(t) - \theta_3(t),
+\label{eq:e3_hat}
+\end{equation}
+%
+where $\widehat{\theta}_{v_3}$ is an estimate of $\theta_{v_3}$.
+From \eqref{eq:e3_hat}, 
+we have that $\widehat{e}_3 \to \epsilon_3$
+as $u_3$ compensates $\tau_{i_3}$,
+where $\epsilon_3$ is the voluntary motion estimator error.
+    
+    
+\subsection{Simulation Setup}
+
+Controller performance is evaluated through repeated simulations under varying physical conditions. For each run, upper limb parameters are sampled around nominal values as described in Subsection \ref{sec:parameters}, and the system response is simulated and evaluated. This procedure is repeated to assess robustness. Since involuntary torques due to Parkinson's disease are already modeled, only voluntary torque profiles are specified. Voluntary torques are null to emulate resting, and to emulate motion follow the trajectories described in Section \ref{sec:results}.
+
+Performance is assessed using output-based and control-based metrics. 
+For the wrist joint, Tremor Power Suppression Ratio (TPSR) \citep{Qi:2024}, 
+Integral Absolute Error (IAE) \citep{Skogestad:2003}, 
+Coefficient of Determination ($R^2$) \citep{Glantz:1990}, and 
+Entropy \citep{Lathi:2018} are computed. 
+Control effort is evaluated through the 
+Total Variation (TV) \citep{Skogestad:2003} and 
+Signal Power \citep{Lathi:2018} of the control input.
+
+\subsection{Parameters}
+\label{sec:parameters}
+
+\subsubsection{Model Parameters}
+% Nominal parameters and range from which they were sampled
+Between system simulations, stiffness coefficients are resampled from uniform distributions centered at their nominal values, which also cause damping coefficients to change since they are associated to stiffness.
+The very first run of each control strategy is run with the nominal model, and following runs use altered models for a total of 100 runs. 
+The random seed is kept fixed between control strategies to avoid bias in evaluations.
+
+Table \ref{tab:nominal} lists the nominal parameter values used in the simulations, and Table \ref{tab:distributions} defines the uniform distributions from which joint stiffness values are resampled. 
+%
+\begin{table}[htbp]
+    \centering
+    \caption{Nominal values of simulation parameters. Based on \cite{Gebai:2018}.}
+    \label{tab:nominal}
+    \input{tables/table_parameter_nominal.tex}
+\end{table}
+%
+\begin{table}[htbp]
+    \centering
+    \caption{Sampling intervals of joints stiffness.}
+    \label{tab:distributions}
+    \input{tables/table_parameter_sampling.tex}
+\end{table}
+
+\subsubsection{Control Parameters}
+
+The control parameters in Table \ref{tab:control_parameters} were obtained through distinct tuning methodologies. For EADRC with ZPLP, observer and controller bandwidths ($w_o,\, w_c$) were determined experimentally by maintaining the heuristic ratio $w_o = 10w_c$ ($w_o=4w_\text{control}$ for EADRC with EBMFLC). IMC-PID was tuned using the Internal Model Control method \citep{Rivera:1986}, based on a second-order approximation of the wrist joint model without coupling terms. Its closed-loop pole was set 3.9 times slower than the open-loop system to ensure a practical and conservative response.
+
+In contrast, DE-PID parameters were optimized via a differential evolution algorithm, following the GA-based framework in \cite{Lekshmi:2019}. 
+The optimization maximized $R^2$
+with respect to true voluntary movement. 
+This process employed a population of 5 individuals over 30 iterations and assumed full knowledge of the voluntary component $\theta_{v_3}$ to establish an ideal performance benchmark. Other control approaches were adjusted according to their respective cited references.
+
+\begin{table*}[htbp]
+    \centering
+    \caption{
+        Controllers parameters set considering 
+        nominal model response with $\bm\tau$ given by \eqref{eq:tau_v}.
+    }
+    \label{tab:control_parameters}
+    \def\arraystretch{1.3}
+    \input{tables/table_control_parameters.tex}
+\end{table*}
+
+\reviewchange{}{%
+\subsection{Statistical Analysis}
+Each run produces matched physical-parameter samples across all four controllers, yielding a paired rather than independent design. 
+%
+For each performance metric, EADRC+ZPLP was compared against each controller using a paired Wilcoxon signed-rank test \citep{Conover:1980}. 
+%
+A nonparametric test was chosen over the paired t-test because several metrics exhibit pronounced skew and heavy tails across runs, violating the normality assumption the t-test requires of the paired differences. 
+
+Effect sizes are reported as the rank-biserial correlation 
+$r \in [-1, 1]$, computed from the signed ranks of the paired differences, with 
+$|r| = 1$ indicating that one controller outperformed the other in every paired run.
+%
+To control the family-wise error rate across the six metrics evaluated per scenario, 
+$p$-values were adjusted using the Holm–Bonferroni procedure, and significance was assessed at $0.05$.
+}

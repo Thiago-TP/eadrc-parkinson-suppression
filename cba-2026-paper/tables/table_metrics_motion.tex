@@ -1,0 +1,29 @@
+\begin{tabular}{
+    c | c | c | c | c | c | c 
+}
+    \multirow{2}{*}{Controller} &
+    \multicolumn{4}{c}{Response Signal} &
+    \multicolumn{2}{|c}{Control Signal} \\
+    \cline{2-7}
+    &
+    TPSR [\%] & 
+    % ASR [\%] & 
+    $R^2$ & 
+    Entropy [bits] & 
+    IAE [rad$\times$s] & 
+    % ISE & 
+    % ITAE & 
+    % ITSE & 
+    Power [(N$\times$m)$^2$] & 
+    TV [N$\times$m$\times$s] 
+    % IAC & 
+    % ISC
+\\
+    \hline
+%AFE & -139.58 $\pm$ 315.12 & -1.63 $\pm$ 1.44 & 5.28 $\pm$ 0.25 & 1.72 $\pm$ 0.43 & 0.76 $\pm$ 0.35 & 229.81 $\pm$ 70.26 \\
+EADRC+EBMFLC & 49.78 $\pm$ 51.24 & 0.46 $\pm$ 0.11 & 5.24 $\pm$ 0.13 & 0.82 $\pm$ 0.25 & 0.50 $\pm$ 0.24 & 301.84 $\pm$ 81.80 \\
+EADRC+ZPLP & 61.31 $\pm$ 33.58 & 0.48 $\pm$ 0.16 & 5.24 $\pm$ 0.13 & 0.74 $\pm$ 0.18 & 0.33 $\pm$ 0.11 & 258.39 $\pm$ 43.92 \\
+%Gallego-PI & -42.61 $\pm$ 132.60 & -0.66 $\pm$ 0.63 & 5.13 $\pm$ 0.24 & 1.38 $\pm$ 0.40 & 0.75 $\pm$ 1.15 & 124.11 $\pm$ 24.17 \\
+DE-PID & 99.92 $\pm$ 0.08 & 1.00 $\pm$ 0.00 & 4.93 $\pm$ 0.10 & 0.03 $\pm$ 0.01 & 0.90 $\pm$ 0.34 & 409.52 $\pm$ 8.96 \\
+IMC-PID & 4.79 $\pm$ 115.92 & -0.05 $\pm$ 0.33 & 5.48 $\pm$ 0.13 & 1.12 $\pm$ 0.45 & 0.40 $\pm$ 0.20 & 192.98 $\pm$ 20.43 \\
+\end{tabular}
