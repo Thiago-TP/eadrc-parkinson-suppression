@@ -15,7 +15,7 @@
       \end{itemize}
       \begin{equation*}
         \mathbf{J}\ddot{\bm{\theta}} + \mathbf{C}\dot{\bm{\theta}} + \mathbf{K}\bm{\theta} = \bm{\tau},
-        \qquad
+        \,\,
         \mathbf{K} =
         \begin{bmatrix}
           k_1 + k_3 & k_3       & 0   \\
@@ -47,7 +47,6 @@
     \end{column}
     \begin{column}{0.46\textwidth}
       \begin{block}{Tremor}
-        \vspace{-0.3cm}
         \begin{equation*}
           \bm{\tau}_i =
           \begin{bmatrix}
@@ -58,7 +57,7 @@
         \end{equation*}
         \centering
         \small
-        $A_i = 1$~N$\cdot$m;\quad $f_1, f_2, f_3 = 3{,}59;\ 5{,}30;\ 14{,}35$~Hz
+        $A_i = 1$~N$\cdot$m;\quad $f_1\ f_2\ f_3 = 3{,}59\ 5{,}30\ 14{,}35$~Hz
       \end{block}
       \begin{block}{Espaço de estados, $\mathbf{x} = [\bm{\theta}^\top\ \dot{\bm{\theta}}^\top]^\top$}
         \vspace{-0.3cm}
@@ -112,15 +111,16 @@
         \end{cases}
       \end{equation*}
       Lei de controle e dinâmica resultante do erro:
-      \begin{gather*}
-        u = \tfrac{1}{b_0}\big(\textstyle\sum_{i=1}^{n} \kappa_i \hat{z}_i + \hat{z}_{n+1}\big) \\
-        \Rightarrow\ e^{(n)} \approx -\textstyle\sum_{i=1}^{n} \kappa_i e^{(i-1)}
-      \end{gather*}
+      \begin{align*}
+        u &= \tfrac{1}{b_0}\big(\textstyle\sum_{i=1}^{n} \kappa_i \hat{z}_i + \hat{z}_{n+1}\big) \\
+        \implies\ e^{(n)} &\approx -\textstyle\sum_{i=1}^{n} \kappa_i e^{(i-1)}
+      \end{align*}
     \end{column}
   \end{columns}
 
   \begin{alertblock}{Cuidado}
     \small
-    Instabilidade do observador pode causar problemas numéricos; usualmente, limita-se a magnitude ou a taxa do sinal de controle \cite{Herbst:2025}.
+    Usualmente, limita-se a magnitude ou a taxa do sinal de controle 
+    para evitar instabilidade do observador\cite{Herbst:2025}.
   \end{alertblock}
 \end{frame}

@@ -43,7 +43,7 @@
     % Forward path
     \draw [->, thick] (sum) -- (eso) node [midway, above] {$\hat{e}_3$};
     \draw [->, thick] (eso) -- (law) node [midway, above] {$\hat{\bm{z}}$};
-    \draw [->, thick] (law) -- (plant) node [pos = 0.3, above] {$u_3$};
+    \draw [->, thick] (law) -- (plant) node [pos = 0.45, above] {$u_3$};
     \draw [->, thick] (plant) -- (output) node [at end, above left] {$\theta_3$};
 
     % Control signal fed back to the observer

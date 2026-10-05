@@ -19,16 +19,16 @@
     \end{column}
     \begin{column}{0.48\textwidth}
       \begin{itemize}
-        \item Erro ideal, que vai a zero quando $u_3$ compensa $\tau_{i_3}$:
+        \item 
+        Erro ideal, que vai a zero quando $u_3$ compensa $\tau_{i_3}$:
           \begin{equation*}
-            e_3 = \theta_{v_3} - \theta_3 = -\theta_{i_3}.
+            e_3 = \bm{\theta_{v_3}} - \theta_3 = -\theta_{i_3}.
           \end{equation*}
-        \item Na prática, $\theta_{v_3}$ é desconhecido e estimado:
+        Na prática, $\theta_{v_3}$ é desconhecido e estimado,
           \begin{equation*}
-            \hat{e}_3 = \hat{\theta}_{v_3} - \theta_3 \to \epsilon_3,
+            \hat{e}_3 = \bm{\hat{\theta}_{v_3}} - \theta_3,
           \end{equation*}
-          com $\epsilon_3$ o erro do estimador de movimento voluntário.
-        \item \alert{A qualidade de $\hat{\theta}_{v_3}$ limita a supressão alcançável.}
+        \alert{e a qualidade da estimativa limita a supressão alcançável.}
       \end{itemize}
     \end{column}
   \end{columns}
@@ -60,7 +60,7 @@
     \begin{column}{0.58\textwidth}
       \small
       \begin{itemize}
-        \item Runge--Kutta de 4ª ordem, $t \in [0, 6]$~s, passo de 1~ms.
+        \item Runge-Kutta de 4ª ordem, $t \in [0, 6]$~s, passo de 1~ms.
         \item 100 execuções por controlador: a primeira com o modelo nominal \cite{Gebai:2018}, as demais com rigidezes reamostradas ($c_i \propto k_i$ acompanha).
         \item Mesma semente aleatória para todos os controladores: comparação pareada.
         \item Cenários: \alert{repouso} ($\bm{\tau}_v = \mathbf{0}$) e \alert{movimento} ($\bm{\tau}_v$ senoidal, ao lado).
@@ -99,7 +99,7 @@
         \small
         \begin{itemize}
           \item EADRC+ZPLP contra cada controlador: teste de Wilcoxon pareado \cite{Conover:1980}, com correlação bisserial de postos $r$.
-          \item Correção de Holm--Bonferroni nas seis métricas; significância em $0{,}05$.
+          \item Correção de Holm-Bonferroni nas seis métricas; significância em $0{,}05$.
         \end{itemize}
       \end{block}
     \end{column}
