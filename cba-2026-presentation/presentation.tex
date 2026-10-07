@@ -39,13 +39,21 @@
 \renewcommand*{\bibfont}{\scriptsize}
 
 
-
+ 
 % --- Dados da Apresentação ---
-\title[XXVI CBA -- 2026]{Error-Based ADRC for Parkinson Tremor
+\title[XXVI CBA -- 2026]{EADRC for Parkinson Tremor
 Suppression in Wrist Considering Upper
 Limb Dynamics}
 \subtitle{}
-\author[Paula et al.]{Thiago T. de Paula, Matheus T. de Sousa, José O. A. L. Filho, Marcela R. Machado}
+\author[Paula et al.]{
+  \texorpdfstring{%
+    Thiago T. de Paula, Matheus T. de Sousa,\\
+    José O. A. L. Filho, Marcela R. Machado
+  }{%
+    Thiago T. de Paula, Matheus T. de Sousa,
+    José O. A. L. Filho, Marcela R. Machado
+  }
+}
 \institute[UnB]{Universidade de Brasília}
 \date{Outubro, 2026}
 
@@ -95,6 +103,24 @@ Limb Dynamics}
 
 % --- Material de apoio ---
 \appendix
+
+\begin{frame}{Espaço de rigidezes das simulações de Monte Carlo}
+  \begin{columns}[c]
+    \begin{column}{0.66\textwidth}
+      \centering
+      \includegraphics[width=\linewidth,height=0.8\textheight,keepaspectratio]{stiffness_space.pdf}
+    \end{column}
+    \begin{column}{0.32\textwidth}
+      \small
+      \begin{itemize}
+        \setlength{\itemsep}{0.25cm}
+        \item Cada $k_i$ é sorteado de forma uniforme e independente em seu intervalo.
+        \item \alert{Estrela:} valores nominais, no ponto central de cada intervalo.
+        \item Pontos: as 99 execuções não nominais do EADRC+ZPLP em movimento.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
 
 \begin{frame}[allowframebreaks]{Referências}
   \printbibliography

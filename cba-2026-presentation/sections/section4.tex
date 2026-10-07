@@ -6,7 +6,7 @@
 
   {\scriptsize Média $\pm$ desvio padrão; $\uparrow$ ($\downarrow$): maior (menor) é melhor.}
 
-  \begin{itemize}
+  \begin{itemize}[<+->]
     \small
     \item DE-PID: TPSR $>$ 99,9\%, mas conhece $\theta_{v_3}$ e tem TV $\approx 1{,}6\times$ a do EADRC+ZPLP.
     \item EADRC+ZPLP: maior TPSR entre os controladores realizáveis (61,31\% em movimento), com menor esforço que o EADRC+EBMFLC.
@@ -25,7 +25,7 @@
     \end{column}
     \begin{column}{0.36\textwidth}
       \small
-      \begin{itemize}
+      \begin{itemize}[<+->]
         \setlength{\itemsep}{0.2cm}
         \item \textbf{vs.\ EBMFLC:} supressão estatisticamente equivalente (TPSR, IAE), mas \textbf{menor esforço} de controle (potência, TV).
         \item \textbf{vs.\ DE-PID:} $|r| \approx 1$ em todas as métricas: resposta melhor em todas as execuções, à custa de maior esforço em todas elas.
@@ -69,7 +69,7 @@
     \end{column}
     \begin{column}{0.30\textwidth}
       \small
-      \begin{itemize}
+      \begin{itemize}[<+->]
         \setlength{\itemsep}{0.2cm}
         \item Componente de 14,35 Hz fortemente atenuada.
         \item Componentes de 3,59 e 5,30 Hz \alert{pouco mitigadas}.
@@ -80,7 +80,7 @@
 \end{frame}
 
 \begin{frame}{Discussão}
-  \begin{itemize}
+  \begin{itemize}[<+->]
     \setlength{\itemsep}{0.25cm}
     \item As estratégias EADRC equilibram atenuação do tremor e esforço de controle em um ambiente com dinâmica acoplada.
     \item DE-PID serve como referência ideal, não como competidor prático: exige conhecimento perfeito do movimento voluntário e maior atuação.
@@ -88,6 +88,7 @@
     \item EBMFLC e ZPLP suprimem o tremor de forma equivalente; o ZPLP gera sinais de controle mais suaves.
   \end{itemize}
 
+  \pause
   \vspace{0.2cm}
   \begin{alertblock}{Limitação: tremores de menor frequência}
     As componentes de 3,59 e 5,30 Hz ficam dentro ou perto da banda tomada como voluntária (EBMFLC: 0-4 Hz; ZPLP: corte em 5 Hz).

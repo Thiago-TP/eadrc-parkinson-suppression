@@ -9,10 +9,11 @@
       {\scriptsize Adaptado de \textcite{Albuquerque:2025}.}
     \end{column}
     \begin{column}{0.58\textwidth}
-      \begin{itemize}
+      \begin{itemize}[<+->]
         \item Modelo planar com 3 GdL: ombro ($\theta_1$), cotovelo ($\theta_2$) e punho ($\theta_3$) \cite{Gebai:2018}.
         \item Músculos e tendões como molas e amortecedores equivalentes; $k_3$ representa o acoplamento pelo bíceps.
       \end{itemize}
+      \pause
       \begin{equation*}
         \mathbf{J}\ddot{\bm{\theta}} + \mathbf{C}\dot{\bm{\theta}} + \mathbf{K}\bm{\theta} = \bm{\tau},
         \,\,
@@ -23,7 +24,7 @@
           0         & 0         & k_4
         \end{bmatrix}
       \end{equation*}
-      \begin{itemize}
+      \begin{itemize}[<+->]
         \item $\mathbf{C}$ tem a estrutura de $\mathbf{K}$, com $c_i \propto k_i$; $\mathbf{J}$ é cheia e acopla as três articulações.
         \item Linearização adequada se os parâmetros variam pouco no tempo \cite{Gebai:2020}.
       \end{itemize}
@@ -40,12 +41,13 @@
           \bm{\tau} = \underbrace{\bm{\tau}_i}_{\text{patológico}} + \underbrace{\bm{\tau}_v}_{\text{voluntário}}
         \end{equation*}
       \end{block}
-      \begin{itemize}
+      \begin{itemize}[<+->]
         \item A potência do tremor concentra-se em torno de uma frequência central \cite{Deuschl:2022}; usualmente, até 3 harmônicos \cite{Zamanian:2019,Albuquerque:2025}.
         \item O acoplamento já torna a dinâmica do punho multimodal: um harmônico por articulação.
       \end{itemize}
     \end{column}
     \begin{column}{0.46\textwidth}
+      \pause
       \begin{block}{Tremor}
         \begin{equation*}
           \bm{\tau}_i =
@@ -59,6 +61,7 @@
         \small
         $A_i = 1$~N$\cdot$m;\quad $f_1\ f_2\ f_3 = 3{,}59\ 5{,}30\ 14{,}35$~Hz
       \end{block}
+      \pause
       \begin{block}{Espaço de estados, $\mathbf{x} = [\bm{\theta}^\top\ \dot{\bm{\theta}}^\top]^\top$}
         \vspace{-0.3cm}
         \begin{align*}
@@ -88,7 +91,7 @@
 \begin{frame}{Controle por rejeição ativa de perturbações baseado em erro}
   \begin{columns}[T]
     \begin{column}{0.48\textwidth}
-      \begin{itemize}
+      \begin{itemize}[<+->]
         \item ADRC: estima e rejeita, em tempo real, a \alert{perturbação total}, isto é, incertezas internas e perturbações externas \cite{Guo:2016}:
           \begin{equation*}
             y^{(n)} = f(y, \dot{y}, \dots, y^{(n-1)}, t) + b_0 u.
@@ -102,6 +105,7 @@
       \end{itemize}
     \end{column}
     \begin{column}{0.48\textwidth}
+      \pause
       ESO, com $z_i = e^{(i-1)}$ ($i \leq n$) e $z_{n+1} = f_e$:
       \begin{equation*}
         \begin{cases}
@@ -117,10 +121,11 @@
       \end{align*}
     \end{column}
   \end{columns}
-
+  \vspace{-.5cm}
+  \pause
   \begin{alertblock}{Cuidado}
     \small
     Usualmente, limita-se a magnitude ou a taxa do sinal de controle 
-    para evitar instabilidade do observador\cite{Herbst:2025}.
+    para evitar instabilidade do observador \cite{Herbst:2025}.
   \end{alertblock}
 \end{frame}

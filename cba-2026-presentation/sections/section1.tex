@@ -24,41 +24,41 @@
 \end{frame}
 
 \begin{frame}{Doença de Parkinson e tremor}
+  \vspace{-.5cm}
   \begin{columns}[T]
-    \begin{column}{0.45\linewidth}
+    \begin{column}{0.625\textwidth}
       \begin{block}{Tratamentos convencionais}
         \begin{itemize}
           \item Farmacológico: primeira linha, mas parte dos pacientes não responde, e o uso prolongado perde eficácia e causa efeitos colaterais \cite{Fujikawa:2023,Lora-Millan:2021,Meng:2022}.
           \item Cirúrgico: invasivo e com riscos \cite{Botzel:2014,Fujikawa:2023}.
         \end{itemize}
       \end{block}
+      %
+      \begin{columns}[b]
+        \begin{column}{0.5\linewidth}
+          \centering
+          \includegraphics[width=1cm]{levodopa.jpg}
+
+          {\tiny \url{americanpharmawholesale.com}.}
+        \end{column}
+        %
+        \begin{column}{0.5\linewidth}
+          \centering
+          \includegraphics[width=.9\linewidth]{deep-brain-stimulation.png}
+          {\scriptsize Adaptado de \cite{Szymoniuk:2023}.}
+        \end{column}
+      \end{columns}
     \end{column}
     %
-    \begin{column}{0.25\linewidth}
-      \centering
-      {\scriptsize Zamanian e Richer \cite{Taheri:2014}.}
-      \includegraphics[width=\linewidth]{active-orthosis-example.png}
-    \end{column}
-    %
-    \begin{column}{0.25\linewidth}
-      \centering
-      {\scriptsize Adaptado de \cite{Szymoniuk:2023}.}
-      \includegraphics[width=.9\linewidth]{deep-brain-stimulation.png}
-    \end{column}
-  \end{columns}
-  
-  \begin{columns}[T]
-    \begin{column}{0.45\linewidth}
+    \pause
+    \begin{column}{0.35\textwidth}
       \begin{exampleblock}{Órteses com controle ativo}
         Alternativa não invasiva \cite{Lora-Millan:2021,Meng:2022} particularmente popular para a supressão do tremor de punho.
       \end{exampleblock}
-    \end{column}
-    %
-    \begin{column}{0.50\linewidth}
+      \vspace{.7cm}
       \centering
-      \includegraphics[width=1cm]{levodopa.jpg}
-
-      {\scriptsize Disponível em \url{americanpharmawholesale.com}.}
+      \includegraphics[width=.9\linewidth]{active-orthosis-example.png}
+      {\scriptsize Zamanian e Richer \cite{Taheri:2014}.}
     \end{column}
   \end{columns}
 \end{frame}
@@ -67,6 +67,7 @@
   \centering
   \input{tables/table_literature.tex}
 
+  \pause
   \vspace{0.3cm}
   \begin{alertblock}{Lacuna}
     Tremores de ombro e cotovelo afetam significativamente o movimento do punho,
@@ -75,12 +76,12 @@
 \end{frame}
 
 \begin{frame}{Proposta deste trabalho}
-  \begin{itemize}
+  \begin{itemize}[<+->]
     \setlength{\itemsep}{0.25cm}
     \item \textbf{Controle:} rejeição ativa de perturbações baseada em erro (EADRC), robusta a perturbações externas e incertezas de modelo \cite{Guo:2016}.
     \item \textbf{Plataforma de teste:} modelo linear do membro superior com 3 graus de liberdade (GdL) \cite{Gebai:2017,Gebai:2018}, que captura o acoplamento ombro-cotovelo-punho.
     \item \textbf{Estimação do movimento voluntário}, em duas variantes:
-      \begin{itemize}
+      \begin{itemize}[<+->]
         \item EBMFLC, o combinador linear de Fourier de \textcite{Atashzar:2016};
         \item ZPLP, filtragem passa-baixas de fase zero.
       \end{itemize}

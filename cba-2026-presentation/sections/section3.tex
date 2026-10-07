@@ -3,7 +3,7 @@
 \begin{frame}{EADRC aplicado ao punho}
   \begin{columns}[T]
     \begin{column}{0.48\textwidth}
-      \begin{itemize}
+      \begin{itemize}[<+->]
         \item Sistema linear: o ângulo do punho tem parcelas voluntária e involuntária,
           \begin{equation*}
             \theta_3 = \theta_{v_3} + \theta_{i_3}.
@@ -18,7 +18,7 @@
       \end{itemize}
     \end{column}
     \begin{column}{0.48\textwidth}
-      \begin{itemize}
+      \begin{itemize}[<+->]
         \item 
         Erro ideal, que vai a zero quando $u_3$ compensa $\tau_{i_3}$:
           \begin{equation*}
@@ -38,6 +38,7 @@
   \centering
   \input{figures/block_diagram_eadrc.tikz}
 
+  \pause
   \vspace{0.3cm}
   \begin{columns}[T]
     \begin{column}{0.48\textwidth}
@@ -47,6 +48,7 @@
       \end{exampleblock}
     \end{column}
     \begin{column}{0.48\textwidth}
+      \pause
       \begin{exampleblock}{EBMFLC \cite{Qi:2024}}
         \small
         Combinação linear adaptativa de 100 senoides entre 0 e 12 Hz; a parcela de 0 a 4 Hz é tomada como movimento voluntário.
@@ -56,21 +58,26 @@
 \end{frame}
 
 \begin{frame}{Simulações de Monte Carlo}
-  \begin{columns}[c]
+  \begin{columns}[T]
+    \small
     \begin{column}{0.58\textwidth}
-      \small
       \begin{itemize}
         \item Runge-Kutta de 4ª ordem, $t \in [0, 6]$~s, passo de 1~ms.
         \item 100 execuções por controlador: a primeira com o modelo nominal \cite{Gebai:2018}, as demais com rigidezes reamostradas ($c_i \propto k_i$ acompanha).
         \item Mesma semente aleatória para todos os controladores: comparação pareada.
-        \item Cenários: \alert{repouso} ($\bm{\tau}_v = \mathbf{0}$) e \alert{movimento} ($\bm{\tau}_v$ senoidal, ao lado).
       \end{itemize}
-
+      %
+      \pause
       \vspace{0.2cm}
       \centering
       \input{tables/table_parameter_sampling.tex}
     \end{column}
+
+    \pause
     \begin{column}{0.40\textwidth}
+      \begin{itemize}
+        \item Cenários: \alert{repouso} ($\bm{\tau}_v = \mathbf{0}$) e \alert{movimento} ($\bm{\tau}_v$ senoidal).
+      \end{itemize}
       \centering
       \includegraphics[width=\linewidth]{figures/plots/uncontrolled_amplitude_1.0/torque_profiles_uncontrolled_amplitude_1.0.pdf}
 
@@ -83,6 +90,7 @@
   \centering
   \input{tables/table_control_parameters.tex}
 
+  \pause
   \vspace{0.4cm}
   \begin{columns}[T]
     \begin{column}{0.48\textwidth}
@@ -95,6 +103,7 @@
       \end{block}
     \end{column}
     \begin{column}{0.48\textwidth}
+      \pause
       \begin{block}{Análise estatística}
         \small
         \begin{itemize}
