@@ -8,8 +8,8 @@
 
   \begin{itemize}[<+->]
     \small
-    \item DE-PID: TPSR $>$ 99,9\%, mas conhece $\theta_{v_3}$ e tem TV $\approx 1{,}6\times$ a do EADRC+ZPLP.
-    \item EADRC+ZPLP: maior TPSR entre os controladores realizáveis (61,31\% em movimento), com menor esforço que o EADRC+EBMFLC.
+    \item DE-PID: TPSR $\approx$ 99,9\%, mas conhece $\theta_{v_3}$ e tem TV $\approx 1{,}6\times$ a do EADRC+ZPLP.
+    \item EADRC+ZPLP: maior TPSR entre os controladores realizáveis (56,97\% em movimento), com menor esforço que o EADRC+EBMFLC.
     \item IMC-PID: supressão fraca e muito variável entre execuções.
   \end{itemize}
 \end{frame}
@@ -27,9 +27,9 @@
       \small
       \begin{itemize}[<+->]
         \setlength{\itemsep}{0.2cm}
-        \item \textbf{vs.\ EBMFLC:} supressão estatisticamente equivalente (TPSR, IAE), mas \textbf{menor esforço} de controle (potência, TV).
+        \item \textbf{vs.\ EBMFLC:} melhor em todas as métricas: maior supressão (TPSR, IAE) e \textbf{menor esforço} de controle (potência menor em todas as execuções).
         \item \textbf{vs.\ DE-PID:} $|r| \approx 1$ em todas as métricas: resposta melhor em todas as execuções, à custa de maior esforço em todas elas.
-        \item \textbf{vs.\ IMC-PID:} supressão superior sem diferença significativa de potência.
+        \item \textbf{vs.\ IMC-PID:} supressão superior em todas as execuções; potência equivalente em repouso e menor em movimento, mas TV maior.
       \end{itemize}
     \end{column}
   \end{columns}
@@ -84,8 +84,8 @@
     \setlength{\itemsep}{0.25cm}
     \item As estratégias EADRC equilibram atenuação do tremor e esforço de controle em um ambiente com dinâmica acoplada.
     \item DE-PID serve como referência ideal, não como competidor prático: exige conhecimento perfeito do movimento voluntário e maior atuação.
-    \item IMC-PID, sintonizado sem os termos de acoplamento, tem supressão fraca sem economia significativa de potência.
-    \item EBMFLC e ZPLP suprimem o tremor de forma equivalente; o ZPLP gera sinais de controle mais suaves.
+    \item IMC-PID, sintonizado sem os termos de acoplamento, tem supressão fraca sem economia de potência.
+    \item O ZPLP supera o EBMFLC na supressão do tremor e no esforço de controle, com sinais de controle mais suaves.
   \end{itemize}
 
   \pause

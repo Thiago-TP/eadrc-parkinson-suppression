@@ -1,24 +1,18 @@
 """
-Appendix figure: the stiffness space from which k1-k4 were sampled.
+Appendix figure: the stiffness space of the Monte Carlo runs.
 
-Samples are recovered from the state matrices stored with the simulation runs
-(A = [[0, I], [-J^-1 K, -J^-1 C]], so K = -J @ A[3:, :3]),
-which is exact and independent of the order in which the shared random
-number generator was consumed by the controllers.
-The runs of EADRC+ZPLP in the motion scenario are used.
+Plots the table of stiffness samples in configs.yaml (the same 99 samples are
+used by every control strategy and scenario), the sampling intervals and the
+nominal values.
 
 Run from the repository root:
     python cba-2026-presentation/figures/plot_stiffness_space.py
 """
 
-import pickle
-
-import blosc
 import matplotlib.pyplot as plt
 import numpy as np
 import yaml
 
-RUNS = "results/runs/eadrc_zplp_amplitude_1.0.data"
 OUT = "cba-2026-presentation/figures/stiffness_space.pdf"
 
 # Slide theme colors (cba2026.sty)
@@ -36,31 +30,8 @@ plt.rcParams.update(
 with open("configs.yaml") as f:
     params = yaml.safe_load(f)["parameters"]
 
-# Constant inertia matrix, as in System._set_dynamics
-a1, a2, a3 = (params[f"a{i}"] * params[f"l{i}"] for i in (1, 2, 3))
-p = params
-j12 = (p["j2"] + p["m2"] * a2**2) + p["j3"]
-j12 += p["m3"] * (p["l2"] ** 2 + a3**2 + 2 * p["l2"] * a3)
-j11 = (
-    (p["j1"] + p["m1"] * a1**2)
-    + j12
-    + p["m2"] * p["l1"] ** 2
-    + p["m3"] * p["l1"] ** 2
-)
-j13 = p["j3"] + p["m3"] * (a3**2 + p["l2"] * a3)
-j33 = p["j3"] + p["m3"] * a3**2
-J = np.array([[j11, j12, j13], [j12, j12, j13], [j13, j13, j33]])
-
-with open(RUNS, "rb") as f:
-    runs = pickle.loads(blosc.decompress(f.read()))
-
-ks = []
-for run in runs.values():  # nominal run first
-    K = -J @ run["state_matrix"][3:, :3]
-    ks.append([K[0, 0] - K[0, 1], K[1, 1] - K[0, 1], K[0, 1], K[2, 2]])
-ks = np.array(ks)
-nominal, samples = ks[0], ks[1:]
-assert np.allclose(nominal, [p["k1"], p["k2"], p["k3"], p["k4"]])
+nominal = np.array([params["k1"], params["k2"], params["k3"], params["k4"]])
+samples = np.array(params["stiffness_samples"])
 
 keys = ["k1", "k2", "k3", "k4"]
 labels = [

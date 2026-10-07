@@ -14,6 +14,7 @@ from system import ModelParameters
 def main(
     num_simulations: int,
     amplitude_voluntary: float = 1.0,
+    strategies: list[str] | None = None,
 ) -> None:
     """
     Main function to run and persist simulations.
@@ -22,13 +23,17 @@ def main(
     ----------
     num_simulations : int
         The number of simulations to run.
-        The first run is always the nominal model, and remaining runs are
-        for models with parameters sampled from the specified intervals.
+        The first run is always the nominal model, and remaining runs
+        take the rows of the stiffness samples table in order, the same
+        for every control strategy, so at most len(table) + 1 runs.
         A properly formatted configs.yaml file is required to specify
-        nominal parameters and stiffness uncertainty intervals.
+        nominal parameters and the stiffness samples table.
     amplitude_voluntary : float, optional
         Amplitude of the voluntary torque profile.
         Defaults to 1.0 (the more interesting case).
+    strategies : list[str], optional
+        Names of the control strategies to simulate.
+        Defaults to None, which simulates all of them.
     """
 
     # Load configurations
@@ -37,6 +42,13 @@ def main(
 
     # Load nominal model parameters
     parameters = ModelParameters(**cfgs["parameters"])
+
+    num_samples = len(parameters.stiffness_samples)
+    if num_simulations - 1 > num_samples:
+        raise ValueError(
+            f"{num_simulations} simulations need {num_simulations - 1} "
+            f"stiffness samples, but configs.yaml has {num_samples}."
+        )
 
     # Load initial conditions
     ic = tuple(cfgs["initial_conditions"].values())
@@ -119,6 +131,8 @@ def main(
         pid_imc_control,
         no_control,
     ]
+    if strategies is not None:
+        controls = [control for control in controls if control.name in strategies]
     for control in controls:
         control.simulate_system()
 
@@ -126,12 +140,12 @@ def main(
     # for selected control strategies
     print(
         f"\nRunning {num_simulations - 1} "
-        "non-nominal model simulations with parameter sampling..."
+        "non-nominal model simulations with tabulated stiffness samples..."
     )
-    for _ in range(num_simulations - 1):
+    for index in range(num_simulations - 1):
         for control in controls:
-            # Constant random seed -> per-control resample is valid
-            control.resample_stiffness()
+            # Same table row for every control -> runs are paired
+            control.set_stiffness_sample(index)
             control.simulate_system()
 
     # Save results across runs to npz files in results folder
@@ -142,9 +156,26 @@ def main(
 if __name__ == "__main__":
     import time
 
+    # Control strategies compared in the CBA 2026 paper
+    paper_strategies = [
+        "eadrc_ebmflc",
+        "eadrc_zplp",
+        "pid_de",
+        "pid_imc",
+        "uncontrolled",
+    ]
+
     __start = time.time()
-    main(num_simulations=1, amplitude_voluntary=0.0)
-    main(num_simulations=1, amplitude_voluntary=1.0)
+    main(
+        num_simulations=100,
+        amplitude_voluntary=0.0,
+        strategies=paper_strategies,
+    )
+    main(
+        num_simulations=100,
+        amplitude_voluntary=1.0,
+        strategies=paper_strategies,
+    )
     __stop = time.time()
 
     delta_s = __stop - __start
