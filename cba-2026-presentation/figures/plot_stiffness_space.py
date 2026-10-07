@@ -6,7 +6,7 @@ used by every control strategy and scenario), the sampling intervals and the
 nominal values.
 
 Run from the repository root:
-    python cba-2026-presentation/figures/plot_stiffness_space.py
+    uv run cba-2026-presentation/figures/plot_stiffness_space.py
 """
 
 import matplotlib.pyplot as plt

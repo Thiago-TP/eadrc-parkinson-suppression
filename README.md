@@ -59,6 +59,7 @@ The nominal arm parameters and uncertainty ranges are defined in [configs.yaml](
 
 - geometric and inertial parameters for the shoulder, elbow, and wrist dynamics
 - stiffness values and stiffness intervals for Monte Carlo-style sampling
+- a table of 99 stiffness samples (`stiffness_samples`), drawn once from those intervals: non-nominal run *i* uses row *i* for every control strategy and scenario, so runs are paired across controllers and the results do not depend on how many strategies are simulated, or in which order
 - initial conditions for the joint states
 
 The main model logic is implemented in [src/system.py](src/system.py), and the top-level simulation driver is [src/main.py](src/main.py).
@@ -78,37 +79,25 @@ The exact controller implementations live under [src/control_strategies](src/con
 
 ## Getting started
 
-### 1. Create an environment
+The environment is managed with [uv](https://docs.astral.sh/uv/): [pyproject.toml](pyproject.toml) declares the dependencies, [uv.lock](uv.lock) pins their exact versions and [.python-version](.python-version) the Python version.
+
+### 1. Create the environment
+
+From the repository root, create the `.venv` folder with the locked dependencies (uv downloads the required Python if needed):
 
 ```bash
-python -m venv .venv
-source .venv/bin/activate
+uv sync
 ```
 
-### 2. Install dependencies
+### 2. Run the simulations
 
-The project declares dependencies in [pyproject.toml](pyproject.toml) and includes a pip-compatible list in [src/requirements.txt](src/requirements.txt).
+Run the simulation entry point from the repository root, since it reads [configs.yaml](configs.yaml) and writes to [results/runs](results/runs) relative to the working directory:
 
 ```bash
-pip install -r src/requirements.txt
+uv run src/main.py
 ```
 
-If you prefer the package metadata workflow:
-
-```bash
-pip install -e .
-```
-
-### 3. Run the simulations
-
-The simulation entry point expects to run from inside the [src](src) directory because the scripts import modules directly from that folder.
-
-```bash
-cd src
-python main.py
-```
-
-This executes the configured control strategies across the nominal model and additional sampled-stiffness cases. Results are written under [results/runs](results/runs).
+This runs the control strategies compared in the CBA 2026 paper on the nominal model and on the 99 tabulated stiffness samples, for both scenarios (rest and deliberate motion). Results are written under [results/runs](results/runs).
 
 ## Output files
 
@@ -120,11 +109,10 @@ The generated run files live in [results/runs](results/runs). These are the prim
 
 ### Post-processing
 
-From the repository root, or from within [src](src), run:
+From the repository root, run:
 
 ```bash
-cd src
-python postprocessing/postprocess.py
+uv run src/postprocessing/postprocess.py
 ```
 
 This script reads the saved run files and generates summary plots and metrics under:
@@ -134,8 +122,8 @@ This script reads the saved run files and generates summary plots and metrics un
 
 ## Notes on the workflow
 
-- The simulation driver in [src/main.py](src/main.py) accepts `num_simulations` and `amplitude_voluntary` parameters.
-- The configuration file drives both the nominal model and the uncertainty sampling ranges for robustness analysis.
+- The simulation driver in [src/main.py](src/main.py) accepts `num_simulations`, `amplitude_voluntary` and `strategies` (names of the control strategies to simulate; all of them by default) parameters.
+- The configuration file drives both the nominal model and the table of stiffness samples for robustness analysis.
 - This repository is organized as a research/simulation project rather than a packaged application, so the source directory is the primary execution context.
 
 ## CBA 2026 paper and presentation

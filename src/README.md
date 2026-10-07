@@ -4,10 +4,10 @@ This directory contains the executable simulation and analysis code for the trem
 
 ## Entry points and core modules
 
-- [main.py](main.py) — simulation entry point; loads [../configs.yaml](../configs.yaml), instantiates controllers, runs nominal and sampled uncertainty cases, and saves results
+- [main.py](main.py) — simulation entry point; loads [../configs.yaml](../configs.yaml), instantiates controllers, runs the nominal model and the tabulated stiffness samples (the same for every controller), and saves results
 - [system.py](system.py) — model parameters and dynamics used by all control strategies
 - [pid_tuning.py](pid_tuning.py) — PID tuning utilities and parameter search scripts
-- [requirements.txt](requirements.txt) — project dependencies for the source tree
+- [requirements.txt](requirements.txt) — pip-style list of dependencies (the uv environment, from [../pyproject.toml](../pyproject.toml) and [../uv.lock](../uv.lock), is the reference one)
 
 ## Control strategy implementations
 
@@ -43,23 +43,23 @@ The [tremor_estimation_strategies](tremor_estimation_strategies) folder contains
 
 ## Typical workflow
 
-From the repo root:
+From the repo root (paths to [../configs.yaml](../configs.yaml) and [../results](../results) are relative to the working directory):
 
 ```bash
-cd src
-python main.py
-python postprocessing/postprocess.py
+uv sync
+uv run src/main.py
+uv run src/postprocessing/postprocess.py
 ```
 
 This mirrors the project workflow used in the repository:
 
 1. load the configuration file
-2. simulate the nominal and perturbed models
+2. simulate the nominal model and the perturbed models given by the table of stiffness samples
 3. save the numerical outputs in the results directory
 4. generate plots and summary metrics from those outputs
 
 ## Important notes
 
 - The project is structured as a research simulation workflow, not as a packaged library.
-- A number of imports are designed to work when the current working directory is the [src](.) folder.
+- Imports resolve modules from the folder of the script being run, while file paths are relative to the repository root, which must be the working directory.
 - The simulation and post-processing steps depend on the configuration in [../configs.yaml](../configs.yaml) and the outputs in [../results](../results).
