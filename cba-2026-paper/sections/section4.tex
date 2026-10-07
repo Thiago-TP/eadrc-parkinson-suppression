@@ -46,7 +46,7 @@ Figure \ref{fig:plots} shows the effect of EADRC+ZPLP on the uncontrolled system
 \end{figure}
 
 Simulation results show that EADRC strategies effectively balance tremor attenuation and control effort in a coupled dynamic environment. 
-While the DE-PID controller achieved a near-perfect TPSR above 99\%, it serves mainly as an ideal benchmark, relying on full knowledge of voluntary motion and requiring significantly higher actuation. Its TV was nearly double of EADRC with ZPLP's in both scenarios.
+While the DE-PID controller achieved a near-perfect TPSR above 99\%, it serves mainly as an ideal benchmark, relying on full knowledge of voluntary motion and requiring significantly higher actuation. Its TV was about 55\% higher than EADRC with ZPLP's in both scenarios.
 
 \reviewchange{%
 \begin{table*}[htbp]
@@ -85,17 +85,20 @@ While the DE-PID controller achieved a near-perfect TPSR above 99\%, it serves m
 }{% 
     To substantiate these comparisons statistically, a paired Wilcoxon signed-rank test was applied per metric and scenario, comparing EADRC+ZPLP against each baseline controller across the same 100 Monte Carlo parameter draws. 
     
-    Table \ref{tab:wilcoxon} confirms that EADRC+ZPLP and +EBMFLC are statistically indistinguishable on tremor suppression itself (TPSR, IAE; $p \geq 0.14$ in both scenarios), 
-    but EADRC+ZPLP requires significantly less control effort (Power, TV; $p < 0.05$), 
+    According to Table \ref{tab:wilcoxon}, in both scenarios EADRC+ZPLP outperforms EADRC+EBMFLC on every metric ($p < 0.001$): 
+    it achieves higher tremor suppression (TPSR, $r \geq 0.56$; IAE, $r \leq -0.67$) 
+    while requiring less control effort (TV, $r \leq -0.85$), with lower control Power in every one of the 100 paired trials ($r = -1.00$), 
     supporting the claimed balance between attenuation and actuation. 
     
-    Differences against DE-PID were significant for every metric in both scenarios with maximal effect size 
-    ($|r| = 1.00$), reflecting that DE-PID outperformed EADRC+ZPLP in every one of the 100 paired trials.
+    Differences against DE-PID were significant for every metric in both scenarios with maximal or near-maximal effect size 
+    ($|r| \geq 0.99$), reflecting that DE-PID suppressed tremor better than EADRC+ZPLP in practically every one of the 100 paired trials, 
+    at the cost of higher control effort in all of them.
     %
     This is consistent with its role as an idealized upper-bound benchmark rather than a practical competitor.
     
-    Differences against IMC-PID were significant for all metrics except control Power 
-    ($p = 0.66$ and $p = 1.00$ for resting and moving scenarios, respectively), 
+    EADRC+ZPLP suppressed tremor better than IMC-PID in every paired trial ($|r| = 1.00$ for TPSR, $R^2$, Entropy and IAE), 
+    at the cost of a higher TV. 
+    Control Power did not differ significantly in the resting scenario ($p = 0.62$) and was lower for EADRC+ZPLP in the moving one ($r = -0.70$), 
     indicating that IMC-PID's weaker tremor suppression does not come from correspondingly lower actuation.
 }
 

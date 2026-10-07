@@ -79,11 +79,11 @@ Signal Power \citep{Lathi:2018} of the control input.
 
 \subsubsection{Model Parameters}
 % Nominal parameters and range from which they were sampled
-Between system simulations, stiffness coefficients are resampled from uniform distributions centered at their nominal values, which also cause damping coefficients to change since they are associated to stiffness.
+Between system simulations, stiffness coefficients change according to samples drawn from uniform distributions centered at their nominal values, which also cause damping coefficients to change since they are associated to stiffness.
 The very first run of each control strategy is run with the nominal model, and following runs use altered models for a total of 100 runs. 
-The random seed is kept fixed between control strategies to avoid bias in evaluations.
+The 99 stiffness samples were drawn once and tabulated, so that the $i$-th run of every control strategy, in both scenarios, uses the same model, which avoids bias in evaluations.
 
-Table \ref{tab:nominal} lists the nominal parameter values used in the simulations, and Table \ref{tab:distributions} defines the uniform distributions from which joint stiffness values are resampled. 
+Table \ref{tab:nominal} lists the nominal parameter values used in the simulations, and Table \ref{tab:distributions} defines the uniform distributions from which joint stiffness values are sampled. 
 %
 \begin{table}[htbp]
     \centering
