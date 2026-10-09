@@ -36,6 +36,7 @@ The [postprocessing](postprocessing) package converts saved simulation results i
 The [audits](audits) folder holds scripts that check specific behaviors of the code, each reporting PASS or FAIL and exiting with a nonzero code on failure:
 
 - [audits/audit_ebmflc.py](audits/audit_ebmflc.py) — checks that the EBMFLC voluntary-motion estimate of EADRC+EBMFLC sums both the sine and the cosine terms up to 4 Hz (until 2026-10-08, the cosine terms were dropped), on the stored runs and on a synthetic signal
+- [audits/ebmflc_cutoff_search.py](audits/ebmflc_cutoff_search.py) — grid search (0 to 4 Hz, 0.5 Hz steps, in parallel) of the voluntary-motion cutoff of EBMFLC in closed loop, ranked by $R^2$, on the nominal model or, with `--monte-carlo`, on the 100 runs of the stiffness table; also checks that the 4 Hz cutoff of the study reproduces the stored runs
 
 ## Tremor estimation methods
 
