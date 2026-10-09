@@ -1,5 +1,5 @@
 """
-Appendix figure: the stiffness space of the Monte Carlo runs.
+Figure of the "Simulações de Monte Carlo" slide: the stiffness space of the Monte Carlo runs.
 
 Plots the table of stiffness samples in configs.yaml (the same 99 samples are
 used by every control strategy and scenario), the sampling intervals and the
@@ -23,7 +23,7 @@ plt.rcParams.update(
         "text.usetex": True,
         "font.family": "sans-serif",
         "text.latex.preamble": r"\usepackage{amsmath}\usepackage{sfmath}",
-        "font.size": 14,
+        "font.size": 12,
     }
 )
 
@@ -43,7 +43,7 @@ labels = [
 bounds = [params["stiffness_intervals"][k] for k in keys]
 n = len(keys) - 1  # grid of the 6 pairs: rows k2..k4, columns k1..k3
 
-fig, axes = plt.subplots(n, n, figsize=(6.2, 4.6))
+fig, axes = plt.subplots(n, n, figsize=(5.6, 2.8))
 for r in range(n):
     for c in range(n):
         ax = axes[r, c]
@@ -66,12 +66,12 @@ for r in range(n):
             )
         )
         ax.scatter(
-            samples[:, j], samples[:, i], s=16, color=PURPLE, alpha=0.7, linewidths=0
+            samples[:, j], samples[:, i], s=10, color=PURPLE, alpha=0.7, linewidths=0
         )
         ax.scatter(
             nominal[j],
             nominal[i],
-            s=190,
+            s=120,
             marker="*",
             color=ORANGE,
             edgecolor=GRAPHITE,
@@ -84,7 +84,7 @@ for r in range(n):
         # Ticks at the interval limits and at the nominal value
         ax.set_xticks([lo_x, nominal[j], hi_x])
         ax.set_yticks([lo_y, nominal[i], hi_y])
-        ax.tick_params(length=2, labelsize=11, colors=GRAPHITE)
+        ax.tick_params(length=2, labelsize=10, colors=GRAPHITE)
         for side in ("top", "right"):
             ax.spines[side].set_visible(False)
         if r == n - 1:
@@ -92,21 +92,22 @@ for r in range(n):
         else:
             ax.set_xticklabels([])
         if c == 0:
-            ax.set_ylabel(labels[i], color=GRAPHITE)
+            # Symbol only: the short panels leave no room for the joint name
+            ax.set_ylabel(f"$k_{i + 1}$", color=GRAPHITE, rotation=0, ha="right", va="center")
         else:
             ax.set_yticklabels([])
 
 # Legend in the empty upper triangle
 handles = [
-    plt.Line2D([], [], marker="o", ls="", color=PURPLE, alpha=0.7, ms=6,
+    plt.Line2D([], [], marker="o", ls="", color=PURPLE, alpha=0.7, ms=5,
                label=r"Amostras ($99$ execu\c{c}\~oes)"),
-    plt.Line2D([], [], marker="*", ls="", color=ORANGE, mec=GRAPHITE, ms=15,
+    plt.Line2D([], [], marker="*", ls="", color=ORANGE, mec=GRAPHITE, ms=12,
                label="Modelo nominal"),
-    plt.Line2D([], [], marker="s", ls="", mfc="none", mec=PETROL, ms=10,
+    plt.Line2D([], [], marker="s", ls="", mfc="none", mec=PETROL, ms=8,
                label=r"Intervalo de amostragem"),
 ]
 fig.legend(handles=handles, loc="upper right", bbox_to_anchor=(1.0, 0.97),
-           frameon=False, fontsize=13, labelcolor=GRAPHITE)
+           frameon=False, fontsize=11, labelcolor=GRAPHITE)
 
 fig.align_ylabels(axes[:, 0])
 fig.tight_layout()

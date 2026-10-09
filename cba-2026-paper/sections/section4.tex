@@ -85,10 +85,11 @@ While the DE-PID controller achieved a near-perfect TPSR above 99\%, it serves m
 }{% 
     To substantiate these comparisons statistically, a paired Wilcoxon signed-rank test was applied per metric and scenario, comparing EADRC+ZPLP against each baseline controller across the same 100 Monte Carlo parameter draws. 
     
-    According to Table \ref{tab:wilcoxon}, in both scenarios EADRC+ZPLP outperforms EADRC+EBMFLC on every metric ($p < 0.001$): 
-    it achieves higher tremor suppression (TPSR, $r \geq 0.56$; IAE, $r \leq -0.67$) 
-    while requiring less control effort (TV, $r \leq -0.85$), with lower control Power in every one of the 100 paired trials ($r = -1.00$), 
+    According to Table \ref{tab:wilcoxon}, in both scenarios EADRC+ZPLP outperforms EADRC+EBMFLC on every metric but Entropy ($p < 0.001$): 
+    it achieves higher tremor suppression (TPSR, $r \geq 0.56$; IAE, $r \leq -0.68$) 
+    while requiring less control effort (TV, $r \leq -0.81$), with lower control Power in every one of the 100 paired trials ($r = -1.00$), 
     supporting the claimed balance between attenuation and actuation. 
+    Entropy did not differ significantly in the resting scenario ($p = 0.73$) and was moderately lower for EADRC+ZPLP in the moving one ($r = -0.32$). 
     
     Differences against DE-PID were significant for every metric in both scenarios with maximal or near-maximal effect size 
     ($|r| \geq 0.99$), reflecting that DE-PID suppressed tremor better than EADRC+ZPLP in practically every one of the 100 paired trials, 
@@ -98,7 +99,7 @@ While the DE-PID controller achieved a near-perfect TPSR above 99\%, it serves m
     
     EADRC+ZPLP suppressed tremor better than IMC-PID in every paired trial ($|r| = 1.00$ for TPSR, $R^2$, Entropy and IAE), 
     at the cost of a higher TV. 
-    Control Power did not differ significantly in the resting scenario ($p = 0.62$) and was lower for EADRC+ZPLP in the moving one ($r = -0.70$), 
+    Control Power did not differ significantly in the resting scenario ($p = 0.73$) and was lower for EADRC+ZPLP in the moving one ($r = -0.70$), 
     indicating that IMC-PID's weaker tremor suppression does not come from correspondingly lower actuation.
 }
 

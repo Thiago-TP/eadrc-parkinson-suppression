@@ -76,16 +76,9 @@
 \end{frame}
 
 \begin{frame}{Proposta deste trabalho}
-  \begin{itemize}[<+->]
-    \setlength{\itemsep}{0.25cm}
-    \item \textbf{Controle:} rejeição ativa de perturbações baseada em erro (EADRC), robusta a perturbações externas e incertezas de modelo \cite{Guo:2016}.
-    \item \textbf{Plataforma de teste:} modelo linear do membro superior com 3 graus de liberdade (GdL) \cite{Gebai:2017,Gebai:2018}, que captura o acoplamento ombro-cotovelo-punho.
-    \item \textbf{Estimação do movimento voluntário}, em duas variantes:
-      \begin{itemize}[<+->]
-        \item EBMFLC, o combinador linear de Fourier de \textcite{Atashzar:2016};
-        \item ZPLP, filtragem passa-baixas de fase zero.
-      \end{itemize}
-    \item \textbf{Comparação} com dois PIDs: IMC-PID (\textit{Internal Model Control}) e DE-PID (evolução diferencial com conhecimento perfeito do movimento voluntário).
-    \item \textbf{Robustez:} 100 simulações de Monte Carlo dos parâmetros físicos e teste de Wilcoxon pareado.
-  \end{itemize}
+  \centering
+  \vfill
+  % Revealed one lane at a time
+  \resizebox{\linewidth}{!}{\input{figures/flowchart_proposal.tikz}}
+  \vfill
 \end{frame}

@@ -61,16 +61,13 @@
   \begin{columns}[T]
     \small
     \begin{column}{0.58\textwidth}
-      \begin{itemize}
-        \item Runge-Kutta de 4ª ordem, $t \in [0, 6]$~s, passo de 1~ms.
-        \item 100 execuções por controlador: a primeira com o modelo nominal \cite{Gebai:2018}, as demais com 99 amostras tabeladas de rigidez ($c_i \propto k_i$ acompanha).
-        \item Mesma tabela de amostras para todos os controladores e cenários: comparação pareada.
-      \end{itemize}
+      \centering
+      \input{tables/table_parameter_sampling.tex}
       %
       \pause
       \vspace{0.2cm}
       \centering
-      \input{tables/table_parameter_sampling.tex}
+      \includegraphics[width=\linewidth,height=0.54\textheight,keepaspectratio]{stiffness_space.pdf}
     \end{column}
 
     \pause
@@ -86,31 +83,31 @@
   \end{columns}
 \end{frame}
 
-\begin{frame}{Controladores e métricas de desempenho}
-  \centering
-  \input{tables/table_control_parameters.tex}
+% \begin{frame}{Controladores e métricas de desempenho}
+%   \centering
+%   \input{tables/table_control_parameters.tex}
 
-  \pause
-  \vspace{0.4cm}
-  \begin{columns}[T]
-    \begin{column}{0.48\textwidth}
-      \begin{block}{Métricas}
-        \small
-        \begin{itemize}
-          \item Resposta do punho: TPSR \cite{Qi:2024}, IAE \cite{Skogestad:2003}, $R^2$ \cite{Glantz:1990} e entropia \cite{Lathi:2018}.
-          \item Sinal de controle: variação total (TV) \cite{Skogestad:2003} e potência \cite{Lathi:2018}.
-        \end{itemize}
-      \end{block}
-    \end{column}
-    \begin{column}{0.48\textwidth}
-      \pause
-      \begin{block}{Análise estatística}
-        \small
-        \begin{itemize}
-          \item EADRC+ZPLP contra cada controlador: teste de Wilcoxon pareado \cite{Conover:1980}, com correlação bisserial de postos $r$.
-          \item Correção de Holm-Bonferroni nas seis métricas; significância em $0{,}05$.
-        \end{itemize}
-      \end{block}
-    \end{column}
-  \end{columns}
-\end{frame}
+%   \pause
+%   \vspace{0.4cm}
+%   \begin{columns}[T]
+%     \begin{column}{0.48\textwidth}
+%       \begin{block}{Métricas}
+%         \small
+%         \begin{itemize}
+%           \item Resposta do punho: TPSR \cite{Qi:2024}, IAE \cite{Skogestad:2003}, $R^2$ \cite{Glantz:1990} e entropia \cite{Lathi:2018}.
+%           \item Sinal de controle: variação total (TV) \cite{Skogestad:2003} e potência \cite{Lathi:2018}.
+%         \end{itemize}
+%       \end{block}
+%     \end{column}
+%     \begin{column}{0.48\textwidth}
+%       \pause
+%       \begin{block}{Análise estatística}
+%         \small
+%         \begin{itemize}
+%           \item EADRC+ZPLP contra cada controlador: teste de Wilcoxon pareado \cite{Conover:1980}, com correlação bisserial de postos $r$.
+%           \item Correção de Holm-Bonferroni nos 18 testes de cada cenário; significância em $0{,}05$.
+%         \end{itemize}
+%       \end{block}
+%     \end{column}
+%   \end{columns}
+% \end{frame}

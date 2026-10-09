@@ -120,6 +120,19 @@ This script reads the saved run files and generates summary plots and metrics un
 - [results/plots](results/plots)
 - [results/metrics](results/metrics)
 
+Two further steps refresh the material of the CBA 2026 documents: the spectrograms of the nominal model come from separate 1000 s simulations, for a fine frequency resolution, and the results tables of the paper and the presentation are updated in place from [results/metrics](results/metrics) and [results/stats](results/stats):
+
+```bash
+uv run src/postprocessing/spectrograms.py     # writes to results/plots
+uv run src/postprocessing/document_tables.py  # rewrites the numbers of the paper and slide tables
+```
+
+The spectrogram PDFs used by the paper and the slides are copies kept in [cba-2026-paper/figures/plots](cba-2026-paper/figures/plots).
+
+### Audits
+
+Scripts in [src/audits](src/audits) check specific behaviors of the code and exit with a nonzero code on failure, e.g. `uv run src/audits/audit_ebmflc.py`.
+
 ## Notes on the workflow
 
 - The simulation driver in [src/main.py](src/main.py) accepts `num_simulations`, `amplitude_voluntary` and `strategies` (names of the control strategies to simulate; all of them by default) parameters.

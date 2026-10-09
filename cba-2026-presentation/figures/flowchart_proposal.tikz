@@ -1,0 +1,70 @@
+% Workflow of the proposal, shown in "Proposta deste trabalho" and repeated in "Agradecimentos"
+% (needs TikZ libraries positioning, calc and fit, the CBA colors from cba2026.sty and the
+% `visible on` overlay style from presentation.tex; set \tikzset{visible on/.style={}}
+% before \input to show everything at once)
+\begin{tikzpicture}[
+    > = latex,
+    font = \small,
+    node distance = 0.35cm,
+    item/.style = {
+        draw,
+        thick,
+        rounded corners = 2pt,
+        align = center,
+        text width = 4.1cm,
+        minimum height = 1.15cm,
+        inner sep = 3pt,
+        execute at begin node = {\hyphenpenalty = 10000\exhyphenpenalty = 10000},
+    },
+    platform/.style = {item, draw = CBAOrange, fill = CBALightOrange},
+    estimator/.style = {item, draw = CBAPetrol, fill = CBALightPetrol},
+    control/.style = {item, draw = CBAPurple, fill = CBALightPurple},
+    baseline/.style = {item, draw = CBAGraphite!60, fill = CBAGraphite!5, dashed},
+    evaluation/.style = {item, draw = CBAMagenta, fill = CBALightMagenta},
+    lane/.style = {
+        draw = #1,
+        very thick,
+        rounded corners = 5pt,
+        inner xsep = 0.2cm,
+        inner ysep = 0.25cm,
+    },
+    lane title/.style = {font = \small\bfseries, text = #1, anchor = south, inner sep = 2pt},
+    stage/.style = {->, line width = 2.5pt, CBAGraphite!45, shorten > = 2pt, shorten < = 2pt},
+]
+    % Wrist control (middle lane), centered on y = 0; the gaps leave room for the annotated arrows
+    \node [control, visible on = <2->] (eadrc) at (6.1, 0)
+        {EADRC no punho: rejeita a perturbação total, inclusive o acoplamento \cite{Guo:2016}};
+    \node [estimator, above = 0.75cm of eadrc, visible on = <2->] (estimator)
+        {Estimação de $\theta_{v_3}$: EBMFLC \cite{Atashzar:2016} ou ZPLP};
+    \node [baseline, below = 0.75cm of eadrc, visible on = <2->] (baselines)
+        {Comparação: IMC-PID e DE-PID ($\theta_{v_3}$ conhecido)};
+
+    % Test platform (left lane), centered on the middle lane
+    \node [platform, above = 0.2cm, visible on = <1->] (model) at (0, 0)
+        {Modelo linear do membro superior com 3 GdL \cite{Gebai:2017,Gebai:2018}};
+    \node [platform, below = 0.2cm, visible on = <1->] (torques) at (0, 0)
+        {Torques de tremor (3 harmônicos) e voluntário (repouso ou movimento)};
+
+    % Evaluation (right lane), centered on the middle lane
+    \node [evaluation, above = 0.4cm, visible on = <3->] (monte carlo) at (12.2, 0)
+        {Monte Carlo: 100 execuções pareadas em 2 cenários};
+    \node [evaluation, below = 0.4cm, visible on = <3->] (statistics) at (12.2, 0)
+        {6 métricas, Wilcoxon pareado e Holm-Bonferroni};
+
+    % Lanes, each fitted to its own boxes
+    \node [lane = CBAOrange, fit = (model) (torques), visible on = <1->] (platform lane) {};
+    \node [lane = CBAPurple, fit = (estimator) (baselines), visible on = <2->] (control lane) {};
+    \node [lane = CBAMagenta, fit = (monte carlo) (statistics), visible on = <3->] (evaluation lane) {};
+    \node [lane title = CBAOrange, visible on = <1->] at (platform lane.north) {Plataforma de teste};
+    \node [lane title = CBAPurple, visible on = <2->] at (control lane.north) {Controle do punho};
+    \node [lane title = CBAMagenta, visible on = <3->] at (evaluation lane.north) {Avaliação};
+
+    % Flow inside and between lanes
+    \draw [->, thick, CBAPetrol, visible on = <2->] (estimator) -- (eadrc)
+        node [midway, right, font = \footnotesize] {$\hat{\theta}_{v_3}$};
+    \draw [thick, dashed, CBAGraphite!60, visible on = <2->] (eadrc) -- (baselines)
+        node [midway, right, font = \footnotesize, text = CBAGraphite] {vs.};
+    \draw [->, thick, CBAMagenta, visible on = <3->] (monte carlo) -- (statistics);
+    \draw [stage, visible on = <2->] (platform lane) -- (control lane);
+    \draw [stage, visible on = <3->] (control lane) -- (evaluation lane);
+\end{tikzpicture}%

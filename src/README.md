@@ -28,6 +28,14 @@ The [postprocessing](postprocessing) package converts saved simulation results i
 - [postprocessing/metrics.py](postprocessing/metrics.py) — metric calculations and CSV writing utilities
 - [postprocessing/plots.py](postprocessing/plots.py) — plotting routines
 - [postprocessing/statistics.py](postprocessing/statistics.py) — summary/statistical helpers
+- [postprocessing/spectrograms.py](postprocessing/spectrograms.py) — spectrograms of the nominal model from 1000 s simulations (uncontrolled and EADRC+EBMFLC), for a fine frequency resolution
+- [postprocessing/document_tables.py](postprocessing/document_tables.py) — updates the numbers of the results tables of the CBA 2026 paper and presentation from the post-processed results
+
+## Audits
+
+The [audits](audits) folder holds scripts that check specific behaviors of the code, each reporting PASS or FAIL and exiting with a nonzero code on failure:
+
+- [audits/audit_ebmflc.py](audits/audit_ebmflc.py) — checks that the EBMFLC voluntary-motion estimate of EADRC+EBMFLC sums both the sine and the cosine terms up to 4 Hz (until 2026-10-08, the cosine terms were dropped), on the stored runs and on a synthetic signal
 
 ## Tremor estimation methods
 
@@ -49,6 +57,8 @@ From the repo root (paths to [../configs.yaml](../configs.yaml) and [../results]
 uv sync
 uv run src/main.py
 uv run src/postprocessing/postprocess.py
+uv run src/postprocessing/spectrograms.py
+uv run src/postprocessing/document_tables.py
 ```
 
 This mirrors the project workflow used in the repository:

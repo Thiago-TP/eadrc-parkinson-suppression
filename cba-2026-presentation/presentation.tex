@@ -3,6 +3,30 @@
 % --- Carrega o Arquivo de Estilo Personalizado ---
 \usepackage{cba2026}
 
+% customization of the footline
+\makeatletter
+\setbeamertemplate{footline}
+{
+  \leavevmode%
+  \hbox{%
+  \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{author in head/foot}%
+    \usebeamerfont{author in head/foot}
+    Thiago Paula (UnB)
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{title in head/foot}%
+    \usebeamerfont{title in head/foot}
+    EADRC for Parkinson Tremor
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{date in head/foot}%
+    \usebeamerfont{date in head/foot}
+    XXVI CBA -- 9 de outubro de 2026
+    \hspace*{2em}
+    \insertframenumber{} / \inserttotalframenumber\hspace*{2ex}
+  \end{beamercolorbox}}%
+  \vskip0pt%
+}
+\makeatother
+
 
 % --- Loads user-defined packages ---
 \usepackage{csquotes}
@@ -16,6 +40,14 @@
 \graphicspath{{logos/}{figures/}{../cba-2026-paper/}}
 \input{../cba-2026-paper/figures/config.tex}
 \usetikzlibrary{fit}
+
+% Overlay-aware TikZ elements: `visible on=<2->` hides an element (keeping its space) outside
+% those slides; \tikzset{visible on/.style={}} shows everything at once
+\tikzset{
+  invisible/.style = {opacity = 0, text opacity = 0},
+  visible on/.style = {alt = {#1{}{invisible}}},
+  alt/.code args = {<#1>#2#3}{\alt<#1>{\pgfkeysalso{#2}}{\pgfkeysalso{#3}}},
+}
 
 % Upper limb schematic from the paper, typeset at the paper's column width so that
 % its annotations stay aligned with the skeleton picture, and scaled afterwards
@@ -31,6 +63,7 @@
 \addbibresource{../cba-2026-paper/references/c3_passive_control_strategies.bib}
 \addbibresource{../cba-2026-paper/references/c4_active_control_strategies.bib}
 \addbibresource{../cba-2026-paper/references/metrics.bib}
+\addbibresource{references.bib}
 
 % Sorted numbers in multiple citations, e.g. [1, 4] instead of [4, 1]
 \ExecuteBibliographyOptions{sortcites=true}
@@ -41,13 +74,15 @@
 
  
 % --- Dados da Apresentação ---
-\title[XXVI CBA -- 2026]{EADRC for Parkinson Tremor
-Suppression in Wrist Considering Upper
-Limb Dynamics}
-\subtitle{}
-\author[Paula et al.]{
+\title[EADRC for Parkinson Tremor]{
+  EADRC for Parkinson Tremor Suppression in Wrist Considering Upper Limb Dynamics\\
+  % \rule{\textwidth}{.5pt}\\
+  % {\small Supressão de tremor de Parkinson no punho via EADRC considerando dinâmicas do membro superior}
+}
+\subtitle{Supressão de tremor de Parkinson no punho via EADRC considerando dinâmicas do membro superior}
+\author[Paula, Thiago et al.]{
   \texorpdfstring{%
-    Thiago T. de Paula, Matheus T. de Sousa,\\
+    \underline{Thiago T. de Paula}, Matheus T. de Sousa,\\
     José O. A. L. Filho, Marcela R. Machado
   }{%
     Thiago T. de Paula, Matheus T. de Sousa,
@@ -80,50 +115,27 @@ Limb Dynamics}
 
 % --- Slide Final ---
 \begin{frame}[plain]{Agradecimentos}
-  \begin{center}
-    Agradecemos o apoio financeiro da \textbf{FAPDF} e do \textbf{Programa de Formação de Recursos Humanos da ANP}.
+  \centering
+  Agradecemos o apoio financeiro da \textbf{FAPDF} e do\\
+  \textbf{Programa de Formação de Recursos Humanos da ANP}.
 
-    \vspace{0.2cm}
-    {\footnotesize FAPDF nº 435/2023, Processo nº~00193-00002143/2023-02, Chamada Pública 01/2023 -- BIO Learning.}
+  {\scriptsize FAPDF nº 435/2023, Processo nº~00193-00002143/2023-02, Chamada Pública 01/2023 -- BIO Learning.}
 
-    \vspace{0.5cm}
-    \includegraphics[height=1.9cm]{fapdf.jpg}
-    \hspace{1.5cm}
-    \includegraphics[height=1.6cm]{PRH-57.png}
+  \includegraphics[height=1.4cm]{fapdf.jpg}
+  \hspace{0.5cm}
+  \includegraphics[height=1.2cm]{PRH-57.png}
 
-    \vspace{0.6cm}
-    {\Large\textbf{Muito Obrigado!}}
+  {\tikzset{visible on/.style = {}}\resizebox{.5\linewidth}{!}{\input{figures/flowchart_proposal.tikz}}}
 
-    \vspace{0.6cm}
-    \small
-    Contato: \href{mailto:thiagotomasdepaula@gmail.com}{thiagotomasdepaula@gmail.com}\\
-    Código: \href{https://github.com/Thiago-TP/eadrc-parkinson-suppression}{github.com/Thiago-TP/eadrc-parkinson-suppression}
-  \end{center}
+  \textbf{Muito Obrigado!}
+
+  {\small Contato: thiagotomasdepaula@gmail.com}
+
+  {\small Código: https://github.com/Thiago-TP/eadrc-parkinson-suppression}
 \end{frame}
 
 % --- Material de apoio ---
 \appendix
-
-\begin{frame}{Espaço de rigidezes das simulações de Monte Carlo}
-  \begin{columns}[c]
-    \begin{column}{0.66\textwidth}
-      \centering
-      \includegraphics[width=\linewidth,height=0.8\textheight,keepaspectratio]{stiffness_space.pdf}
-    \end{column}
-    \begin{column}{0.32\textwidth}
-      \small
-      \begin{itemize}
-        \setlength{\itemsep}{0.25cm}
-        \item Cada $k_i$ foi sorteado uma vez, de forma uniforme e independente em seu intervalo; a tabela fica no \texttt{configs.yaml}.
-        \item \alert{Estrela:} valores nominais, no ponto central de cada intervalo.
-        \item Pontos: as 99 amostras, as mesmas para todos os controladores e cenários.
-      \end{itemize}
-    \end{column}
-  \end{columns}
-\end{frame}
-
-\begin{frame}[allowframebreaks]{Referências}
-  \printbibliography
-\end{frame}
+\input{sections/appendix.tex}
 
 \end{document}

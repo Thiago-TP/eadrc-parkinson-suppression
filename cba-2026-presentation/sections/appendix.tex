@@ -1,0 +1,168 @@
+% Material de apoio (after \appendix): methods first, then statistics, then results
+
+\begin{frame}{EBMFLC: estimação do movimento voluntário}
+  \begin{columns}[T]
+    \begin{column}{0.47\textwidth}
+      \footnotesize
+      \begin{itemize}
+        \setlength{\itemsep}{0.12cm}
+        \item Combinador linear de Fourier com banda limitada e memória em janela \cite{Atashzar:2016,Qi:2024}: $\theta_3$ é aproximado por $n = 100$ senoides de frequências fixas $f_r \in [0, 12]$~Hz (passo de $\approx 0{,}12$~Hz).
+        \item A cada passo $k$, com $\mathbf{x}_k = [\sin\omega_r t_k \,\,\, \cos\omega_r t_k]_{r=1}^{n}$:
+          \begin{equation*}
+            \varepsilon_k = \theta_{3,k} - \mathbf{w}_k^\top\mathbf{x}_k,
+            \quad
+            \mathbf{w}_{k+1} = p\,\mathbf{w}_k + 2\mu\,\varepsilon_k\,\mathbf{x}_k.
+          \end{equation*}
+        \item Esquecimento $p = \alpha^{1/(f_s T_p)} \approx 0{,}9934$: uma amostra com $T_p = 0{,}59$~s de idade pesa $\alpha = 2\%$. Ainda, $\mu = 0{,}005$ e $f_s = 1$~kHz.
+        \item Movimento voluntário: só os termos de até 4~Hz,
+          \begin{equation*}
+            \hat{\theta}_{v_3,k} = \textstyle\sum_{f_r \leq 4\,\text{Hz}} \left( w_{r}\sin\omega_r t_k + w_{n+r}\cos\omega_r t_k \right).
+          \end{equation*}
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.51\textwidth}
+      \centering
+      \begin{tikzpicture}[
+          > = latex,
+          font = \footnotesize,
+          block/.style = {draw, thick, rounded corners = 2pt, align = center, inner sep = 3pt, minimum height = 0.75cm},
+          estimator/.style = {block, draw = CBAPetrol, fill = CBALightPetrol},
+          junction/.style = {draw, thick, circle, minimum size = 0.4cm, inner sep = 0pt},
+        ]
+        % Adaptive loop
+        \node [estimator] (reference) at (0, 0) {Senoides\\$\mathbf{x}_k$};
+        \node [estimator] (combiner) at (2.3, 0) {$\mathbf{w}_k^\top\mathbf{x}_k$};
+        \node [junction] (sum) at (4.3, 0) {};
+        \node [estimator] (selection) at (2.3, 1.35) {Termos com $f_r \leq 4$~Hz};
+        \node [estimator] (lms) at (2.3, -1.35) {LMS com esquecimento};
+        \draw [->, thick] (reference) -- (combiner);
+        \draw [->, thick] (combiner) -- (sum) node [pos = 0.8, above] {$-$};
+        \draw [<-, thick] (sum) -- ++(1, 0) node [right] {$\theta_3$} node [pos = 0.35, above] {$+$};
+        \draw [->, thick] (sum) |- (lms) node [pos = 0.3, right] {$\varepsilon_k$};
+        \draw [->, thick] (reference) |- (lms);
+        \draw [->, thick] (lms) -- (combiner) node [midway, right] {$\mathbf{w}_{k+1}$};
+        \draw [->, thick] (combiner) -- (selection);
+        \draw [->, thick, CBAPetrol] (selection) -- ++(2.4, 0) node [right] {$\hat{\theta}_{v_3}$};
+
+        % Frequency comb of the references, split at 4 Hz
+        \begin{scope}[shift = {(-0.6, -3.55)}, x = 0.37cm, y = 1cm]
+          \foreach \r in {0, ..., 99} {
+            \pgfmathsetmacro{\f}{12 * \r / 99}
+            \pgfmathparse{\f <= 4 ? "CBAPetrol" : "CBAGraphite!35"}
+            \draw [\pgfmathresult, line width = 0.6pt] (\f, 0) -- (\f, 0.5);
+          }
+          \draw [->, thick] (0, 0) -- (13, 0) node [right] {$f$ [Hz]};
+          \foreach \f in {0, 4, 8, 12} \draw (\f, 0) -- (\f, -0.08) node [below] {\f};
+          \node [above, text = CBAPetrol] at (1.6, 0.5) {voluntário};
+          \node [above, text = CBAGraphite] at (8, 0.5) {tremor};
+          % Tremor harmonics
+          \foreach \f/\label in {3.59/{3,59}, 5.30/{5,30}} {
+            \draw [CBAMagenta, thick, dashed] (\f, 0) -- (\f, 0.9) node [above, font = \scriptsize, text = CBAMagenta] {\label};
+          }
+          \node [right, font = \scriptsize, text = CBAMagenta, align = left] at (12.3, 0.65) {14,35 Hz:\\fora da banda};
+        \end{scope}
+      \end{tikzpicture}
+
+      \vspace{0.1cm}
+      {\scriptsize Tracejado: harmônicos do tremor; o de 3,59~Hz cai na banda voluntária.}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Teste de postos sinalizados de Wilcoxon}
+  \begin{columns}[T]
+    \begin{column}{0.55\textwidth}
+      \footnotesize
+      Por cenário, métrica $M$ e controlador de comparação, com a mesma rigidez na execução $j$ (amostras pareadas), $d_j = M_j^{\text{ZPLP}} - M_j^{\text{outro}}$, $j = 1, \dots, 100$.
+      $H_0$: distribuição de $d$ simétrica em torno de 0, bilateral \cite{Wilcoxon:1945,Conover:1980}.
+      \begin{enumerate}
+        \setlength{\itemsep}{0.05cm}
+        \item \alert{Zeros} ($d_j = 0$) são descartados; $n$ é o número de $d_j \neq 0$.
+        \item Postos de $|d_j|$; \alert{empates} recebem o posto médio.
+        \item $R^{+}$ e $R^{-}$: somas dos postos de $d_j > 0$ e de $d_j < 0$.
+        \item Aproximação normal, com correção de continuidade e de empates ($t_g$: tamanho do grupo $g$ de empates):
+          \begin{gather*}
+            \mu = \tfrac{n(n+1)}{4},
+            \quad
+            \sigma^2 = \tfrac{n(n+1)(2n+1)}{24} - \textstyle\sum_g \tfrac{t_g^3 - t_g}{48}, \\
+            z = \frac{R^{+} - \mu - \frac{1}{2}\operatorname{sgn}(R^{+} - \mu)}{\sigma},
+            \quad
+            p = 2\left[1 - \Phi(|z|)\right].
+          \end{gather*}
+        \item Tamanho de efeito: $r = (R^{+} - R^{-}) / (R^{+} + R^{-}) \in [-1, 1]$ \cite{Kerby:2014}.
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.43\textwidth}
+      \begin{block}{Nos dados}
+        \footnotesize
+        \begin{itemize}
+          \item $n = 100$ nos 36 testes: \alert{nenhum zero e nenhum empate}, pois as métricas são contínuas.
+          \item $|r| = 1$ quando uma estratégia vence em todas as execuções: $\min(R^{+}, R^{-}) = 0$, $|z| = 8{,}68$ e $p = 3{,}96 \cdot 10^{-18}$, o menor $p$ possível com $n = 100$.
+        \end{itemize}
+      \end{block}
+      \begin{exampleblock}{Implementação}
+        \footnotesize
+        \raggedright
+        \texttt{scipy.stats.wilcoxon} (SciPy 1.18.1), com \texttt{zero\_method="wilcox"}, \texttt{correction=True} e aproximação normal. Reproduzido à mão, com erro relativo em $p$ abaixo de $10^{-13}$.
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Correção de Holm-Bonferroni}
+  \begin{columns}[T]
+    \begin{column}{0.45\textwidth}
+      \footnotesize
+      \begin{itemize}
+        \setlength{\itemsep}{0.15cm}
+        \item Por cenário, $m = 18$ testes (6 métricas $\times$ 3 comparações). Sem correção, com $\alpha = 0{,}05$ e testes independentes, a chance de ao menos um falso positivo seria $1 - 0{,}95^{18} \approx 60\%$.
+        \item Procedimento de Holm \cite{Holm:1979}: ordenam-se $p_{(1)} \leq \dots \leq p_{(m)}$ e
+          \begin{equation*}
+            \tilde{p}_{(k)} = \min\Big\{1, \max_{j \leq k} \,(m - j + 1)\, p_{(j)}\Big\};
+          \end{equation*}
+          $H_{(k)}$ é rejeitada se $\tilde{p}_{(k)} < \alpha$.
+        \item Limita a taxa de erro por família a $\alpha$ sob qualquer dependência entre os testes e nunca é menos poderoso que Bonferroni ($m\,p_{(k)}$); o máximo acumulado mantém $\tilde{p}$ monótono.
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.53\textwidth}
+      \centering
+      {\small Exemplo: repouso}
+
+      \vspace{0.1cm}
+      \scriptsize
+      \setlength{\tabcolsep}{2.5pt}
+      \begin{tabular}{r l c c c}
+        \toprule
+        $k$ & ZPLP vs. & $p_{(k)}$ & $m - k + 1$ & $\tilde{p}_{(k)}$ \\
+        \midrule
+        1  & DE-PID, TPSR      & $3{,}96 \cdot 10^{-18}$ & 18 & $7{,}12 \cdot 10^{-17}$ \\
+        \multicolumn{5}{c}{$\vdots$} \\
+        12 & DE-PID, entropia  & $5{,}19 \cdot 10^{-18}$ & 7  & $7{,}12 \cdot 10^{-17}$\textsuperscript{*} \\
+        13 & EBMFLC, TV        & $1{,}88 \cdot 10^{-12}$ & 6  & $1{,}13 \cdot 10^{-11}$ \\
+        \multicolumn{5}{c}{$\vdots$} \\
+        16 & EBMFLC, TPSR      & $1{,}35 \cdot 10^{-6}$  & 3  & $4{,}04 \cdot 10^{-6}$ \\
+        17 & EBMFLC, entropia  & $0{,}365$               & 2  & \alert{$0{,}730$} \\
+        18 & IMC-PID, potência & $0{,}619$               & 1  & \alert{$0{,}730$}\textsuperscript{**} \\
+        \bottomrule
+      \end{tabular}
+
+      \vspace{0.15cm}
+      \raggedright
+      Máximo acumulado: \textsuperscript{*}$7\,p_{(12)} = 3{,}6 \cdot 10^{-17}$, mas vale o de $k = 1$; \textsuperscript{**}$p_{(18)} = 0{,}619$, mas vale o de $k = 17$.
+      Em vermelho, os testes não significativos.
+
+      \vspace{0.2cm}
+      \structure{Implementação:} \texttt{holm\_bonferroni()}, em \texttt{statistics.py}, com uma família de 18 testes por cenário.
+
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Respostas temporais no modelo nominal}
+  \centering
+  \includegraphics[width=\linewidth,height=0.9\textheight,keepaspectratio]{time_responses.pdf}
+\end{frame}
+
+\begin{frame}[allowframebreaks]{Referências}
+  \printbibliography
+\end{frame}

@@ -33,59 +33,31 @@
 \end{frame}
 
 \begin{frame}{Torques aplicados e representação em espaço de estados}
-  \begin{columns}[T]
-    \begin{column}{0.5\textwidth}
-      \begin{block}{Torque em um paciente com DP \cite{Qi:2024}}
-        \vspace{-0.3cm}
-        \begin{equation*}
-          \bm{\tau} = \underbrace{\bm{\tau}_i}_{\text{patológico}} + \underbrace{\bm{\tau}_v}_{\text{voluntário}}
-        \end{equation*}
-      \end{block}
-      \begin{itemize}[<+->]
-        \item A potência do tremor concentra-se em torno de uma frequência central \cite{Deuschl:2022}; usualmente, até 3 harmônicos \cite{Zamanian:2019,Albuquerque:2025}.
-        \item O acoplamento já torna a dinâmica do punho multimodal: um harmônico por articulação.
-      \end{itemize}
-    \end{column}
-    \begin{column}{0.46\textwidth}
-      \pause
-      \begin{block}{Tremor}
-        \begin{equation*}
-          \bm{\tau}_i =
-          \begin{bmatrix}
-            A_1\sin(2\pi f_1 t) \\
-            A_2\sin(2\pi f_2 t) \\
-            A_3\sin(2\pi f_3 t)
-          \end{bmatrix}
-        \end{equation*}
-        \centering
-        \small
-        $A_i = 1$~N$\cdot$m;\quad $f_1\ f_2\ f_3 = 3{,}59\ 5{,}30\ 14{,}35$~Hz
-      \end{block}
-      \pause
-      \begin{block}{Espaço de estados, $\mathbf{x} = [\bm{\theta}^\top\ \dot{\bm{\theta}}^\top]^\top$}
-        \vspace{-0.3cm}
-        \begin{align*}
-          \dot{\mathbf{x}} &= \mathbf{A}\mathbf{x} + \mathbf{B}\bm{\tau}, \qquad
-          \mathbf{y} = \mathbf{C}_\text{ss}\mathbf{x} \\[1mm]
-          \mathbf{A} &=
-          \begin{bmatrix}
-            \mathbf{0} & \mathbf{I} \\
-            -\mathbf{J}^{-1}\mathbf{K} & -\mathbf{J}^{-1}\mathbf{C}
-          \end{bmatrix},
-          \quad
-          \mathbf{B} =
-          \begin{bmatrix}
-            \mathbf{0} \\
-            \mathbf{J}^{-1}
-          \end{bmatrix} \\[1mm]
-          \mathbf{C}_\text{ss} &=
-          \begin{bmatrix}
-            \mathbf{I} & \mathbf{0}
-          \end{bmatrix}
-        \end{align*}
-      \end{block}
-    \end{column}
-  \end{columns}
+  \begin{block}{Torque em um paciente com DP \cite{Qi:2024}}
+    \vspace{-0.3cm}
+    \begin{equation*}
+      \bm{\tau} = \underbrace{\bm{\tau}_i}_{\text{patológico}} + \underbrace{\bm{\tau}_v}_{\text{voluntário}}
+    \end{equation*}
+  \end{block}
+  %
+  \begin{itemize}[<+->]
+    \item A potência do tremor concentra-se em torno de uma frequência central \cite{Deuschl:2022}; usualmente, até 3 harmônicos \cite{Zamanian:2019,Albuquerque:2025}.
+    \begin{equation*}
+      \bm{\tau}_i =
+      \begin{bmatrix}
+        A_1\sin(2\pi f_1 t) \\
+        A_2\sin(2\pi f_2 t) \\
+        A_3\sin(2\pi f_3 t)
+      \end{bmatrix},
+      \quad
+      A_i = 1~\text{N}\cdot\text{m} \quad
+      f_1 = 3{,}59~\text{Hz} \quad
+      f_2 = 5{,}30~\text{Hz} \quad
+      f_3 = 14{,}35~\text{Hz}
+    \end{equation*}
+
+    \item O acoplamento torna a dinâmica do punho multimodal.
+  \end{itemize}
 \end{frame}
 
 \begin{frame}{Controle por rejeição ativa de perturbações baseado em erro}
