@@ -8,9 +8,9 @@
 
   \begin{itemize}[<+->]
     \small
-    \item DE-PID: TPSR $\approx$ 99,9\%, mas conhece $\theta_{v_3}$ e tem TV $\approx 1{,}6\times$ a do EADRC+ZPLP.
+    \item DE-PID: TPSR $\approx$ 99,9\%, mas conhece $\theta_{v_3}$ e tem TV $\approx 3{,}3\times$ a do EADRC+ZPLP.
     \item EADRC+ZPLP: maior TPSR entre os controladores realizáveis (56,97\% em movimento), com menor esforço que o EADRC+EBMFLC.
-    \item IMC-PID: supressão fraca e muito variável entre execuções.
+    \item IMC-PID: TPSR mediano acima de 50\%, mas oscilações crescentes em algumas execuções derrubam a média.
   \end{itemize}
 \end{frame}
 
@@ -29,7 +29,7 @@
         \setlength{\itemsep}{0.2cm}
         \item \textbf{vs.\ EBMFLC:} maior supressão (TPSR, IAE) e \textbf{menor esforço} de controle (potência menor em todas as execuções); entropia equivalente em repouso.
         \item \textbf{vs.\ DE-PID:} $|r| \approx 1$ em todas as métricas: resposta melhor em todas as execuções, à custa de maior esforço em todas elas.
-        \item \textbf{vs.\ IMC-PID:} supressão superior em todas as execuções; potência equivalente em repouso e menor em movimento, mas TV maior.
+        \item \textbf{vs.\ IMC-PID:} supressão superior ($|r| \geq 0{,}94$ em TPSR, $R^2$ e IAE) e \textbf{menor esforço} em todas as execuções (potência e TV).
       \end{itemize}
     \end{column}
   \end{columns}

@@ -101,12 +101,12 @@ Table \ref{tab:nominal} lists the nominal parameter values used in the simulatio
 
 \subsubsection{Control Parameters}
 
-The control parameters in Table \ref{tab:control_parameters} were obtained through distinct tuning methodologies. For EADRC with ZPLP, observer and controller bandwidths ($w_o,\, w_c$) were determined experimentally by maintaining the heuristic ratio $w_o = 10w_c$ ($w_o=4w_\text{control}$ for EADRC with EBMFLC). IMC-PID was tuned using the Internal Model Control method \citep{Rivera:1986}, based on a second-order approximation of the wrist joint model without coupling terms. Its closed-loop pole was set 3.9 times slower than the open-loop system to ensure a practical and conservative response.
+The control parameters in Table \ref{tab:control_parameters} were obtained through distinct tuning methodologies. For EADRC with ZPLP, observer and controller bandwidths ($w_o,\, w_c$) were determined experimentally by maintaining the heuristic ratio $w_o = 10w_c$ ($w_o=4w_\text{control}$ for EADRC with EBMFLC). IMC-PID was tuned using the Internal Model Control method \citep{Rivera:1986}, based on a second-order approximation of the wrist joint model without coupling terms. Its closed-loop time constant was set to $\lambda = f\tau$, with $\tau$ the time constant of the uncoupled wrist model and $f = 0.4$ chosen by a grid search over $f \in \{0.1, 0.2, \dots, 5.0\}$ that maximized $R^2$ on the nominal model.
 
 In contrast, DE-PID parameters were optimized via a differential evolution algorithm, following the GA-based framework in \cite{Lekshmi:2019}. 
 The optimization maximized $R^2$
 with respect to true voluntary movement. 
-This process employed a population of 5 individuals over 30 iterations and assumed full knowledge of the voluntary component $\theta_{v_3}$ to establish an ideal performance benchmark. Other control approaches were adjusted according to their respective cited references.
+The optimization used the DE/best/1/bin strategy with a population of 15 individuals (5 per gain), a limit of 30 generations and a convergence tolerance of $10^{-3}$, reached after 8 generations, and assumed full knowledge of the voluntary component $\theta_{v_3}$ to establish an ideal performance benchmark. Other control approaches were adjusted according to their respective cited references.
 
 \begin{table*}[htbp]
     \centering

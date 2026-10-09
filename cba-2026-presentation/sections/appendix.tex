@@ -69,6 +69,88 @@
   \end{columns}
 \end{frame}
 
+\begin{frame}{Hiperparâmetros dos controladores}
+  \centering
+  \input{tables/table_control_parameters.tex}
+
+  \vspace{0.3cm}
+  \raggedright
+  \footnotesize
+  \begin{itemize}
+    \setlength{\itemsep}{0.1cm}
+    \item EADRC parametrizado por largura de banda: ESO com $\beta_1 = 3\omega_o$, $\beta_2 = 3\omega_o^2$, $\beta_3 = \omega_o^3$; lei PD com $\kappa_1 = \omega_c^2$, $\kappa_2 = 2\omega_c$; $b_0 = [\mathbf{J}^{-1}]_{33}$.
+    \item PIDs discretos com passo $\Delta t = 1$~ms: $u_{3,k} = K_p e_k + K_i \sum_{j \leq k} e_j \Delta t + K_d (e_k - e_{k-1}) / \Delta t$; o IMC-PID estima $\theta_{v_3}$ com o mesmo filtro do ZPLP.
+    \item Todos sintonizados no modelo nominal e mantidos fixos nas 100 execuções.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Sintonia do IMC-PID}
+  \begin{columns}[T]
+    \begin{column}{0.53\textwidth}
+      \footnotesize
+      \begin{itemize}
+        \setlength{\itemsep}{0.12cm}
+        \item Modelo de projeto: punho isolado, sem o acoplamento com ombro e cotovelo,
+          \begin{equation*}
+            G(s) = \frac{1}{J_{33}s^2 + c_4 s + k_4} = \frac{K}{\tau^2 s^2 + 2\zeta\tau s + 1}.
+          \end{equation*}
+        \item IMC \cite{Rivera:1986}: $Q(s) = G^{-1}(s)\,\frac{1}{\lambda s + 1}$, de modo que a malha nominal é $\frac{1}{\lambda s + 1}$. O controlador clássico equivalente é um PID ideal:
+          \begin{gather*}
+            C(s) = \frac{Q}{1 - GQ} = \frac{\tau^2 s^2 + 2\zeta\tau s + 1}{K\lambda s}, \\
+            K_p = \frac{2\zeta\tau}{K\lambda}, \quad
+            K_i = \frac{K_p}{2\zeta\tau}, \quad
+            K_d = \frac{K_p\,\tau}{2\zeta}.
+          \end{gather*}
+        \item Velocidade da malha: $\lambda = f\,\tau$, com $f$ escolhido por busca em grade, $f \in \{0{,}1;\, 0{,}2;\, \dots;\, 5{,}0\}$, maximizando $R^2$ no modelo nominal em movimento.
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.45\textwidth}
+      \begin{block}{Valores (modelo nominal)}
+        \footnotesize
+        \begin{itemize}
+          \item $J_{33} = 0{,}0041$~kg$\cdot$m$^2$, $k_4 = 10$~N$\cdot$m/rad, $c_4 = 0{,}01$~N$\cdot$m$\cdot$s/rad.
+          \item $K = 1/k_4$, $\tau = \sqrt{J_{33}/k_4} = 0{,}0202$~s e $\zeta = c_4 / (2\sqrt{J_{33}k_4}) = 0{,}0247$: polos complexos, pouco amortecidos.
+          \item Melhor $f = 0{,}4$ nos dois cenários, logo $\lambda = 0{,}0081$~s: $K_p = 1{,}235$, $K_i = 1234{,}7$ e $K_d = 0{,}506$.
+        \end{itemize}
+      \end{block}
+      \begin{alertblock}{Limitação}
+        \footnotesize
+        O modelo ignora o acoplamento, e a malha rápida ($\lambda < \tau$) não tolera bem a incerteza: em 4 (repouso) e 5 (movimento) das 99 execuções perturbadas, a oscilação cresce.
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Sintonia do DE-PID por evolução diferencial}
+  \begin{columns}[T]
+    \begin{column}{0.53\textwidth}
+      \footnotesize
+      Busca de $\mathbf{x} = (K_p, K_i, K_d) \in [0, 5] \times [0, 100] \times [0, 5]$ que minimiza $J(\mathbf{x}) = -R^2$ no modelo nominal, com rastreamento perfeito ($\hat{\theta}_{v_3} = \theta_{v_3}$); simulações instáveis recebem $J = 10^{12}$.
+
+      \vspace{0.15cm}
+      DE/best/1/bin \cite{Storn:1997}, a cada geração e para cada indivíduo $\mathbf{x}_i$:
+      \begin{enumerate}
+        \setlength{\itemsep}{0.08cm}
+        \item \alert{Mutação}: $\mathbf{v} = \mathbf{x}_{\text{best}} + F\,(\mathbf{x}_{r_1} - \mathbf{x}_{r_2})$, com $r_1 \neq r_2$ sorteados e $F \sim \mathcal{U}(0{,}5;\, 1)$ por geração.
+        \item \alert{Cruzamento binomial}: $u_j = v_j$ se $\mathcal{U}(0, 1) < CR = 0{,}7$ ou $j = j_{\text{rand}}$; senão, $u_j = x_{i,j}$.
+        \item \alert{Seleção}: $\mathbf{x}_i \leftarrow \mathbf{u}$ se $J(\mathbf{u}) \leq J(\mathbf{x}_i)$, atualizando o melhor imediatamente.
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.45\textwidth}
+      \begin{block}{Configuração e resultado}
+        \footnotesize
+        \begin{itemize}
+          \item População de 15 indivíduos ($5 \times 3$ ganhos), iniciada por hipercubo latino; semente 42; sem polimento local.
+          \item Parada: 30 gerações ou $\sigma(J) \leq 10^{-3}\,|\overline{J}|$ na população; convergiu na 8ª geração, com 135 simulações.
+          \item $K_p = 1{,}721$, $K_i = 15{,}059$ e $K_d = 3{,}239$ nos dois cenários, com $R^2 \approx 0{,}999$.
+        \end{itemize}
+      \end{block}
+      \vspace{0.1cm}
+      {\tiny Implementação: \texttt{scipy.optimize.differential\_evolution}, em \texttt{src/pid\_tuning.py}.}
+    \end{column}
+  \end{columns}
+\end{frame}
+
 \begin{frame}{Teste de postos sinalizados de Wilcoxon}
   \begin{columns}[T]
     \begin{column}{0.55\textwidth}
@@ -137,19 +219,19 @@
         \midrule
         1  & DE-PID, TPSR      & $3{,}96 \cdot 10^{-18}$ & 18 & $7{,}12 \cdot 10^{-17}$ \\
         \multicolumn{5}{c}{$\vdots$} \\
-        12 & DE-PID, entropia  & $5{,}19 \cdot 10^{-18}$ & 7  & $7{,}12 \cdot 10^{-17}$\textsuperscript{*} \\
-        13 & EBMFLC, TV        & $1{,}88 \cdot 10^{-12}$ & 6  & $1{,}13 \cdot 10^{-11}$ \\
+        9  & DE-PID, entropia  & $5{,}19 \cdot 10^{-18}$ & 10 & $7{,}12 \cdot 10^{-17}$\textsuperscript{*} \\
+        10 & IMC-PID, TPSR     & $3{,}23 \cdot 10^{-16}$ & 9  & $2{,}91 \cdot 10^{-15}$ \\
+        11 & IMC-PID, $R^2$    & $3{,}42 \cdot 10^{-16}$ & 8  & $2{,}91 \cdot 10^{-15}$\textsuperscript{**} \\
         \multicolumn{5}{c}{$\vdots$} \\
-        16 & EBMFLC, TPSR      & $1{,}35 \cdot 10^{-6}$  & 3  & $4{,}04 \cdot 10^{-6}$ \\
-        17 & EBMFLC, entropia  & $0{,}365$               & 2  & \alert{$0{,}730$} \\
-        18 & IMC-PID, potência & $0{,}619$               & 1  & \alert{$0{,}730$}\textsuperscript{**} \\
+        17 & EBMFLC, TPSR      & $1{,}35 \cdot 10^{-6}$  & 2  & $2{,}70 \cdot 10^{-6}$ \\
+        18 & EBMFLC, entropia  & $0{,}365$               & 1  & \alert{$0{,}365$} \\
         \bottomrule
       \end{tabular}
 
       \vspace{0.15cm}
       \raggedright
-      Máximo acumulado: \textsuperscript{*}$7\,p_{(12)} = 3{,}6 \cdot 10^{-17}$, mas vale o de $k = 1$; \textsuperscript{**}$p_{(18)} = 0{,}619$, mas vale o de $k = 17$.
-      Em vermelho, os testes não significativos.
+      Máximo acumulado: \textsuperscript{*}$10\,p_{(9)} = 5{,}2 \cdot 10^{-17}$, mas vale o de $k = 1$; \textsuperscript{**}$8\,p_{(11)} = 2{,}74 \cdot 10^{-15}$, mas vale o de $k = 10$.
+      Em vermelho, o único teste não significativo do cenário.
 
       \vspace{0.2cm}
       \structure{Implementação:} \texttt{holm\_bonferroni()}, em \texttt{statistics.py}, com uma família de 18 testes por cenário.

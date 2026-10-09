@@ -84,33 +84,36 @@ def main(
         params=parameters,
         ic=ic,
         amplitude_voluntary=amplitude_voluntary,
-        # Values below were found with slow_factor=5.0 on
-        # the nominal model with amplitude_voluntary=1.0
+        # Values below were found by the grid search of src/pid_tuning.py
+        # (tune_flawed_tracker) on the nominal model, in both scenarios
         manual=True,
-        # IMC gains for slow_factor=5
-        # kp=0.0998772,
-        # ki=98.7732779,
-        # kd=0.040496,
-        # IMC gains for slow_factor=3.9 (best from grid search)
-        kp=0.1266318,
-        ki=126.6317684,
-        kd=0.0519192,
+        # IMC gains for slow_factor=3.9, grid search on the 2026-05-01 code
+        # (null initial state, R2 normalized by the variance of theta_3)
+        # kp=0.1266318,
+        # ki=126.6317684,
+        # kd=0.0519192,
+        # IMC gains for slow_factor=0.4 (best from grid search, current code)
+        kp=1.2346597,
+        ki=1234.6597421,
+        kd=0.5062123,
     )
     pid_de_control = pid.PIDControl(
         name="pid_de",
         params=parameters,
         ic=ic,
         amplitude_voluntary=amplitude_voluntary,
-        # Values below were found from src/pid_tuning.py
+        # Values below were found by the DE of src/pid_tuning.py
+        # (tune_perfect_tracker) on the nominal model, in both scenarios
         manual=True,
-        # Perfect tracker gains from shallow-search DE
-        # kp=1.2998816,
-        # ki=20.2188130,
-        # kd=3.2374438,
-        # Perfect tracker gains from deep-search DE
-        kp=2.8024576,
-        ki=16.3107364,
-        kd=3.2077601,
+        # Perfect tracker gains from DE on the 2026-05-01 code
+        # (null initial state, R2 normalized by the variance of theta_3)
+        # kp=2.8024576,
+        # ki=16.3107364,
+        # kd=3.2077601,
+        # Perfect tracker gains from DE (current code)
+        kp=1.7212542,
+        ki=15.0591711,
+        kd=3.2392269,
         perfect_tracking=True,
     )
     no_control = uncontrolled.Uncontrolled(

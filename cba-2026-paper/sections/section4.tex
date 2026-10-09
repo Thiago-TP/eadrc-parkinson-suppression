@@ -46,7 +46,7 @@ Figure \ref{fig:plots} shows the effect of EADRC+ZPLP on the uncontrolled system
 \end{figure}
 
 Simulation results show that EADRC strategies effectively balance tremor attenuation and control effort in a coupled dynamic environment. 
-While the DE-PID controller achieved a near-perfect TPSR above 99\%, it serves mainly as an ideal benchmark, relying on full knowledge of voluntary motion and requiring significantly higher actuation. Its TV was about 55\% higher than EADRC with ZPLP's in both scenarios.
+While the DE-PID controller achieved a near-perfect TPSR above 99\%, it serves mainly as an ideal benchmark, relying on full knowledge of voluntary motion and requiring significantly higher actuation. Its TV was about 3.3 times that of EADRC with ZPLP in both scenarios.
 
 \reviewchange{%
 \begin{table*}[htbp]
@@ -97,10 +97,10 @@ While the DE-PID controller achieved a near-perfect TPSR above 99\%, it serves m
     %
     This is consistent with its role as an idealized upper-bound benchmark rather than a practical competitor.
     
-    EADRC+ZPLP suppressed tremor better than IMC-PID in every paired trial ($|r| = 1.00$ for TPSR, $R^2$, Entropy and IAE), 
-    at the cost of a higher TV. 
-    Control Power did not differ significantly in the resting scenario ($p = 0.73$) and was lower for EADRC+ZPLP in the moving one ($r = -0.70$), 
-    indicating that IMC-PID's weaker tremor suppression does not come from correspondingly lower actuation.
+    EADRC+ZPLP suppressed tremor better than IMC-PID in nearly every paired trial ($|r| \geq 0.94$ for TPSR, $R^2$ and IAE) 
+    while requiring less control effort in every one of them (Power and TV, $r = -1.00$). 
+    IMC-PID, tuned on the uncoupled nominal wrist, showed growing oscillations in 4 (resting) and 5 (moving) of the 99 perturbed models, 
+    which explains its negative average TPSR despite median values above 50\%.
 }
 
 \reviewchange{}{
