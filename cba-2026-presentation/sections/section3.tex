@@ -1,0 +1,114 @@
+\section{Metodologia}
+
+\begin{frame}{EADRC aplicado ao punho}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \begin{itemize}[<+->]
+        \item Sistema linear: o ângulo do punho tem parcelas voluntária e involuntária,
+          \begin{equation*}
+            \theta_3 = \theta_{v_3} + \theta_{i_3}.
+          \end{equation*}
+        \item Torque de controle apenas no punho, $\mathbf{u} = [0\ \ 0\ \ u_3]^\top$:
+          \begin{equation*}
+            \ddot{\theta}_3 = b_0 u_3 + \zeta(\bm{\tau}, \bm{\theta}, \dot{\bm{\theta}}),
+            \quad
+            b_0 = \left[\mathbf{J}^{-1}\right]_{33}.
+          \end{equation*}
+        \item $\zeta$ inclui o acoplamento com ombro e cotovelo, tratado como parte da perturbação total ($n = 2$).
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{itemize}[<+->]
+        \item 
+        Erro ideal, que vai a zero quando $u_3$ compensa $\tau_{i_3}$:
+          \begin{equation*}
+            e_3 = \bm{\theta_{v_3}} - \theta_3 = -\theta_{i_3}.
+          \end{equation*}
+        Na prática, $\theta_{v_3}$ é desconhecido e estimado,
+          \begin{equation*}
+            \hat{e}_3 = \bm{\hat{\theta}_{v_3}} - \theta_3.
+          \end{equation*}
+        \item EADRC parametrizado por largura de banda: ESO com $\beta_1 = 3\omega_o$, $\beta_2 = 3\omega_o^2$, $\beta_3 = \omega_o^3$; lei PD com $\kappa_1 = \omega_c^2$, $\kappa_2 = 2\omega_c$; $b_0 = [\mathbf{J}^{-1}]_{33}$.
+    
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Malha de controle e estimadores de movimento voluntário}
+  \centering
+  \input{figures/block_diagram_eadrc.tikz}
+
+  \pause
+  \vspace{0.3cm}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \begin{exampleblock}{ZPLP}
+        \small
+        Butterworth passa-baixas de 1ª ordem, corte em 5 Hz, filtrado nos dois sentidos (fase zero) sobre as amostras disponíveis até o instante atual.
+      \end{exampleblock}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \pause
+      \begin{exampleblock}{EBMFLC \cite{Qi:2024}}
+        \small
+        Combinação linear adaptativa de 100 senoides entre 0 e 12 Hz; a parcela de 0 a 4 Hz é tomada como movimento voluntário.
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Simulações de Monte Carlo}
+  \begin{columns}[T]
+    \small
+    \begin{column}{0.58\textwidth}
+      \centering
+      \input{tables/table_parameter_sampling.tex}
+      %
+      \pause
+      \vspace{0.2cm}
+      \centering
+      \includegraphics[width=\linewidth,height=0.54\textheight,keepaspectratio]{stiffness_space.pdf}
+    \end{column}
+
+    \pause
+    \begin{column}{0.40\textwidth}
+      \begin{itemize}
+        \item Cenários: \alert{repouso} ($\bm{\tau}_v = \mathbf{0}$) e \alert{movimento} ($\bm{\tau}_v$ senoidal).
+      \end{itemize}
+      \centering
+      \includegraphics[width=\linewidth]{figures/plots/uncontrolled_amplitude_1.0/torque_profiles_uncontrolled_amplitude_1.0.pdf}
+
+      {\scriptsize Torques voluntários (movimento) e de tremor.}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% \begin{frame}{Controladores e métricas de desempenho}
+%   \centering
+%   \input{tables/table_control_parameters.tex}
+
+%   \pause
+%   \vspace{0.4cm}
+%   \begin{columns}[T]
+%     \begin{column}{0.48\textwidth}
+%       \begin{block}{Métricas}
+%         \small
+%         \begin{itemize}
+%           \item Resposta do punho: TPSR \cite{Qi:2024}, IAE \cite{Skogestad:2003}, $R^2$ \cite{Glantz:1990} e entropia \cite{Lathi:2018}.
+%           \item Sinal de controle: variação total (TV) \cite{Skogestad:2003} e potência \cite{Lathi:2018}.
+%         \end{itemize}
+%       \end{block}
+%     \end{column}
+%     \begin{column}{0.48\textwidth}
+%       \pause
+%       \begin{block}{Análise estatística}
+%         \small
+%         \begin{itemize}
+%           \item EADRC+ZPLP contra cada controlador: teste de Wilcoxon pareado \cite{Conover:1980}, com correlação bisserial de postos $r$.
+%           \item Correção de Holm-Bonferroni nos 18 testes de cada cenário; significância em $0{,}05$.
+%         \end{itemize}
+%       \end{block}
+%     \end{column}
+%   \end{columns}
+% \end{frame}

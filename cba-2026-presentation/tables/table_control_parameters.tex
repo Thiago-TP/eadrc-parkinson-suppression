@@ -1,0 +1,19 @@
+\footnotesize
+\begin{tabularx}{\textwidth}{l >{\raggedright\arraybackslash}X l}
+    \toprule
+    Controlador & Parâmetros & Sintonia (modelo nominal) \\
+    \midrule
+    EADRC+ZPLP &
+        $\omega_c = 10$, $\omega_o = 100$; Butterworth de 1ª ordem, corte em 5 Hz &
+        Experimental, $\omega_o = 10\,\omega_c$ \\
+    EADRC+EBMFLC &
+        $\omega_c = 20$, $\omega_o = 80$; $n = 100$, $\mu = 0{,}005$, $T_p = 0{,}59$~s, $\alpha = 0{,}02$ &
+        Experimental, $\omega_o = 4\,\omega_c$ \\
+    IMC-PID &
+        $K_p = 1{,}235$, $K_i = 1234{,}660$, $K_d = 0{,}506$ &
+        IMC \cite{Rivera:1986}, punho isolado, $\lambda = 0{,}4\,\tau$ \\
+    DE-PID &
+        $K_p = 1{,}721$, $K_i = 15{,}059$, $K_d = 3{,}239$ &
+        Evolução diferencial, $\theta_{v_3}$ conhecido \\
+    \bottomrule
+\end{tabularx}

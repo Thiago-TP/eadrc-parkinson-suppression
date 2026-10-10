@@ -1,0 +1,155 @@
+\section{Results and Discussions}
+\label{sec:results}
+
+System outputs were simulated using 4th order Runge-Kutta method on
+the state space representation in \eqref{eq:state_space_x}.
+Simulation time ranged from $0$s to $6$s with sampling period of $1$ms,
+with initial conditions given by \eqref{eq:initial_conditions}:
+%
+\begin{equation}
+    \bm{\theta}_0 = 
+    \begin{bmatrix}
+        0.5 & 0.1 & 0.05
+    \end{bmatrix}^\top,
+    \quad
+    \dot{\bm{\theta}}_0 = 
+    \begin{bmatrix}
+        0 & 0 & 0.01
+    \end{bmatrix}^\top.
+\label{eq:initial_conditions}
+\end{equation}
+
+Tremor torque $\bm{\tau}_i$ profiles, presented in \reviewchange{}{Figure} \ref{fig:profiles},
+were kept the same in all runs.
+The figure also presents the voluntary torques in the deliberate motion scenario, defined as:
+\begin{equation}
+    \bm{\tau}_v(t) = 
+    \begin{bmatrix}
+        \sin(2\pi \times 0.1 \times t) \\
+        \sin(2\pi \times 0.2 \times t) \\
+        \sin(2\pi \times 0.3 \times t) 
+    \end{bmatrix}.
+\label{eq:tau_v}
+\end{equation}
+This modeling of voluntary torque compromises between fidelity to real life and ease of implementation. Metrics from 100 simulations with varying physical parameters for $\bm{\tau}_v=\mathbf{0}$ and \eqref{eq:tau_v} are presented in Table \ref{tab:results_averages}. 
+%
+Figure \ref{fig:plots} shows the effect of EADRC+ZPLP on the uncontrolled system via spectrograms.
+
+\begin{figure}[htbp!]
+    \centering
+    \caption{
+        Tremor torque adopted for all simulations and 
+        voluntary torque adopted for deliberate motion scenario.
+    }
+    \label{fig:profiles}
+    \includegraphics[width=\linewidth]{figures/plots/uncontrolled_amplitude_1.0/torque_profiles_uncontrolled_amplitude_1.0.pdf}
+\end{figure}
+
+Simulation results show that EADRC strategies effectively balance tremor attenuation and control effort in a coupled dynamic environment. 
+While the DE-PID controller achieved a near-perfect TPSR above 99\%, it serves mainly as an ideal benchmark, relying on full knowledge of voluntary motion and requiring significantly higher actuation. Its TV was about 3.3 times that of EADRC with ZPLP in both scenarios.
+
+\reviewchange{%
+\begin{table*}[htbp]
+    \centering
+    \caption{
+        Performance metrics of each control for $\bm\tau_v = \mathbf{0}$.
+    }
+    \label{tab:results_scenario1}
+    \def\arraystretch{1.3}
+    \input{tables/table_metrics_resting_tremor.tex}
+\end{table*}
+%
+\begin{table*}[htbp]
+    \centering
+    \caption{
+        Performance metrics of each control for $\bm\tau_v$ given by \eqref{eq:tau_v}.
+    }
+    \label{tab:results_scenario2}
+    \def\arraystretch{1.3}
+    \input{tables/table_metrics_motion.tex}
+\end{table*}
+}{%
+    \begin{table*}[htbp]
+        \centering
+        \caption{
+            Average performance metrics of each control strategy.
+        }
+        \label{tab:results_averages}
+        \def\arraystretch{1.3}
+        \input{tables/table_average_metrics.tex}
+    \end{table*}
+}
+
+\reviewchange{%
+    In contrast, IMC-PID and Gallego-PI exhibited much lower TPSR, indicating sensitivity to coupled perturbations in a 3-DoF model.
+}{% 
+    To substantiate these comparisons statistically, a paired Wilcoxon signed-rank test was applied per metric and scenario, comparing EADRC+ZPLP against each baseline controller across the same 100 Monte Carlo parameter draws. 
+    
+    According to Table \ref{tab:wilcoxon}, in both scenarios EADRC+ZPLP outperforms EADRC+EBMFLC on every metric but Entropy ($p < 0.001$): 
+    it achieves higher tremor suppression (TPSR, $r \geq 0.56$; IAE, $r \leq -0.68$) 
+    while requiring less control effort (TV, $r \leq -0.81$), with lower control Power in every one of the 100 paired trials ($r = -1.00$), 
+    supporting the claimed balance between attenuation and actuation. 
+    Entropy did not differ significantly in the resting scenario ($p = 0.73$) and was moderately lower for EADRC+ZPLP in the moving one ($r = -0.32$). 
+    
+    Differences against DE-PID were significant for every metric in both scenarios with maximal or near-maximal effect size 
+    ($|r| \geq 0.99$), reflecting that DE-PID suppressed tremor better than EADRC+ZPLP in practically every one of the 100 paired trials, 
+    at the cost of higher control effort in all of them.
+    %
+    This is consistent with its role as an idealized upper-bound benchmark rather than a practical competitor.
+    
+    EADRC+ZPLP suppressed tremor better than IMC-PID in nearly every paired trial ($|r| \geq 0.94$ for TPSR, $R^2$ and IAE) 
+    while requiring less control effort in every one of them (Power and TV, $r = -1.00$). 
+    IMC-PID, tuned on the uncoupled nominal wrist, showed growing oscillations in 4 (resting) and 5 (moving) of the 99 perturbed models, 
+    which explains its negative average TPSR despite median values above 50\%.
+}
+
+\reviewchange{}{
+\begin{table}[htb]
+    \centering
+    \caption{% 
+        Holm-Bonferroni corrected $p$-value and rank-biserial correlation $r$ 
+        for paired Wilcoxon signed-rank tests.
+    }
+    \label{tab:wilcoxon}
+    \resizebox{\linewidth}{!}{%
+        \def\arraystretch{1.3}
+        \input{tables/table_wilcoxon.tex}
+    }
+\end{table}
+}
+
+While EADRC+ZPLP has been successful in suppressing tremor regardless of the voluntary motion estimator employed,
+it demonstrated somewhat poor capacity in mitigating lower-frequency tremors, 
+as spectrograms in Figure \ref{fig:plots} show.
+%
+This could indicate that the filtering process in voluntary motion estimation was not sufficient,
+and EADRC did not factor unmitigated tremor as part of the total disturbance.
+
+\begin{figure}[htb]
+    \centering
+    \captionof{figure}{Spectrograms of the uncompensated and compensated tremor of both scenarios.}
+    \label{fig:plots}
+    \begin{subfigure}{.685\linewidth}
+        \centering
+        \caption{Uncompensated resting tremor}
+        \includegraphics[width=\linewidth]{figures/plots/uncontrolled_amplitude_0.0/spectrogram_response_uncontrolled_amplitude_0.0.pdf}
+    \end{subfigure}
+    %
+    \begin{subfigure}{.685\linewidth}
+        \centering
+        \caption{Compensated resting tremor}
+        \includegraphics[width=\linewidth]{figures/plots/eadrc_ebmflc_amplitude_0.0/spectrogram_response_eadrc_ebmflc_amplitude_0.0.pdf}
+    \end{subfigure}
+    %
+    \begin{subfigure}{.685\linewidth}
+        \centering
+        \caption{Uncompensated moving tremor}
+        \includegraphics[width=\linewidth]{figures/plots/uncontrolled_amplitude_1.0/spectrogram_response_uncontrolled_amplitude_1.0.pdf}
+    \end{subfigure}
+    %
+    \begin{subfigure}{.685\linewidth}
+        \centering
+        \caption{Compensated moving tremor}
+        \includegraphics[width=\linewidth]{figures/plots/eadrc_ebmflc_amplitude_1.0/spectrogram_response_eadrc_ebmflc_amplitude_1.0.pdf}
+    \end{subfigure}
+\end{figure}

@@ -7,9 +7,6 @@ from typing import final
 
 import blosc
 import numpy as np
-from numpy.random import MT19937, RandomState, SeedSequence
-
-rs = RandomState(MT19937(SeedSequence(42)))
 
 
 @dataclass(frozen=False)
@@ -17,7 +14,9 @@ class ModelParameters:
     """
     Class to hold the model parameters for the system dynamics.
     Inertia values remain constant, while stiffness values
-    are resampled across runs from their uncertainty intervals.
+    change across runs according to a fixed table of samples
+    (drawn from their uncertainty intervals), so that run i
+    uses the same stiffness values for every control strategy.
     """
 
     # Lengths
@@ -54,6 +53,9 @@ class ModelParameters:
 
     # Stiffness uncertainty intervals
     stiffness_intervals: dict[str, tuple[float, float]]
+
+    # Stiffness samples [k1, k2, k3, k4] for the non-nominal runs
+    stiffness_samples: list[list[float]]
 
 
 # Shorthand type aliases for readability
@@ -257,6 +259,9 @@ class System(ABC):
             "amplitude_voluntary": self.amplitude_voluntary,
             "state_matrix": self.a,
             "input_matrix": self.b,
+            "stiffness": np.array(
+                [self.params.k1, self.params.k2, self.params.k3, self.params.k4]
+            ),
         }
 
         return
@@ -346,16 +351,25 @@ class System(ABC):
         self.c_ss = np.concatenate((iden, null), axis=1)  # output matrix
 
     @final
-    def resample_stiffness(self) -> None:
+    def set_stiffness_sample(self, index: int) -> None:
         """
-        Resamples stiffness parameters from their uncertainty intervals
-        and updates model (matrices K and C).
+        Sets the stiffness parameters to the given row of the table of
+        stiffness samples and updates model (matrices K and C).
+        Indexing a fixed table (instead of drawing random numbers) makes the
+        stiffness values of a run independent of how many control strategies
+        are simulated, and in which order, so runs are paired across them.
+
+        Parameters
+        ----------
+        index : int
+            Row of params.stiffness_samples, starting at 0.
         """
-        print("Resampling stiffness parameters...")
-        self.params.k1 = rs.uniform(*self.params.stiffness_intervals["k1"])
-        self.params.k2 = rs.uniform(*self.params.stiffness_intervals["k2"])
-        self.params.k3 = rs.uniform(*self.params.stiffness_intervals["k3"])
-        self.params.k4 = rs.uniform(*self.params.stiffness_intervals["k4"])
+        print(f"Setting stiffness sample {index}...")
+        k1, k2, k3, k4 = self.params.stiffness_samples[index]
+        self.params.k1 = k1
+        self.params.k2 = k2
+        self.params.k3 = k3
+        self.params.k4 = k4
         self._set_model()
 
         # Clears simulation-relevant attributes

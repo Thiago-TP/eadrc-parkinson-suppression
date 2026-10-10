@@ -1,0 +1,67 @@
+\begin{tabular}{
+    c |
+    c c c c c c c
+}
+    Controller &
+    \multicolumn{7}{c}{Parameters}  \\
+    \hline
+    EADRC+ZPLP & 
+        $\omega_c=10$ & 
+        $\omega_o=100$  &  
+        filter: Butterworth &
+        cutoff: 5 Hz &
+        order: 1 & & \\
+    \hline
+    IMC-PID & 
+        $K_p=1.235$ & 
+        $K_i=1234.660$ & 
+        $K_d=0.506$ &
+        & & & \\
+    \hline
+    \multirow{2}{*}{EADRC+EBMFLC} & 
+        $n=100$ & 
+        $\mu=0.005$ & 
+        $\omega_a=0$ & 
+        $\omega_b=8\pi$ & 
+        $\omega_c=8\pi$ \\ 
+    &
+        $\omega_d=24\pi$ & 
+        $T_p=0.59$ &
+        $\alpha=0.02$ &
+        $\omega_\text{control}=20$ &
+        $\omega_o=80$ &
+        \\
+    % \hline
+    % \multirow{2}{*}{Gallego-PI} & 
+    %     $K_p=0.099$ & 
+    %     $K_i=98.773$ & 
+    %     All thresholds: $0$ &
+    %     $\theta = 0.99$ &
+    %     $f_0 = 12$ &
+    %     $\mathbf{P} = 
+    %     0.001 \times \mathbf{I}$ \\ 
+    % &
+    %     $M = 1$ &
+    %     $\mu = 0.01$ &
+    %     $\mu_0 = 0.001$ &
+    %     $\mu_b = 0.01$ & 
+    %     $\sigma_\tau^2 = 1$ & 
+    %     $\mathbf{Q} = 
+    %     \mathrm{diag}(1, 1, 0)$ \\
+    % \hline
+    % AFE &  
+    %     $\zeta_f = 0.01$ & 
+    %     $\zeta_e = 4$ & 
+    %     $\gamma = 8$ & 
+    %     $\zeta_1 = 0.01$ & 
+    %     $\zeta_2 = 0.01$ & 
+    %     $b_1 = 2$ & 
+    %     $b_2 = 2$ 
+    % \\
+    \hline
+    DE-PID &
+        $K_p = 1.721$ & 
+        $K_i = 15.059$ & 
+        $K_d = 3.239$ 
+    \\
+\end{tabular}

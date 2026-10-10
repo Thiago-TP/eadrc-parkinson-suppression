@@ -99,7 +99,8 @@ def evaluate_controls() -> None:
     Evaluate control strategies against the baseline open-loop (uncontrolled) case
     for both null and non-null voluntary tremor amplitudes.
     One CSV file is generated per control strategy per scenario, containing metrics for each run.
-    Runs from same key use the same random seed, so they are later paired for statistical comparison.
+    Runs from same key use the same row of the stiffness samples table (configs.yaml),
+    so they are later paired for statistical comparison.
     """
     # Case 1: null amplitude (0.0) voluntary tremor
     control_files = list(Path("results/runs").glob("*_amplitude_0.0.data"))

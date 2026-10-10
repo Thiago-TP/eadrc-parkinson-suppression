@@ -1,0 +1,78 @@
+\begin{tikzpicture}[scale=1.066, > = latex]
+
+    % Invisible vertical padding
+    \draw [white] (0,2.75) circle (1);
+
+    \node [opacity=0.25] at (0,0) {
+        \includegraphics[width=0.8\linewidth]
+        {figures/skeleton.png}
+    };
+    
+    \coordinate (shoulder) at (0.37, -2.37);
+    \path (shoulder) +(45.9:3.725) coordinate (elbow);
+    \path (elbow) +(138.7:3.47) coordinate (wrist);
+    \path (wrist) +(138.7:0.9) coordinate (knuckle);
+    
+    % test coordinates alignments (debug only)
+    % \draw [cyan, fill=cyan, opacity=0.2, thick, dashed] (shoulder) circle (0.3);
+    % \draw [cyan, fill=cyan, opacity=0.2, thick, dashed] (elbow) circle (0.3);
+    % \draw [cyan, fill=cyan, opacity=0.2, thick, dashed] (wrist) circle (0.3);
+    % \draw [cyan, fill=cyan, opacity=0.2, thick, dashed] (knuckle) circle (0.3);
+
+    % Arm annotations
+    \draw [|-|, opacity=0.5] (shoulder) ++ (-45:0.5) --++ (45.9:3.725)
+        node [midway, fill=white, opacity=1.0, inner sep=0.2] {$l_1$};
+    \draw [thick, orange, fill=orange, opacity=0.5]
+        (shoulder) ++ (0.2, 0) 
+        --++ (0.7, 0) node [right, black, opacity=1.0] {$\theta_1$}
+        arc (0:45.9:0.7) -- cycle;
+    \draw [thick, <->] (shoulder) ++ (0.5, 0) arc (0:90:0.5) 
+        node [midway, above, xshift=0.4cm, yshift=-0.1cm] {$I_1, \tau_1$};
+
+    % Forearm annotations
+    \draw [|-|, opacity=0.5] (elbow) ++ (45:0.55) --++ (142:3.5)
+        node [midway, fill=white, opacity=1.0, inner sep=0.2] {$l_2$};
+    \draw [thick, orange, fill=orange, opacity=0.5]
+        (elbow) ++ (42:0.35) 
+        --++ (45:0.7) arc (45:142:0.7) 
+        node [midway, above, black, opacity=1.0] {$\theta_2$}
+        -- cycle;
+    \draw [thick, <->] (elbow) ++ (175:0.3)
+        arc (180:90:0.5) node [below, xshift=0.2cm, yshift=-0.2cm] {$I_2, \tau_2\quad$};
+
+    % Wrist annotations
+    \draw [|-|, opacity=0.5] (wrist) ++ (45:0.3) --++ (138:0.9)
+        node [midway, fill=white, opacity=1.0, inner sep=0.2] {$l_3$};
+    \draw [thick, orange, fill=orange, opacity=0.5]
+        (wrist)
+        --++ (142:0.7) 
+        arc (142:135:0.7) 
+        node [midway, left, black, opacity=1.0] {$\theta_3$} 
+        -- cycle;
+    \draw [thick, <->] (wrist) node [xshift=0.1cm, yshift=0cm] {$I_3, \tau_3$} ++ (100:0.3)
+        arc (100:170:0.4) ;
+
+    % Stiffness and damping
+    
+    %% Shoulder
+    \draw [spring] (shoulder) ++ (97:1.05) arc (97:45:1.05);
+    \draw [postaction={damper}] (shoulder) ++ (98:1.3) arc (98:45:1.3)
+        node [midway, above, sloped, yshift=0.1cm] {$k_1$, $c_1$};
+        
+    %% Elbow            
+    \draw [spring] (elbow) ++ (-135:0.5) arc (-135:-225:0.5);
+    \draw [postaction={damper}] (elbow) ++ (-135:0.8) 
+    arc (-135:-225:0.8)
+    node [midway, above, sloped, yshift=0.1cm] {$k_2$, $c_2$};
+    %% Biceps
+    \draw [spring] (elbow) ++ (-135:3.7) arc (-135:-280:2);
+    \draw [postaction={damper}] (elbow) ++ (-135:4) 
+        arc (-135:-270:2.3)
+        node [midway, above, sloped, yshift=0.1cm] {$k_3$, $c_3$};
+    %% Wrist
+    \draw [spring] (wrist) ++ (175:0.5) arc (175:317:0.5);
+    \draw [postaction={damper}] (wrist) ++ (176:0.8) 
+        arc (176:317:0.8)
+        node [midway, below, sloped] {$k_4$, $c_4$}; 
+    
+\end{tikzpicture}

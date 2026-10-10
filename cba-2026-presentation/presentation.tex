@@ -1,0 +1,141 @@
+\documentclass[aspectratio=169, xcolor=table]{beamer}
+
+% --- Carrega o Arquivo de Estilo Personalizado ---
+\usepackage{cba2026}
+
+% customization of the footline
+\makeatletter
+\setbeamertemplate{footline}
+{
+  \leavevmode%
+  \hbox{%
+  \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{author in head/foot}%
+    \usebeamerfont{author in head/foot}
+    Thiago Paula (UnB)
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{title in head/foot}%
+    \usebeamerfont{title in head/foot}
+    EADRC for Parkinson Tremor
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{date in head/foot}%
+    \usebeamerfont{date in head/foot}
+    XXVI CBA -- 9 de outubro de 2026
+    \hspace*{2em}
+    \insertframenumber{} / \inserttotalframenumber\hspace*{2ex}
+  \end{beamercolorbox}}%
+  \vskip0pt%
+}
+\makeatother
+
+
+% --- Loads user-defined packages ---
+\usepackage{csquotes}
+\usepackage{bm}
+\usepackage{multirow}
+\usepackage{tabularx}
+\usepackage{adjustbox}
+\usepackage{appendixnumberbeamer}
+
+% --- Reuses the paper's figures and TikZ styles (spring, damper, etc.) ---
+\graphicspath{{logos/}{figures/}{../cba-2026-paper/}}
+\input{../cba-2026-paper/figures/config.tex}
+\usetikzlibrary{fit}
+
+% Overlay-aware TikZ elements: `visible on=<2->` hides an element (keeping its space) outside
+% those slides; \tikzset{visible on/.style={}} shows everything at once
+\tikzset{
+  invisible/.style = {opacity = 0, text opacity = 0},
+  visible on/.style = {alt = {#1{}{invisible}}},
+  alt/.code args = {<#1>#2#3}{\alt<#1>{\pgfkeysalso{#2}}{\pgfkeysalso{#3}}},
+}
+
+% Upper limb schematic from the paper, typeset at the paper's column width so that
+% its annotations stay aligned with the skeleton picture, and scaled afterwards
+\newcommand{\upperlimbschematic}{%
+  {\setlength{\linewidth}{251.80688pt}%
+  \input{../cba-2026-paper/figures/schematic_upper_limb.tikz}\unskip}%
+}
+
+% --- Arquivo de Referências (the paper's bibliography) ---
+\addbibresource{../cba-2026-paper/references/active_disturbance_rejection_control_theory.bib}
+\addbibresource{../cba-2026-paper/references/c1_tremor_characterization_reviews.bib}
+\addbibresource{../cba-2026-paper/references/c2_tremor_suppression_reviews.bib}
+\addbibresource{../cba-2026-paper/references/c3_passive_control_strategies.bib}
+\addbibresource{../cba-2026-paper/references/c4_active_control_strategies.bib}
+\addbibresource{../cba-2026-paper/references/metrics.bib}
+\addbibresource{references.bib}
+
+% Sorted numbers in multiple citations, e.g. [1, 4] instead of [4, 1]
+\ExecuteBibliographyOptions{sortcites=true}
+% Acronyms such as DOI and ISBN in plain capitals, since the sans serif font has no small caps
+\renewrobustcmd*{\mkbibacro}[1]{#1}
+\renewcommand*{\bibfont}{\scriptsize}
+
+
+ 
+% --- Dados da Apresentação ---
+\title[EADRC for Parkinson Tremor]{
+  EADRC for Parkinson Tremor Suppression in Wrist Considering Upper Limb Dynamics\\
+  % \rule{\textwidth}{.5pt}\\
+  % {\small Supressão de tremor de Parkinson no punho via EADRC considerando dinâmicas do membro superior}
+}
+\subtitle{Supressão de tremor de Parkinson no punho via EADRC considerando dinâmicas do membro superior}
+\author[Paula, Thiago et al.]{
+  \texorpdfstring{%
+    \underline{Thiago T. de Paula}, Matheus T. de Sousa,\\
+    José O. A. L. Filho, Marcela R. Machado
+  }{%
+    Thiago T. de Paula, Matheus T. de Sousa,
+    José O. A. L. Filho, Marcela R. Machado
+  }
+}
+\institute[UnB]{Universidade de Brasília}
+\date{Outubro, 2026}
+
+% =========================================================================
+% CONTEÚDO DO DOCUMENTO
+% =========================================================================
+\begin{document}
+
+% 1. Capa
+\begin{frame}[plain]
+  \titlepage
+\end{frame}
+
+% 2. Sumário
+% \begin{frame}{Sumário}
+%   \tableofcontents
+% \end{frame}
+
+\input{sections/section1.tex}
+\input{sections/section2.tex}
+\input{sections/section3.tex}
+\input{sections/section4.tex}
+\input{sections/section5.tex}
+
+% --- Slide Final ---
+\begin{frame}[plain]{Agradecimentos}
+  \centering
+  Agradecemos o apoio financeiro da \textbf{FAPDF} e do\\
+  \textbf{Programa de Formação de Recursos Humanos da ANP}.
+
+  {\scriptsize FAPDF nº 435/2023, Processo nº~00193-00002143/2023-02, Chamada Pública 01/2023 -- BIO Learning.}
+
+  \includegraphics[height=1.4cm]{fapdf.jpg}
+  \hspace{0.5cm}
+  \includegraphics[height=1.2cm]{PRH-57.png}
+
+  {\tikzset{visible on/.style = {}}\resizebox{.5\linewidth}{!}{\input{figures/flowchart_proposal.tikz}}}
+
+  \textbf{Muito Obrigado!}
+
+  {\small Contato: thiagotomasdepaula@gmail.com}
+
+  {\small Código: https://github.com/Thiago-TP/eadrc-parkinson-suppression}
+\end{frame}
+
+% --- Material de apoio ---
+\appendix
+\input{sections/appendix.tex}
+
+\end{document}
