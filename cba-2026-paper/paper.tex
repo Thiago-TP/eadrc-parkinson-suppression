@@ -1,0 +1,95 @@
+\documentclass[a4paper]{ifacconf}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{url} 
+\usepackage[round]{natbib}             
+
+% Added packages
+\usepackage[dvipsnames]{xcolor}
+\usepackage{tikz}
+    \input{figures/config.tex}
+\usepackage{bm}
+\usepackage{multicol}
+\usepackage{multirow}
+\usepackage{subcaption}
+\usepackage{amssymb}
+% ---
+
+% Added commands
+\definecolor{reviewcolor}{HTML}{fb3257}
+\newcommand{\reviewmode}{0}
+\newcommand{\reviewchange}[2]{%
+    \if\reviewmode1%
+        \color{reviewcolor}
+            #2
+        \color{black}
+    \else%
+        #2
+    \fi   
+}
+% ---
+
+\begin{document}
+
+
+\begin{frontmatter}
+    \title{%
+        Error-Based Active Disturbance Rejection Control for Parkinson's Disease Tremor Suppression in Wrist Considering Upper Limb Dynamics\thanksref{footnoteinfo}
+    }  
+    
+    \thanks[footnoteinfo]{%
+        Financiamento: em parte pela FAPDF no. 435/2023 Processo nº~00193-00002143/2023-02, CHAMADA PÚBLICA 01/2023 BIO LEARNING / VINCULADA AO EDITAL 10/2023 - PROGRAMA FAPDF LEARNING Programa de Fomento Estratégico na macro área da linha de pesquisa: BIO Learning; em parte pelo Programa de Formação de Recursos Humanos da Agência Nacional do Petróleo, Gás Natural e Biocombustíveis.
+    }
+    
+    \author[First]{Thiago T. de Paula} 
+    \author[Second]{Matheus T. de Sousa} 
+    \author[Second]{Jos\'e Oniram de A. Limaverde Filho}
+    \author[First]{Marcela R. Machado}
+    
+    \address[First]{%
+        Department of Mechanical Engineering, University of Brasília, DF 
+        (e-mails: thiagotomasdepaula@gmail.com; marcelam@unb.br).
+    }
+    \address[Second]{%
+        Department of Electrical Engineering, University of Brasília, DF 
+        (e-mails: matheus.sousa@ieee.org; jose.oniram@ene.unb.br).
+    }
+       
+    \renewcommand{\abstractname}{{\bf Abstract:~}}   
+
+    \begin{abstract} % Abstract of not more than 250 words.
+        Parkinson's disease is a neurodegenerative disorder whose tremor often persists despite pharmacological or surgical treatment. Active orthoses are a noninvasive alternative for wrist tremor suppression, but most approaches focus on single-joint compensation and neglect dynamic coupling from proximal joints. This work proposes an error-based active disturbance rejection control strategy for wrist tremor suppression using a three-degree-of-freedom upper limb model. The controller estimates and rejects total disturbances in real time, including model uncertainties and perturbations originating from proximal joints. Voluntary motion is estimated via \reviewchange{}{lowpass} filtering, and the method is evaluated against \reviewchange{}{proportional integral derivative} controllers. Simulation results over 100 trials for two different motion profiles show that 
+        the method achieves a balance between tremor reduction and control effort. Although an optimized proportional integral derivative controller achieves higher suppression under ideal conditions, it requires prior knowledge of voluntary motion and higher actuation. In contrast, the method maintains significant attenuation and robustness to parameter variations, indicating its potential for practical wearable tremor suppression systems.
+    \end{abstract}
+
+    \begin{keyword}
+        % Five to ten keywords, preferably chosen from the IFAC keyword list.
+        Parkinson's Disease,
+        Tremor Suppression,
+        Voluntary Motion Tracking,
+        Human-Machine Systems,
+        Active Disturbance Rejection Control,
+        Upper Limb Modeling.
+    \end{keyword}
+
+\end{frontmatter}
+
+\input{sections/section1.tex}
+\input{sections/section2.tex}
+\input{sections/section3.tex}
+\input{sections/section4.tex}
+\input{sections/section5.tex}
+
+\bibliography{%
+    references/active_disturbance_rejection_control_theory,%
+    references/c1_tremor_characterization_reviews,%
+    references/c2_tremor_suppression_reviews,%
+    references/c3_passive_control_strategies,%
+    references/c4_active_control_strategies,%
+    references/metrics%
+} 
+\end{document}

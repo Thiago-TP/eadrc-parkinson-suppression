@@ -1,0 +1,64 @@
+% Closed loop of the error-based ADRC applied to the wrist joint
+% (needs TikZ libraries positioning, calc and fit, and the CBA colors from cba2026.sty)
+\begin{tikzpicture}[
+    > = latex,
+    font = \small,
+    block/.style = {
+        draw,
+        thick,
+        rounded corners = 2pt,
+        align = center,
+        minimum height = 0.95cm,
+        inner sep = 4pt,
+    },
+    eadrc/.style = {block, draw = CBAPurple, fill = CBALightPurple, minimum width = 2.2cm},
+    plant/.style = {block, draw = CBAOrange, fill = CBALightOrange},
+    estimator/.style = {block, draw = CBAPetrol, fill = CBALightPetrol},
+    junction/.style = {draw, thick, circle, minimum size = 0.45cm, inner sep = 0pt},
+]
+    % Blocks
+    \node [junction] (sum) {};
+    \node [eadrc, right = 1.2cm of sum] (eso) {ESO\\baseado em erro};
+    \node [eadrc, right = 1.6cm of eso] (law) {Lei de\\controle};
+    \node [plant, right = 1.6cm of law] (plant) {Membro superior\\(3 GdL)};
+    \node [estimator] (estimator) at ($(eso)!0.5!(law) + (0, -1.55)$)
+        {Estimador de movimento voluntário\\(ZPLP ou EBMFLC)};
+
+    % EADRC frame
+    \node [
+        draw = CBAPurple,
+        dashed,
+        rounded corners = 4pt,
+        inner xsep = 0.25cm,
+        inner ysep = 0.2cm,
+        fit = (eso) (law),
+        label = {[CBAPurple, font = \small\bfseries]north:EADRC},
+    ] (eadrc frame) {};
+
+    % Auxiliary coordinates
+    \coordinate (u branch) at ($(law.east)!0.45!(plant.west)$);
+    \coordinate (y branch) at ($(plant.east) + (0.45, 0)$);
+    \coordinate (output) at ($(plant.east) + (1.3, 0)$);
+
+    % Forward path
+    \draw [->, thick] (sum) -- (eso) node [midway, above] {$\hat{e}_3$};
+    \draw [->, thick] (eso) -- (law) node [midway, above] {$\hat{\bm{z}}$};
+    \draw [->, thick] (law) -- (plant) node [pos = 0.45, above] {$u_3$};
+    \draw [->, thick] (plant) -- (output) node [at end, above left] {$\theta_3$};
+
+    % Control signal fed back to the observer
+    \fill (u branch) circle (1.5pt);
+    \draw [->, thick] (u branch) |- ($(eadrc frame.south) + (0, -0.2)$) -| (eso.south);
+
+    % Torques acting on the upper limb
+    \draw [<-, thick] (plant.north) -- ++(0, 0.6) node [above] {$\bm{\tau}_i + \bm{\tau}_v$};
+
+    % Measured wrist angle fed back through the estimator (+) and directly (-)
+    \fill (y branch) circle (1.5pt);
+    \draw [->, thick] (y branch) |- (estimator.east);
+    \draw [->, thick] (estimator.west) -| (sum.south)
+        node [pos = 0.25, above] {$\hat{\theta}_{v_3}$}
+        node [at end, below right = -1pt] {\scriptsize $+$};
+    \draw [->, thick] (y branch) |- ($(estimator.south) + (0, -0.45)$) -| ($(sum.west) + (-0.6, 0)$)
+        -- (sum.west) node [at end, above left = -1pt] {\scriptsize $-$};
+\end{tikzpicture}

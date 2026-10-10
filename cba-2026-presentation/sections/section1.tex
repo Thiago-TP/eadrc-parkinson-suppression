@@ -1,0 +1,82 @@
+\section{Introdução}
+
+\begin{frame}{Doença de Parkinson e tremor}
+  \begin{block}{A doença}
+    \begin{itemize}
+      \item Perda de neurônios dopaminérgicos na substância negra gera distúrbio neurodegenerativo crônico e progressivo \cite{Meng:2022,Fujikawa:2023}.
+      \item Manifestações: bradicinesia, rigidez, instabilidade postural e \alert{tremor de repouso} \cite{Botzel:2014}.
+    \end{itemize}
+  \end{block}
+  %
+  \begin{columns}[T]
+    \begin{column}{0.40\textwidth}
+      \centering
+      {\scriptsize Gomes et al. \cite{Gomes:2025}.}
+      \includegraphics[width=.85\linewidth]{substantia-nigra.png}
+    \end{column}
+    %
+    \begin{column}{0.60\textwidth}
+      \centering
+      {\scriptsize Adaptado de \url{thiagocardosovale.com/o-que-e-parkinsonismo}.}
+      \includegraphics[width=.85\linewidth]{motor-symptoms.png}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Doença de Parkinson e tremor}
+  \vspace{-.5cm}
+  \begin{columns}[T]
+    \begin{column}{0.625\textwidth}
+      \begin{block}{Tratamentos convencionais}
+        \begin{itemize}
+          \item Farmacológico: primeira linha, mas parte dos pacientes não responde, e o uso prolongado perde eficácia e causa efeitos colaterais \cite{Fujikawa:2023,Lora-Millan:2021,Meng:2022}.
+          \item Cirúrgico: invasivo e com riscos \cite{Botzel:2014,Fujikawa:2023}.
+        \end{itemize}
+      \end{block}
+      %
+      \begin{columns}[b]
+        \begin{column}{0.5\linewidth}
+          \centering
+          \includegraphics[width=1cm]{levodopa.jpg}
+
+          {\tiny \url{americanpharmawholesale.com}.}
+        \end{column}
+        %
+        \begin{column}{0.5\linewidth}
+          \centering
+          \includegraphics[width=.9\linewidth]{deep-brain-stimulation.png}
+          {\scriptsize Adaptado de \cite{Szymoniuk:2023}.}
+        \end{column}
+      \end{columns}
+    \end{column}
+    %
+    \pause
+    \begin{column}{0.35\textwidth}
+      \begin{exampleblock}{Órteses com controle ativo}
+        Alternativa não invasiva \cite{Lora-Millan:2021,Meng:2022} particularmente popular para a supressão do tremor de punho.
+      \end{exampleblock}
+      \vspace{.7cm}
+      \centering
+      \includegraphics[width=.9\linewidth]{active-orthosis-example.png}
+      {\scriptsize Zamanian e Richer \cite{Taheri:2014}.}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Supressão ativa do tremor de punho}
+  \centering
+  \input{tables/table_literature.tex}
+
+  \pause
+  \begin{alertblock}{Lacuna}
+    A maioria das abordagens usa \textbf{modelos de uma única articulação}, desprezando acoplamento.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Proposta deste trabalho}
+  \centering
+  \vfill
+  % Revealed one lane at a time
+  \resizebox{\linewidth}{!}{\input{figures/flowchart_proposal.tikz}}
+  \vfill
+\end{frame}

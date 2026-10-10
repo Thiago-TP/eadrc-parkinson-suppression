@@ -1,0 +1,31 @@
+----------------------- REVIEW 2 ---------------------
+
+SUBMISSION: 2227
+TITLE: Error-Based Active Disturbance Rejection Control for Parkinson's Disease Tremor Suppression in Wrist Considering Upper Limb Dynamics
+
+----------- Paper organization -----------
+SCORE: 5 (excellent)
+----------- Originality -----------
+SCORE: 4 (good)
+----------- Contribution -----------
+SCORE: 4 (good)
+----------- References -----------
+SCORE: 3 (fair)
+----------- Overall evaluation -----------
+SCORE: 2 (accept)
+----- TEXT:
+In this work, the authors apply ADRC to suppress involuntary wrist movements. The paper is interesting and well-written, with some minor suggestions to improve it presented in the sequel.
+
+Authors should update the reference list.
+
+The introduction is too long. Authors should focus on the disease's control aspects.
+
+Please explain or provide a reference for the values of a1, a2, and a3 presented after (2).
+
+How realistic is assuming the involuntary torque is purely sinusoidal? How will the presence of other harmonics impact the method?
+
+Please define w after (11).
+
+In the sentence before (22), the correct is "presented in Figure 2."
+
+The discussion of the results is too brief. Reducing the number of methods in the comparison may provide the necessary space to enhance the discussion.

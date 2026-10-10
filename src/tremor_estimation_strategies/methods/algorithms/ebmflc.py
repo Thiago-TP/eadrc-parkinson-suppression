@@ -75,6 +75,15 @@ class EBMFLC(Method):
             (freqs <= f_max_trem)
         )[0].tolist()
 
+        # Positions of the voluntary and tremor terms in the reference vector
+        # x_m = [sin(ws t), cos(ws t)]: sine of frequency i at i, cosine at i + n
+        self.voluntary_terms = self.voluntary_indices + [
+            i + self.n for i in self.voluntary_indices
+        ]
+        self.tremor_terms = self.tremor_indices + [
+            i + self.n for i in self.tremor_indices
+        ]
+
         self.ws = 2 * np.pi * freqs
 
         self.d = self.fs * window_time
@@ -99,16 +108,16 @@ class EBMFLC(Method):
                 np.sin(self.ws * k * self.dt),
                 np.cos(self.ws * k * self.dt)
             ])
-            x_v = x_m[self.voluntary_indices * 2]
-            x_t = x_m[self.tremor_indices * 2]
+            x_v = x_m[self.voluntary_terms]
+            x_t = x_m[self.tremor_terms]
 
             # Estimate of motion
             m_hat = self.w_m.T @ x_m
 
             # Estimates of voluntary and tremor components
-            # Indices are doubled (concatenated) to include both harmonics
-            w_v = self.w_m[self.voluntary_indices * 2]
-            w_t = self.w_m[self.tremor_indices * 2]
+            # Both the sine and the cosine terms of each band are included
+            w_v = self.w_m[self.voluntary_terms]
+            w_t = self.w_m[self.tremor_terms]
             v_hat = w_v.T @ x_v
             t_hat = w_t.T @ x_t
 

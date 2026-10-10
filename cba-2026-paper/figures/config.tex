@@ -1,0 +1,110 @@
+% Useful libs (TiKz and Dvipsnames packages are assumed loaded)
+\usetikzlibrary{
+    shapes, 
+    positioning, 
+    decorations.pathmorphing, 
+    decorations.markings,
+    patterns,
+    calc,
+}
+
+% Colors
+\definecolor{startstop}{HTML}{FF3867}
+\definecolor{io}{HTML}{2E8B57}
+\definecolor{process}{HTML}{1CA1DA}
+\definecolor{decision}{HTML}{D8C303}
+
+% Spring and damper
+\tikzstyle{spring}=[
+    decorate, 
+    decoration={
+        coil,
+        segment length = 1mm,
+        amplitude = 1mm,
+    }
+]
+\tikzstyle{damper}=[
+    decoration={
+    markings,  
+      mark connection node=dmp,
+      mark=at position 0.5 with 
+      {
+        \node (dmp) [thick,inner sep=0pt,transform shape,rotate=-90,minimum width=5pt,minimum height=1pt,draw=none] {};
+        \draw [thick] ($(dmp.north east)+(1pt,0)$) -- (dmp.south east) -- (dmp.south west) -- ($(dmp.north west)+(1pt,0)$);
+        \draw [thick] ($(dmp.north)+(0,-3pt)$) -- ($(dmp.north)+(0,2pt)$);
+      }
+    }, 
+    decorate
+]
+
+% Flowchart blocks
+\tikzstyle{startstop} = [
+    rectangle, 
+    rounded corners, 
+    minimum width=2cm, 
+    minimum height=1cm,
+    text centered, 
+    draw=black, 
+    fill=startstop!50,
+]
+
+\tikzstyle{process} = [
+    rectangle, 
+    minimum width=2cm, 
+    minimum height=1cm, 
+    text centered, 
+    draw=black, 
+    trapezium stretches=true,
+    fill=process!50,
+]
+\tikzstyle{io} = [
+    trapezium, 
+    trapezium left angle=70, 
+    trapezium right angle=110, 
+    minimum width=2cm, 
+    minimum height=1cm, 
+    text centered, 
+    draw=black, 
+    trapezium stretches=true,
+    fill=io!30,
+]
+\tikzstyle{decision} = [
+    diamond, 
+    minimum width=1cm, 
+    minimum height=1cm, 
+    text centered, 
+    draw=black, 
+    fill=decision!50,
+]
+
+% Control diagram blocks
+\tikzstyle{sum} = [
+    draw,
+    circle,
+    minimum size=0.6cm,
+    fill=Rhodamine!70,
+]
+% When using a sum shape, lines must be drawn and +- sign indicated
+% \draw 
+% (sum.north east) -- (sum.south west)
+% (sum.north west) -- (sum.south east);
+% \node[left=-1pt] at (sum.center){\tiny $+$};
+% \node[below] at (sum.center){\tiny $-$};
+\tikzstyle{controller} = [
+    draw,
+    fill=Peach!90,
+    minimum width=1.2cm,
+    minimum height=0.9cm,
+]
+\tikzstyle{system} = [
+    draw,
+    fill=Peach!90,
+    minimum width=1.2cm,
+    minimum height=0.9cm,
+]
+\tikzstyle{sensor} = [
+    draw,
+    fill=Goldenrod!80,
+    minimum width=1.2cm,
+    minimum height=0.9cm,
+]

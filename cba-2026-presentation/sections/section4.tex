@@ -1,0 +1,83 @@
+\section{Resultados e Discussão}
+
+\begin{frame}{Métricas médias em 100 execuções}
+  \centering
+  \input{tables/table_average_metrics.tex}
+
+  {\scriptsize Média $\pm$ desvio padrão; $\uparrow$ ($\downarrow$): maior (menor) é melhor.}
+
+  \pause
+  \begin{itemize}[<+->]
+    \small
+    \item DE-PID: TPSR $\approx$ 99,9\%, mas conhece $\theta_{v_3}$ e tem TV $\approx 3{,}3\times$ a do EADRC+ZPLP.
+    \item EADRC+ZPLP: maior TPSR entre os controladores realizáveis (56,97\% em movimento), com menor esforço que o EADRC+EBMFLC.
+    \item IMC-PID: TPSR mediano acima de 50\%, mas oscilações crescentes em algumas execuções derrubam a média.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Análise estatística}
+  \begin{columns}[c]
+    \begin{column}{0.62\textwidth}
+      \centering
+      \input{tables/table_wilcoxon.tex}
+
+      \vspace{0.1cm}
+      {\scriptsize $p$ corrigido por Holm-Bonferroni; $r > 0$: métrica maior com EADRC+ZPLP; em vermelho, $p \geq 0{,}05$.}
+    \end{column}
+    \pause
+    \begin{column}{0.36\textwidth}
+      \small
+      \begin{itemize}[<+->]
+        \setlength{\itemsep}{0.2cm}
+        \item \textbf{vs.\ EBMFLC:} maior supressão (TPSR, IAE) e \textbf{menor esforço} de controle (potência menor em todas as execuções); entropia equivalente em repouso.
+        \item \textbf{vs.\ DE-PID:} $|r| \approx 1$ em todas as métricas: resposta melhor em todas as execuções, à custa de maior esforço em todas elas.
+        \item \textbf{vs.\ IMC-PID:} supressão superior ($|r| \geq 0{,}94$ em TPSR, $R^2$ e IAE) e \textbf{menor esforço} em todas as execuções (potência e TV).
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Espectrogramas da resposta do punho}
+  \begin{columns}[c]
+    \begin{column}{0.68\textwidth}
+      \centering
+      \begin{minipage}{0.49\linewidth}
+        \centering
+        {\scriptsize Sem controle, repouso}\\
+        \includegraphics[width=\linewidth]{figures/plots/uncontrolled_amplitude_0.0/spectrogram_response_uncontrolled_amplitude_0.0.pdf}
+      \end{minipage}
+      \hfill
+      \begin{minipage}{0.49\linewidth}
+        \centering
+        {\scriptsize EADRC+EBMFLC, repouso}\\
+        \includegraphics[width=\linewidth]{figures/plots/eadrc_ebmflc_amplitude_0.0/spectrogram_response_eadrc_ebmflc_amplitude_0.0.pdf}
+      \end{minipage}
+
+      \vspace{0.2cm}
+      \begin{minipage}{0.49\linewidth}
+        \centering
+        {\scriptsize Sem controle, movimento}\\
+        \includegraphics[width=\linewidth]{figures/plots/uncontrolled_amplitude_1.0/spectrogram_response_uncontrolled_amplitude_1.0.pdf}
+      \end{minipage}
+      \hfill
+      \begin{minipage}{0.49\linewidth}
+        \centering
+        {\scriptsize EADRC+EBMFLC, movimento}\\
+        \includegraphics[width=\linewidth]{figures/plots/eadrc_ebmflc_amplitude_1.0/spectrogram_response_eadrc_ebmflc_amplitude_1.0.pdf}
+      \end{minipage}
+
+      \vspace{0.1cm}
+      {\tiny Espectrogramas de simulações longas (cerca de 1000 s), para maior resolução em frequência.}
+    \end{column}
+    \begin{column}{0.30\textwidth}
+      \small
+      \begin{itemize}
+        \setlength{\itemsep}{0.2cm}
+        \item Componente de 14,35 Hz fortemente atenuada.
+        \item Componentes de 3,59 e 5,30 Hz \alert{pouco mitigadas}.
+        \item Comportamento semelhante em repouso e em movimento.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+

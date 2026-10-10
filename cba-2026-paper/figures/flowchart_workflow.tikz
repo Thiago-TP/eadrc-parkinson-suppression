@@ -1,0 +1,33 @@
+\begin{tikzpicture}[> = latex]
+    \node (empty anchor) {};
+    % Blocks
+    \node [startstop, below=0.1 of empty anchor] (start) {Start};
+    \node [io, right=0.67 of start] (nominal) {Nominal parameters profiling};
+    \node [io, below=0.4 of nominal] (torques) {Voluntary torques profiling};
+    \node [process, left=0.4 of torques] (controller) {Controller tuning};
+    \node [process, below=0.4 of controller] (simulation) {Simulation};
+    \node [process, right=0.4 of simulation] (evaluation) {Evaluation};
+    \node [decision, below right=0.5 and 1 of evaluation] (repeat) {
+        \begin{minipage}{1.75cm}
+        \centering
+            100th\\ simulation?
+        \end{minipage}
+    };
+    \node [process, below=0.72 of simulation] (resampling) {Parameter sampling};
+    \node [startstop, below=0.4 of repeat] (stop) {Stop};
+
+    % Alingment tests
+    % \draw (repeat.west) --++ (-5, 0);
+    % \draw (start.center) --++ (0, -5);
+
+    % Arrows
+    \draw [->] (start) -- (nominal);
+    \draw [->] (nominal) -- (torques);
+    \draw [->] (torques) -- (controller);
+    \draw [->] (controller) -- (simulation);
+    \draw [->] (simulation) -- (evaluation);
+    \draw [->] (evaluation) -| (repeat);
+    \draw [->] (repeat) -- (resampling) node [at start, above left] {No};
+    \draw [->] (repeat) -- (stop) node [at end, above left] {Yes};
+    \draw [->] (resampling) -- (simulation);
+\end{tikzpicture}
