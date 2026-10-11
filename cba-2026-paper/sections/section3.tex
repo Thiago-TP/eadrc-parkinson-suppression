@@ -63,7 +63,15 @@ where $\epsilon_3$ is the voluntary motion estimator error.
     
 \subsection{Simulation Setup}
 
-Controller performance is evaluated through repeated simulations under varying physical conditions. For each run, upper limb parameters are sampled around nominal values as described in Subsection \ref{sec:parameters}, and the system response is simulated and evaluated. This procedure is repeated to assess robustness. Since involuntary torques due to Parkinson's disease are already modeled, only voluntary torque profiles are specified. Voluntary torques are null to emulate resting, and to emulate motion follow the trajectories described in Section \ref{sec:results}.
+Controller performance is evaluated through repeated simulations under varying physical conditions. 
+For each run, upper limb parameters are sampled around nominal values as described in Subsection \ref{sec:parameters}, 
+and the system response is simulated and evaluated. 
+This procedure is repeated to assess robustness. 
+Since involuntary torques due to Parkinson's disease are already modeled
+(eq. \eqref{eq:tau_PD}), 
+only voluntary torque profiles are specified. 
+Voluntary torques are null to emulate resting, 
+and to emulate motion follow the trajectories described in Section \ref{sec:results}.
 
 Performance is assessed using output-based and control-based metrics. 
 For the wrist joint, Tremor Power Suppression Ratio (TPSR) \citep{Qi:2024}, 
